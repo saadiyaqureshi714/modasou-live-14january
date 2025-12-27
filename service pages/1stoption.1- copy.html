@@ -76,8 +76,22 @@ body {
   grid-column: span 2;
   text-align: center;
   margin-top: 20px;
+  position: relative;
+  z-index: 10;
+}
+.btn-measure {
+  display: inline-block;
+  padding: 14px 30px;
+  background: #4a2a18;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 30px;
+  font-weight: 600;
 }
 
+.submit-box a{
+  text-decoration: none;
+}
 .submit-box button {
   background: #2b1a12;
   color: #fff;
@@ -88,8 +102,12 @@ body {
   cursor: pointer;
 }
 
-.submit-box button:hover {
+.btn-measure button:hover {
   background: #be85088f;
+}
+.submit-box,
+.submit-box * {
+  pointer-events: auto;
 }
 
 /* COLOR VARIABLES */
@@ -214,7 +232,16 @@ body {
   </div>
 
   <div class="submit-box">
-    <button>Submit Customization</button>
+<a href="service pages/dressmeasure-1 copy.html" target="_blank" class="btn-measure">
+  Add your measurements
+</a>
+
+
+
+    
+
+
+
   </div>
 
 </div>

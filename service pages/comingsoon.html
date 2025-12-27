@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coming Soon</title>
+
+<style>
+/* ===== COLOR PALETTE ===== */
+:root {
+  --dark-brown: #3b2416;
+  --chocolate-brown: #4e2e1f;
+  --coffee-brown: #6b3e2e;
+  --gold: #d4af37;
+  --light-gold: #f5e6b8;
+  --ivory: #fff8ef;
+}
+
+/* ===== GLOBAL STYLES ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  height: 100vh;
+  background: linear-gradient(135deg, var(--dark-brown), var(--chocolate-brown), var(--coffee-brown));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--ivory);
+}
+
+/* ===== MAIN CARD ===== */
+.coming-soon {
+  background: rgba(255, 248, 239, 0.08);
+  border: 2px solid var(--gold);
+  border-radius: 18px;
+  padding: 50px 40px;
+  text-align: center;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  backdrop-filter: blur(10px);
+}
+
+/* ===== HEADING ===== */
+.coming-soon h1 {
+  font-size: 48px;
+  margin-bottom: 15px;
+  background: linear-gradient(90deg, var(--light-gold), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 2px;
+}
+
+/* ===== SUBTEXT ===== */
+.coming-soon p {
+  font-size: 18px;
+  color: var(--light-gold);
+  margin-bottom: 30px;
+}
+
+/* ===== DIVIDER ===== */
+.divider {
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--light-gold));
+  margin: 25px auto;
+  border-radius: 5px;
+}
+
+/* ===== BUTTON ===== */
+.notify-btn {
+  display: inline-block;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, var(--gold), var(--light-gold));
+  color: var(--dark-brown);
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 30px;
+  transition: 0.3s ease;
+  box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+}
+
+.notify-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(212, 175, 55, 0.6);
+}
+
+/* ===== FOOTER TEXT ===== */
+.footer-text {
+  margin-top: 35px;
+  font-size: 14px;
+  color: #e9d8a6;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 480px) {
+  .coming-soon h1 {
+    font-size: 36px;
+  }
+  .coming-soon p {
+    font-size: 16px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="coming-soon">
+  <h1>Coming Soon</h1>
+  <div class="divider"></div>
+  <p>We are crafting something elegant and timeless for you.</p>
+  <a href="#" class="notify-btn">Notify Me</a>
+  <div class="footer-text">© 2025 | Premium Brown & Gold Theme</div>
+</div>
+
+</body>
+</html>
