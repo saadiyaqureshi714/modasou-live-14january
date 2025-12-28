@@ -89,7 +89,7 @@
 
 body {
   margin: 0;
-  background: #f5f5f5;
+  background: #331300;
 }
 
 .topbar {
@@ -103,16 +103,19 @@ body {
   max-width: 1000px;
   margin: auto;
   padding: 30px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
   
   gap: 20px;
 }
 .upload-box {
+  width: 50%;
   border: 2px solid black;
   padding: 30px;
   text-align: center;
-  border-radius: 6px;
+  background-color: #d4af37;
+  border-radius: 20px;
 }
 
 .upload-box h3 {
@@ -133,6 +136,7 @@ body {
 }
 
 .preview {
+  background-color: #f5e6b0;
   margin-top: 20px;
 }
 
@@ -210,12 +214,16 @@ img {
   background: #333;
 }
 .card{
+  width: 60%;
+  background-color: #d4af37;
   max-height: 60vh;
+  margin-left: 30px;
   margin-top: 20px;
   border:2px solid black ;
   line-height: normal;
-  display: flexbox;
-  padding-left: 14px;
+  display: block;
+  
+  padding-left: 24px;
   
   
 }
@@ -273,7 +281,7 @@ footer {
     <div class="preview">
       <img id="designPreview">
     </div>
-</div>  
+</div>  </main>
   <!-- GOOGLE SEARCH + URL -->
   <div class="card">
     <h2>Search Design Online</h2>
@@ -296,18 +304,8 @@ footer {
   </div>
 
   <!-- DESIGNERS (LAST) -->
-  <div class="card">
-    <h2>Designers Collection</h2>
-
-    <div class="designers">
-      <img src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c"
-           onclick="selectDesign(this.src)">
-      <img src="https://images.unsplash.com/photo-1520975922284-8b456906c813"
-           onclick="selectDesign(this.src)">
-      <img src="https://images.unsplash.com/photo-1520974735194-7d6a42a78c91"
-           onclick="selectDesign(this.src)">
-    </div>
-  </div>
+  
+  
 
 </main>
 <div class="submit-box">

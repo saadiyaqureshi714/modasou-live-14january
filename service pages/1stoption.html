@@ -232,7 +232,7 @@ body {
   </div>
 
   <div class="submit-box">
-<a href="service pages/blousemeasure.html" target="_blank" class="btn-measure">
+<a href="service pages/measurement-blouse.html" id="measurementBtn" target="_blank" class="btn-measure ">
   Add your measurements
 </a>
 
@@ -245,6 +245,37 @@ body {
   </div>
 
 </div>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const service = params.get("service");
+
+  document.getElementById("measurementBtn").addEventListener("click", function () {
+    switch (service) {
+      case "blouse":
+        window.location.href = "measurement-blouse.html";
+        break;
+
+      case "dress":
+        window.location.href = "measurement-dress.html";
+        break;
+
+      case "blazer":
+        window.location.href = "measurement-blazer.html";
+        break;
+
+      case "skirt":
+        window.location.href = "measurement-skirt.html";
+        break;
+
+      case "kurti":
+        window.location.href = "measurement-kurti.html";
+        break;
+
+      default:
+        alert("Please select a service first");
+    }
+  });
+</script>
 
 <script>
 function previewImage(input, previewId) {
