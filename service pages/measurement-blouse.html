@@ -426,7 +426,16 @@ font-family: 'CINZEL', serif;
 }
 
 
-</style>
+</style><script>
+  // Check if sessionId already exists in browser
+  let sessionId = localStorage.getItem('sessionId');
+
+  // If not, create a new one
+  if (!sessionId) {
+    sessionId = Date.now(); // simple unique ID
+    localStorage.setItem('sessionId', sessionId);
+  }
+</script>
 </head><!-- NAVBAR -->
 <header class="navbar">
   <div class="nav-wrap">
@@ -436,12 +445,12 @@ font-family: 'CINZEL', serif;
 
     <!-- MENU -->
     <nav class="menu">
-      <a href="index.html">Home</a>
-      <a href="about.html">About Us</a>
-      <a href="services.html">Services</a>
-      <a href="designers.html">Designers</a>
-      <a href="blog.html">Blog</a>
-      <a href="contact.html">Contact</a>
+      <a href="/index.html">Home</a>
+      <a href="/about.html">About Us</a>
+      <a href="/services.html">Services</a>
+      <a href="/designers.html">Designers</a>
+      <a href="/blog.html">Blog</a>
+      <a href="/contact.html">Contact</a>
     </nav>
 
   </div>
@@ -473,6 +482,8 @@ font-family: 'CINZEL', serif;
     <!-- Replace measurement-guide.jpg with your actual image -->
   <section class="measurement-section">
   <div class="options-wrapper">
+    <form id="measurementForm">
+
 <div class="measurement-input-section option-1">
   <h2>Enter Your Measurements (in Inches)</h2>
 
@@ -484,7 +495,7 @@ font-family: 'CINZEL', serif;
 
 
 
-        <input type="number" name="shoulder" step="0.1" placeholder="0" required>
+        <input type="number" name="Front-length-of-the-blouse" step="0.1" placeholder="0" required>
         <span>in</span>
       </div>
     </div>
@@ -492,7 +503,7 @@ font-family: 'CINZEL', serif;
     <div class="measure-row">
       <label>2-Back length of the blouse:</label>
       <div class="input-wrap">
-        <input type="number" step="0.1" placeholder="0" required>
+        <input type="number" name="Back-length-of-the-blouse" step="0.1" placeholder="0" required>
         <span>in</span>
       </div>
     </div>
@@ -500,7 +511,7 @@ font-family: 'CINZEL', serif;
     <div class="measure-row">
       <label>3-Mid-point to apex length:</label>
       <div class="input-wrap">
-        <input type="number" step="0.1" placeholder="0" required>
+        <input type="number" name="Mid-point_to-apex-length" step="0.1" placeholder="0" required>
         <span>in</span>
       </div>
     </div>
@@ -508,7 +519,7 @@ font-family: 'CINZEL', serif;
     <div class="measure-row">
       <label>4-Mid-point to under-bust length:</label>
       <div class="input-wrap">
-        <input type="number" step="0.1" placeholder="0" required>
+        <input type="number" name=" Mid-point_to_under-bust_length" step="0.1" placeholder="0" required>
         <span>in</span>
       </div>
     </div>
@@ -516,108 +527,125 @@ font-family: 'CINZEL', serif;
     <div class="measure-row">
       <label>5-Across shoulder:</label>
       <div class="input-wrap">
-        <input type="number" step="0.1" placeholder="0" required>
+        <input type="number" name="Across_shoulder" step="0.1" placeholder="0" required>
         <span>in</span>
       </div>
     </div>
       <div class="measure-row">
       <label>6-Bust round:</label>
       <div class="input-wrap">
-        <input type="number" step="0.1" placeholder="0" required>
+        <input type="number" name="bust_round" step="0.1" placeholder="0" required>
         <span>in</span>
       </div>
     </div>
     <div class="measure-row">
       <label>7-Waist round:</label>
       <div class="input-wrap">
-        <input type="number" step="0.1" placeholder="0" required>
+        <input type="number" name="waist_round" step="0.1" placeholder="0" required>
         <span>in</span>
       </div>
     </div>
     <div class="measure-row">
       <label>8-Apex point to point:</label>
       <div class="input-wrap">
-        <input type="number" step="0.1" placeholder="0" required>
+        <input type="number" name="apex-point-to-point" step="0.1" placeholder="0" required>
         <span>in</span>
       </div>
     </div>
     <div class="measure-row">
       <label>9-Front neck depth:</label>
       <div class="input-wrap">
-        <input type="number" step="0.1" placeholder="0" required>
+        <input type="number" name="front-neck-depth" step="0.1" placeholder="0" required>
         <span>in</span>
       </div>
     </div>
     <div class="measure-row">
       <label>10-Back neck depth:</label>
       <div class="input-wrap">
-        <input type="number" step="0.1" placeholder="0" required>
+        <input type="number" name="back-neck-depth" step="0.1" placeholder="0" required>
         <span>in</span>
       </div>
     </div>
     <div class="measure-row">
       <label>11-Armhole:</label>
       <div class="input-wrap">
-        <input type="number" step="0.1" placeholder="0" required>
+        <input type="number" name="Armhole" step="0.1" placeholder="0" required>
         <span>in</span>
       </div>
     </div>
     <div class="measure-row">
       <label>12-Short sleeve length:</label>
       <div class="input-wrap">
-        <input type="number" step="0.1" placeholder="0" required>
+        <input type="number" name="short-sleeve-length" step="0.1" placeholder="0" required>
         <span>in</span>
       </div>
     </div>
     <div class="measure-row">
       <label>13-Short sleeve round:</label>
       <div class="input-wrap">
-        <input type="number" step="0.1" placeholder="0" required>
+        <input type="number" name="short-sleeve-round" step="0.1" placeholder="0" required>
         <span>in</span>
       </div>
     </div>
     <div class="measure-row">
       <label>14-Elbow sleeve length:</label>
       <div class="input-wrap">
-        <input type="number" step="0.1" placeholder="0" required>
+        <input type="number" name="elbowSleeveLength" step="0.1" placeholder="0" required>
         <span>in</span>
       </div>
     </div>
     <div class="measure-row">
       <label>15-Elbow sleeve round:</label>
       <div class="input-wrap">
-        <input type="number" step="0.1" placeholder="0" required>
+        <input type="number" name="elbowSleeveRound" step="0.1" placeholder="0" required>
         <span>in</span>
       </div>
     </div>
     <div class="measure-row">
       <label>16-Full sleeve Length:</label>
       <div class="input-wrap">
-        <input type="number" step="0.1" placeholder="0" required>
+        <input type="number" name="fullSleeveLength" step="0.1" placeholder="0" required>
         <span>in</span>
       </div>
     </div>
     <div class="measure-row">
       <label>17-Full sleeve round:</label>
       <div class="input-wrap">
-        <input type="number" step="0.1" placeholder="0" required>
+        <input type="number" name="fullSleeveRound" step="0.1" placeholder="0" required>
         <span>in</span>
       </div>
-    </div></div></div></section>
+
     </div>
 
-  <p class="note">
-    Your measurements are safe with us. Our team will contact you after submission.
-  
-  </p>
-  
+</div></div></section>
+    </div>
+
+<p class="note">
+  Your measurements are safe with us. Our team will contact you after submission.
+</p>
+
+<button id="nextBtn" type="submit" class="submit-btn">
+  Submit Measurements
+</button>
+
+</form>   <!-- ✅ FORM CLOSES HERE -->
+
+
+
+
+
+
+
+
+ 
  <div>
 
-    <button type="submit" class="submit-btn"><a href="/service pages/client-details.html" >
-  Proceed to Submit Measurements
+    <button  type="submit" class="submit-btn"><a href="/final-submit.html" >
+  Next
 </a>
 </button>
   </div> 
+    
   
   
   <br><br>
@@ -626,6 +654,34 @@ font-family: 'CINZEL', serif;
 <footer>
   <p id="p">© 2025 MODASOU - LUXURY, CUSTOMIZED</p>
 </footer>
+<script type="module">
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const db = getFirestore();
+const sessionId = localStorage.getItem("sessionId");
+
+document.getElementById("nextBtn").addEventListener("click", async () => {
+
+  const measurements = {};
+
+  document.querySelectorAll(".measure-row").forEach(row => {
+    const label = row.querySelector("label")?.innerText.trim();
+    const input = row.querySelector("input")?.value;
+
+    if (label && input) {
+      measurements[label] = input + " in";
+    }
+  });
+
+  await setDoc(
+    doc(db, "measurements", sessionId),
+    measurements,
+    { merge: true }
+  );
+
+});
+</script>
+
 
 </body>
 </html>

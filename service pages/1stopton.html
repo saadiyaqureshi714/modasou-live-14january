@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fabric Upload</title>
+<script>
+  // Check if sessionId already exists in browser
+  let sessionId = localStorage.getItem('sessionId');
+
+  // If not, create a new one
+  if (!sessionId) {
+    sessionId = Date.now(); // simple unique ID
+    localStorage.setItem('sessionId', sessionId);
+  }
+</script>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #fce775;
+    color: #331300;
+  }
+
+/* HEADER */
+.site-header {
+  background: #fff;
+  border-bottom: 2px solid var(--light-golden);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* CONTAINER */
+.nav-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 15px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* LOGO */
+.logo {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--golden);
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+
+.logo:hover {
+  color: var(--chocolate);
+}
+
+/* NAV MENU */
+.nav-menu a {
+  margin: 0 14px;
+  text-decoration: none;
+  color: var(--dark-brown);
+  font-weight: 500;
+  position: relative;
+  padding-bottom: 5px;
+}
+
+/* HOVER EFFECT */
+.nav-menu a::after {
+  content: '';
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  left: 0;
+  bottom: 0;
+  background: var(--golden);
+  transition: 0.3s ease;
+}
+
+.nav-menu a:hover::after {
+  width: 100%;
+}
+
+/* ACTIVE PAGE */
+.nav-menu a.active {
+  color: var(--golden);
+}
+
+.nav-menu a.active::after {
+  width: 100%;
+}
+
+
+
+.topbar {
+  background: #4d2d18;
+  color: white;
+  padding: 15px;
+  text-align: center;}
+
+  .container{
+    max-width: 80%;
+  margin: 40px auto;
+  background: #f5e6b0;
+  padding: 30px;
+  border-radius: 8px;
+     display: grid;
+  grid-template-columns: 1fr 1fr;
+  
+}
+  
+
+  .upload-box {
+    width: 100%;
+
+    border: 2px solid #331300;
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 400px;
+    margin: 50px auto;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background-color: #fffaf0;
+  }
+
+  .upload-box h3 {
+    color: #b28b00;
+  }
+
+  input[type="file"] {
+    display: none;
+  }
+
+  label.choose-btn, button.send-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px 5px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  label.choose-btn {
+    background-color: #331300;
+    color: #ffd700;
+  }
+
+  label.choose-btn:hover {
+    background-color: #4b2000;
+  }
+
+  button.send-btn {
+    background-color: #b28b00;
+    color: #331300;
+  }
+
+  button.send-btn:hover {
+    background-color: #ffd700;
+  }
+
+  .preview img {
+    max-width: 100%;
+    margin-top: 15px;
+    border-radius: 8px;
+  }
+
+  .nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.nav-btn {
+  padding: 12px 26px;
+  font-size: 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  box-shadow: 0 6px 0 rgba(0,0,0,0.25);
+  display: inline-block;
+}
+
+/* LEFT */
+.left-btn {
+    margin-left: 30%;
+  background-color: #331300;
+  color: #ffd700;
+}
+
+/* RIGHT */
+.right-btn {
+    margin-right: 30%;
+  background-color: #b28b00;
+  color: #331300;
+}
+
+/* HOVER */
+.nav-btn:hover {
+  filter: brightness(1.1);
+}
+
+/* CLICK FEEL */
+.nav-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 rgba(0,0,0,0.25);
+}
+
+</style>
+</head>
+<header class="site-header">
+  <div class="nav-container">
+
+    <!-- LOGO (Click → Home) -->
+    <a href="/index.html" class="logo">MODASOU</a>
+
+    <!-- NAV MENU -->
+    <nav class="nav-menu">
+      <a href="/index.html" class="active">Home</a>
+      <a href="/about.html">About Us</a>
+      <a href="/services.html">Services</a>
+      <a href="/designers.html">Designers</a>
+      <a href="/blog.html">Blog</a>
+      <a href="/contact.html">Contact Us</a>
+    </nav>
+
+  </div>
+</header>
+
+<body>
+    <div class="container">
+
+<div class="upload-box">
+  <h3>Upload Fabric Photo</h3>
+
+  <!-- Choose File Button -->
+  <label class="choose-btn" for="fabricUpload">Choose Fabric Image</label>
+  <input type="file" id="fabricUpload" accept="image/*" required>
+
+  <!-- Preview -->
+  <div class="preview">
+    <img id="fabricPreview" alt="Fabric Preview">
+  </div>
+
+  <!-- Send Button -->
+  <button class="send-btn" id="sendFabric">Send to Admin</button>
+</div>
+
+
+
+<div class="upload-box">
+  <h3>Upload Design Photo</h3>
+
+  <!-- Choose File Button -->
+  <label class="choose-btn" for="designUpload">Choose Design Image</label>
+  <input type="file" id="designUpload" accept="image/*" required>
+
+  <!-- Preview -->
+  <div class="preview">
+    <img id="designPreview" alt="designPreview">
+  </div>
+
+  <!-- Send Button -->
+  <button class="send-btn" id="sendDesign">Send to Admin</button>
+</div>
+    </div>
+
+    <!-- buttons-->
+
+    <div class="nav-buttons">
+  <a href="/#" id="measurementBtn" target="_blank" class="nav-btn left-btn ">Add your measurements</a>
+  <a href="/send-your-cloth.html" class="nav-btn right-btn">Send your measurement cloth</a>
+</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const service = params.get("service");
+
+  document.getElementById("measurementBtn").addEventListener("click", function () {
+    switch (service) {
+      case "blouse":
+        window.location.href = "measurement-blouse.html";
+        break;
+
+      case "dress":
+        window.location.href = "measurement-dress.html";
+        break;
+
+      case "top":
+        window.location.href = "measurement-Tops.html";
+        break;
+       
+      case "kurta":
+        window.location.href = "measurement-kurta.html";
+        break;
+  
+      case "skirt":
+        window.location.href = "measurement-skirt.html";
+        break;
+
+      case "lehenga":
+        window.location.href = "measurement-lehenga.html";
+        break;
+       
+      case "pant":
+        window.location.href = "measurement-pants.html";
+        break;
+  
+      default:
+        alert("Please select a service first");
+    }
+  });
+</script>
+
+
+
+
+
+<script>
+  function setupUpload(fileInputId, previewImgId, sendBtnId, labelName) {
+    const fileInput = document.getElementById(fileInputId);
+    const previewImg = document.getElementById(previewImgId);
+    const sendBtn = document.getElementById(sendBtnId);
+
+    // Preview image
+    fileInput.addEventListener("change", () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = e => {
+        previewImg.src = e.target.result;
+        previewImg.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Send button
+    sendBtn.addEventListener("click", () => {
+      const file = fileInput.files[0];
+      if (!file) {
+        alert(`Please choose a ${labelName} image first`);
+        return;
+      }
+
+      // 🔗 PLACE FIREBASE / EMAILJS CODE HERE
+      console.log(`${labelName} ready to send:`, file.name);
+
+      alert(`${labelName} sent to admin successfully!`);
+    });
+  }
+
+  // FABRIC UPLOAD
+  setupUpload(
+    "fabricUpload",
+    "fabricPreview",
+    "sendFabric",
+    "Fabric"
+  );
+
+  // DESIGN UPLOAD
+  setupUpload(
+    "designUpload",
+    "designPreview",
+    "sendDesign",
+    "Design"
+  );
+</script>
+
+<script>
+document.getElementById("nextBtn").onclick = async () => {
+
+  const fabricFile = document.getElementById("fabricImg").files[0];
+  const designFile = document.getElementById("designImg").files[0];
+
+  if (!fabricFile || !designFile) {
+    alert("Please upload both Fabric and Design images");
+    return;
+  }
+
+  // Upload Fabric Image
+  const fabricRef = firebase.storage()
+    .ref(`uploads/${sessionId}/fabric_${Date.now()}`);
+  await fabricRef.put(fabricFile);
+  const fabricURL = await fabricRef.getDownloadURL();
+
+  // Upload Design Image
+  const designRef = firebase.storage()
+    .ref(`uploads/${sessionId}/design_${Date.now()}`);
+  await designRef.put(designFile);
+  const designURL = await designRef.getDownloadURL();
+
+  // Save BOTH URLs in Firestore
+  await firestore.collection("submissions").add({
+    sessionId: sessionId,
+    formName: "Service1_Images",
+    fabricImage: fabricURL,
+    designImage: designURL,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  // Go to next page
+  
+};
+</script>
+
+</body>
+</html>
+
+</body>
+</html>

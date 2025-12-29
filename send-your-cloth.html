@@ -124,12 +124,23 @@ button{
   background:#331300;
   color:#fff;
   border:none;
-  padding:14px 30px;
+  padding:14px 60px;
   border-radius:8px;
   font-size:15px;
   cursor:pointer;
+  font-size: 20px;
+}
+.next{
+  position: relative;
+  margin-left: 20px;
 }
 
+.next a{
+  
+  text-decoration: none;
+  font-size: 20px;
+  color: #eee;
+}
 button:hover{
   background:#b8962e;
 }
@@ -146,6 +157,16 @@ button:hover{
   }
 }
 </style>
+<script>
+  // Check if sessionId already exists in browser
+  let sessionId = localStorage.getItem('sessionId');
+
+  // If not, create a new one
+  if (!sessionId) {
+    sessionId = Date.now(); // simple unique ID
+    localStorage.setItem('sessionId', sessionId);
+  }
+</script>
 </head>
 
 <body>
@@ -169,7 +190,8 @@ button:hover{
     <h3>Enter your pickup address. We will arrange cloth pickup.</h3>
     <br><br>
 
-    <form action="send-cloth.php" method="POST">
+  <form id="pickupForm">
+
 
 
       <!-- NAME -->
@@ -179,6 +201,7 @@ button:hover{
   </label>    <!-- NAME -->
 <input
   type="text"
+  id="fullname"
   name="fullname"
   placeholder="Full Name"
   required
@@ -193,7 +216,8 @@ button:hover{
   <span class="country-code">+91</span>
   <input
     type="tel"
-    name="mobile"
+    id="watsapp_number"
+    name="watsapp_number"
     placeholder="10 digit watsapp number"
     maxlength="10"
     pattern="[6-9][0-9]{9}"
@@ -209,6 +233,7 @@ button:hover{
   </label>
   <input
     type="date"
+    id="pickup_date"
     name="pickup_date"
     required
     min="2026-01-01"
@@ -221,6 +246,7 @@ button:hover{
     Pickup Time Slot
   </label>
   <select
+  id="pickup_time"
     name="pickup_time"
     required
     style="width:100%;padding:14px 16px;border-radius:8px;border:1px solid #ccc;font-size:15px;"
@@ -238,6 +264,7 @@ button:hover{
     Enter your full address
   </label>
 <textarea
+id="address"
   name="address"
   placeholder="Full Address (House no, Area, City)"
   required
@@ -249,6 +276,7 @@ button:hover{
   </label>
 <input
   type="text"
+  id="pincode"
   name="pincode"
   placeholder="Pincode"
   maxlength="6"
@@ -258,12 +286,41 @@ button:hover{
 >
 </div>
 
-      <button type="submit">Schedule Cloth Pickup</button>
+      <button type="submit">Schedule Cloth Pickup</button><br><br>
+      <button class="next" type="next"><a href="/finalsubmit.html">Next</a></button>
 
     </form>
-
   </div>
 </section>
+<script type="module">
+import { db } from "./firebase.js";
+import { doc, setDoc } from
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const form = document.getElementById("pickupForm");
+
+// reuse your existing sessionId
+const sessionId = localStorage.getItem("sessionId");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  await setDoc(doc(db, "orders", sessionId), {
+    pickup: {
+      fullname: document.getElementById("fullname").value,
+      watsapp_number: document.getElementById("watsapp_number").value,
+      pickup_date: document.getElementById("pickup_date").value,
+      pickup_time: document.getElementById("pickup_time").value,
+      address: document.getElementById("address").value,
+      pincode: document.getElementById("pincode").value
+    }
+  }, { merge: true });
+
+  // move to FINAL page
+  window.location.href = "final-submit.html";
+});
+</script>
+
 
 </body>
 </html>

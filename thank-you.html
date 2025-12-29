@@ -68,18 +68,12 @@
 
   <a href="index.html" class="home-btn">Back to Home</a>
 </div>
-
 <script>
-  const params = new URLSearchParams(window.location.search);
-  const phone = params.get("whatsapp");
-  const msg = params.get("msg");
-
-  if (phone && msg) {
-    setTimeout(() => {
-      window.location.href = `https://wa.me/91${phone}?text=${msg}`;
-    }, 1500);
-  }
+  localStorage.removeItem("sessionId");
 </script>
+
+
+
 
 </body>
 </html>

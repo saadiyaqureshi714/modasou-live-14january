@@ -427,6 +427,16 @@ font-family: 'CINZEL', serif;
 
 
 </style>
+<script>
+  // Check if sessionId already exists in browser
+  let sessionId = localStorage.getItem('sessionId');
+
+  // If not, create a new one
+  if (!sessionId) {
+    sessionId = Date.now(); // simple unique ID
+    localStorage.setItem('sessionId', sessionId);
+  }
+</script>
 </head><!-- NAVBAR -->
 <header class="navbar">
   <div class="nav-wrap">
@@ -436,12 +446,12 @@ font-family: 'CINZEL', serif;
 
     <!-- MENU -->
     <nav class="menu">
-      <a href="index.html">Home</a>
-      <a href="about.html">About Us</a>
-      <a href="services.html">Services</a>
-      <a href="designers.html">Designers</a>
-      <a href="blog.html">Blog</a>
-      <a href="contact.html">Contact</a>
+      <a href="/index.html">Home</a>
+      <a href="/about.html">About Us</a>
+      <a href="/services.html">Services</a>
+      <a href="/designers.html">Designers</a>
+      <a href="/blog.html">Blog</a>
+      <a href="/contact.html">Contact</a>
     </nav>
 
   </div>
@@ -474,13 +484,13 @@ font-family: 'CINZEL', serif;
   <div class="options-wrapper">
 <div class="measurement-input-section option-1">
   <h2>Enter Your Measurements (in Inches)</h2>
-
+<form id="measurementForm">
   <div class="measurement-form">
 
     <div class="measure-row">
       <label>1-Skirt waist round:</label>
       <div class="input-wrap">
-        <input type="number" step="0.1" placeholder="0" required>
+        <input type="number" name="skirt-waist-round" step="0.1" placeholder="0" required>
         <span>in</span>
       </div>
     </div>
@@ -488,7 +498,7 @@ font-family: 'CINZEL', serif;
     <div class="measure-row">
       <label>2-Hip round:</label>
       <div class="input-wrap">
-        <input type="number" step="0.1" placeholder="0" required>
+        <input type="number" name="hip-round" step="0.1" placeholder="0" required>
         <span>in</span>
       </div>
     </div>
@@ -496,7 +506,7 @@ font-family: 'CINZEL', serif;
     <div class="measure-row">
       <label>3-Skirt length:</label>
       <div class="input-wrap">
-        <input type="number" step="0.1" placeholder="0" required>
+        <input type="number" name="skirt-length" step="0.1" placeholder="0" required>
         <span>in</span>
       </div>
     </div>
@@ -506,18 +516,32 @@ font-family: 'CINZEL', serif;
     </div></div></section>
     </div>
 
-  <p class="note">
-    Your measurements are safe with us. Our team will contact you after submission.
-  
-  </p>
-  
+<p class="note">
+  Your measurements are safe with us. Our team will contact you after submission.
+</p>
+
+<button id="nextBtn" type="submit" class="submit-btn">
+  Submit Measurements
+</button>
+
+</form>   <!-- ✅ FORM CLOSES HERE -->
+
+
+
+
+
+
+
+
+ 
  <div>
 
-    <button type="submit" class="submit-btn"><a href="/service pages/client-details.html" >
-  Proceed to Submit Measurements
+    <button  type="submit" class="submit-btn"><a href="/final-submit.html" >
+  Next
 </a>
 </button>
   </div> 
+    
   
   
   <br><br>
@@ -526,6 +550,37 @@ font-family: 'CINZEL', serif;
 <footer>
   <p id="p">© 2025 MODASOU - LUXURY, CUSTOMIZED</p>
 </footer>
+<script type="module">
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const db = getFirestore();
+const sessionId = localStorage.getItem("sessionId");
+
+document.getElementById("nextBtn").addEventListener("click", async () => {
+
+  const measurements = {};
+
+  document.querySelectorAll(".measure-row").forEach(row => {
+    const label = row.querySelector("label")?.innerText.trim();
+    const input = row.querySelector("input")?.value;
+
+    if (label && input) {
+      measurements[label] = input + " in";
+    }
+  });
+
+  await setDoc(
+    doc(db, "measurements", sessionId),
+    measurements,
+    { merge: true }
+  );
+
+});
+</script>
+
 
 </body>
 </html>
+
+
+

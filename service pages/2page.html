@@ -5,6 +5,16 @@
   <meta charset="UTF-8">
   <title>ModaSou | Customize Clothing</title>
   <link rel="stylesheet" href="style.css">
+  <script>
+  // Check if sessionId already exists in browser
+  let sessionId = localStorage.getItem('sessionId');
+
+  // If not, create a new one
+  if (!sessionId) {
+    sessionId = Date.now(); // simple unique ID
+    localStorage.setItem('sessionId', sessionId);
+  }
+</script>
 </head>
 <style>
     * {
@@ -254,16 +264,16 @@ footer {
   <div class="nav-container">
 
     <!-- LOGO (Click → Home) -->
-    <a href="index.html" class="logo">MODASOU</a>
+    <a href="/index.html" class="logo">MODASOU</a>
 
     <!-- NAV MENU -->
     <nav class="nav-menu">
       <a href="/index.html" class="active">Home</a>
-      <a href="about.html">About Us</a>
-      <a href="services.html">Services</a>
-      <a href="designers.html">Designers</a>
-      <a href="blog.html">Blog</a>
-      <a href="contact.html">Contact Us</a>
+      <a href="/about.html">About Us</a>
+      <a href="/services.html">Services</a>
+      <a href="/designers.html">Designers</a>
+      <a href="/blog.html">Blog</a>
+      <a href="/contact.html">Contact Us</a>
     </nav>
 
   </div>
@@ -286,6 +296,8 @@ footer {
     <div class="preview">
       <img id="fabricPreview">
     </div>
+     <input type="file" id="fabricImg" accept="image/*" required>
+<label>Upload Fabric</label><br><br>
   </div>
 
   <!-- Design Upload -->
@@ -296,6 +308,8 @@ footer {
     <div class="preview">
       <img id="designPreview">
     </div>
+     <input type="file" id="fabricImg" accept="image/*" required>
+<label>Upload design</label><br><br>
 </div>  </main>
   <!-- GOOGLE SEARCH + URL -->
   <div class="card">
@@ -313,10 +327,18 @@ footer {
       placeholder="Paste ANY image link here"
     ><br>
 <br>
-    <button onclick="loadImageFromUrl()">Use This Image</button>
+    <button onclick="loadImageFromUrl()">Preview Image</button>
 
-    <img id="urlPreview">
+    <img id="urlPreview"><br>
+    
+
+
+<button id="useImageBtn">Use this image</button>
   </div>
+
+
+
+
 
   <!-- DESIGNERS (LAST) -->
   
@@ -434,6 +456,36 @@ function selectDesign(src) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 </script>
+<script>
+document.getElementById("useImageBtn").onclick = async () => {
+
+  const file = document.getElementById("service2Img").files[0];
+
+  if (!file) {
+    alert("Please upload an image first");
+    return;
+  }
+
+  // Upload image to Firebase Storage
+  const imgRef = firebase.storage()
+    .ref(`uploads/${sessionId}/service2_${Date.now()}`);
+
+  await imgRef.put(file);
+  const imageURL = await imgRef.getDownloadURL();
+
+  // Save image URL in Firestore
+  await firestore.collection("submissions").add({
+    sessionId: sessionId,
+    formName: "Service2_Image",
+    imageUrl: imageURL,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  // Move to next page
+  window.location.href = "service3.html";
+};
+</script>
+
 
 </body>
 </html>

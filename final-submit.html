@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Confirm Details | MODASOU</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAjHpJuDKbAc2NLIr30m3pTZeO8Pu4_9M8",
+  authDomain: "modasou-luxury.firebaseapp.com",
+  projectId: "modasou-luxury"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+emailjs.init("V5fGF5JF2JAOD_AcW");
+
+window.finalSubmit = async function () {
+
+  const sessionId = localStorage.getItem("sessionId");
+  if (!sessionId) {
+    alert("Session expired. Please start again.");
+    return;
+  }
+
+  const client = {
+    name: document.getElementById("name").value,
+    whatsapp: document.getElementById("whatsapp").value,
+    email: document.getElementById("email").value,
+    address: document.getElementById("address").value,
+    pincode: document.getElementById("pincode").value
+  };
+
+  if (!client.name || !client.whatsapp || !client.email || !client.address || !client.pincode) {
+    alert("Please fill all details");
+    return;
+  }
+
+  const snap = await getDoc(doc(db, "orders", sessionId));
+  if (!snap.exists()) {
+    alert("Order data not found");
+    return;
+  }
+
+  const orderData = snap.data();
+
+  const message = `
+MODASOU – NEW ORDER
+
+Customer ID: ${sessionId}
+
+CLIENT DETAILS
+--------------
+Name: ${client.name}
+WhatsApp: ${client.whatsapp}
+Email: ${client.email}
+Address: ${client.address}
+Pincode: ${client.pincode}
+
+===========================
+
+FULL ORDER DATA
+---------------
+${JSON.stringify(orderData, null, 2)}
+`;
+
+  emailjs.send("TailorEmailService", "template_nz5r9d7", {
+    customer_id: sessionId,
+    message: message
+  }).then(() => {
+    alert("Order submitted successfully");
+    localStorage.removeItem("sessionId");
+    window.location.href = "thank-you.html";
+  }).catch(() => {
+    alert("Email failed. Please try again.");
+  });
+};
+</script>
+
+<style>
+:root{
+  --primary:#331300;
+  --gold:#C9A24D;
+}
+
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:#faf7f5;
+  color:#331300;
+}
+
+header{
+  padding:20px 40px;
+  font-weight:600;
+  font-size:22px;
+  letter-spacing:1px;
+  border-bottom:1px solid #e6d8d0;
+}
+
+.container{
+  max-width:560px;
+  margin:60px auto;
+  background:#fff;
+  padding:40px;
+  border-radius:14px;
+  box-shadow:0 15px 40px rgba(51,19,0,0.15);
+}
+
+h2{
+  margin-bottom:8px;
+  font-size:24px;
+}
+
+p{
+  font-size:14px;
+  color:#6b3a2a;
+  margin-bottom:30px;
+}
+
+label{
+  font-size:13px;
+  font-weight:500;
+  margin-bottom:6px;
+  display:block;
+}
+
+input,textarea{
+  width:100%;
+  padding:14px;
+  border-radius:8px;
+  border:1px solid #d9c5b8;
+  font-size:14px;
+  margin-bottom:18px;
+}
+
+textarea{
+  min-height:90px;
+  resize:vertical;
+}
+
+button{
+  width:100%;
+  padding:16px;
+  border:none;
+  border-radius:30px;
+  background:var(--primary);
+  color:#fff;
+  font-size:15px;
+  font-weight:500;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+button:hover{
+  background:var(--gold);
+  color:#331300;
+}
+
+footer{
+  text-align:center;
+  padding:30px;
+  font-size:13px;
+  color:#7a4a39;
+}
+</style>
+</head>
+
+<body>
+
+<header>MODASOU</header>
+
+<div class="container">
+  <h2>Confirm Your Details</h2>
+  <p>Please provide your contact and address details to complete the order.</p>
+
+  <label>Name</label>
+  <input id="name" type="text" placeholder="Full Name">
+
+  <label>WhatsApp Number</label>
+  <input id="whatsapp" type="tel" placeholder="10 digit number">
+
+  <label>Email</label>
+  <input id="email" type="email" placeholder="Email address">
+
+  <label>Residential Address</label>
+  <textarea id="address" placeholder="House no, area, city"></textarea>
+
+  <label>Pincode</label>
+  <input id="pincode" type="text" maxlength="6" placeholder="Pincode">
+
+  <button onclick="finalSubmit()">Submit Order</button>
+</div>
+
+<footer>
+  © MODASOU
+</footer>
+
+</body>
+</html>
