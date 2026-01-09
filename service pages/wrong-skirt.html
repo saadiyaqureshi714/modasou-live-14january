@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>How to Take Measurements | MODASOU</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script src="assets/js/app.js"></script>
+</head>
+
+<style>
+  
+
+
+:root{
+  --chocolate:#4b2e1f;
+  --dark-brown:#2b1a12;
+  --golden:#d4af37;
+  --light-golden:#f5e6b0;
+}
+:root{
+  --chocolate:#4b2e1f;
+  --dark-brown:#2b1a12;
+  --golden:#d4af37;
+  --light-golden:#f5e6b0;
+}
+
+/* NAVBAR */
+.navbar{
+  background:#fff;
+  border-bottom:2px solid var(--light-golden);
+  position:sticky;
+  top:0;
+  z-index:1000;
+}
+
+/* WRAPPER */
+.nav-wrap{
+  max-width:1200px;
+  margin:auto;
+  padding:15px 25px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+/* LOGO */
+.logo{
+  font-size:26px;
+  font-weight:700;
+  color:var(--golden);
+  text-decoration:none;
+  letter-spacing:1px;
+}
+
+.logo:hover{
+  color:var(--chocolate);
+}
+
+/* MENU */
+.menu a{
+  margin:0 14px;
+  text-decoration:none;
+  color:var(--dark-brown);
+  font-weight:500;
+  position:relative;
+  padding-bottom:5px;
+}
+
+/* HOVER LINE */
+.menu a::after{
+  content:'';
+  position:absolute;
+  left:0;
+  bottom:0;
+  width:0%;
+  height:2px;
+  background:var(--golden);
+  transition:0.3s;
+}
+
+.menu a:hover::after{
+  width:100%;
+}
+
+.menu a:hover{
+  color:var(--chocolate);
+}
+
+body{
+  margin:0;
+  font-family: 'Segoe UI', sans-serif;
+  background:#331300;
+  color:#fffdf7;
+}
+
+/* HEADER */
+.header{
+  padding:20px;
+  text-align:center;
+  border-bottom:2px solid var(--light-golden);
+}
+
+.header h1{
+  color:var(--golden);
+  margin-bottom:5px;
+}
+
+.header p{
+  color:#f5e6b0;
+}
+
+/* CONTAINER */
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:30px 20px;
+}
+
+/* MEASUREMENT GUIDE */
+.guide{
+  text-align:center;
+  margin-bottom:40px;
+}
+
+.guide img{
+  max-width:100%;
+  border-radius:12px;
+  border:2px solid #4b2e1f;
+}
+
+.guide h2{
+  color:#f5e6b0;
+  margin-bottom:15px;
+  font-size: 30px;
+  font-family: 'cinzel',serif;
+}
+.guide p{
+  color: #fffdf7;
+  font-size: 20px;
+}
+
+/* OPTIONS */
+/*.options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:30px;
+}*/
+
+.card{
+
+  
+  border:2px solid var(--light-golden);
+  border-radius:14px;
+  padding:25px;
+}
+
+.card h3{
+  color:var(--golden);
+  margin-bottom:15px;
+}
+
+.card p{
+  margin-bottom:20px;
+}
+
+
+/* FORM */
+input, textarea{
+  width:100%;
+  padding:12px;
+  margin-bottom:15px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  font-size:15px;
+}
+
+textarea{
+  resize:none;
+  height:90px;
+}
+
+button{
+  background:var(--golden);
+  color:#fff;
+  border:none;
+  padding:12px 20px;
+  border-radius:8px;
+  font-size:16px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+button:hover{
+  background:var(--chocolate);
+}
+
+/* FOOTER NOTE */
+.note{
+  margin-top:40px;
+  text-align:center;
+  color:var(--chocolate);
+  font-size:14px;
+}
+/* MEASUREMENT GUIDE GRID */
+
+/* PDF STYLE – VERTICAL SCROLL */
+.measurement-guides {
+  max-width: 850px;        /* PDF look */
+  margin: 40px auto;
+  padding: 20px;
+  background: #fffdf7;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+/* EACH IMAGE AS A PAGE */
+.measurement-guides img {
+  display: block;
+  width: 100%;
+  height: auto;            /* IMPORTANT */
+  margin-bottom: 30px;
+  border-radius: 12px;
+  border: 2px solid #d4af37;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+/* REMOVE EXTRA SPACE AT END */
+.measurement-guides img:last-child {
+  margin-bottom: 0;
+}
+
+.measurement-section {
+  width: 100%;
+  padding: 60px 40px;
+}
+
+
+
+.options-wrapper {
+  display: grid;
+  grid-template-columns: ifr auto ifr;
+  gap: 40px;
+  align-items: start;
+ width: 100%; 
+}
+
+
+.measurement-input-section {
+  
+  width: 80%;
+  padding: 30px;
+  background: #f5e6b0;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}/*
+.or-text {
+  align-self: center;
+ margin-left: 45%;
+  font-weight: bold;
+  font-size: 20px;
+  color: #fffdf7;
+
+}*/
+
+
+.measurement-input-section h2 {
+  text-align: center;
+  color: #331300;
+  margin-bottom: 30px;
+  font-size: 30px;
+  font-family: 'poppins', sans-serif;
+}
+
+/* FORM LAYOUT */
+.measurement-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+/* EACH ROW */
+.measure-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.measure-row label {
+  
+  font-weight: 600;
+  color: #2b1a12;
+  font-size: 20px;
+  flex: 1;
+}
+
+/* INPUT + UNIT */
+.input-wrap {
+  display: flex;
+  align-items: center;
+  border: 2px solid #d4af37;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.input-wrap input {
+  width: 100px;
+  padding: 10px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  text-align: center;
+}
+
+/* REMOVE ARROWS (Chrome) */
+.input-wrap input::-webkit-outer-spin-button,
+.input-wrap input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* FIREFOX */
+.input-wrap input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* INCH LABEL */
+.input-wrap span {
+  background: #f5e6b0;
+  padding: 10px 14px;
+  font-weight: 600;
+  color: #4b2e1f;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .measure-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+
+
+
+
+
+/*
+.measurement-guides {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+  padding: 30px 0;
+}
+
+/* IMAGE CARD STYLE 
+.measurement-guides img {
+  width: 100%;
+  height: 280px;              /* SAME HEIGHT FOR ALL 
+  object-fit: cover;          /* CROPS CLEANLY 
+  border-radius: 18px;
+  background: #f5e6b0;        /* light golden 
+  border: 2px solid #d4af37;  /* golden border 
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  transition: all 0.3s ease;
+  cursor: zoom-in;
+}
+
+/* HOVER EFFECT */
+.measurement-guides img:hover {
+  transform: scale(1.04);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+}
+.note{
+margin-top: 40px;
+text-align: center;
+color: #fffdf7;
+font-size: 18px;
+
+}
+
+  .submit-btn {
+  text-decoration: none;
+  display: block;
+  color: #331300;
+  margin: 25px auto 0;
+  padding: 20px 80px;
+  background: #d4af37;
+  border: none;
+  border-radius: 30px;
+  font-size: 26px;
+  cursor: pointer;
+}
+.submit-btn a{
+  color: #331300;
+  text-decoration: none;
+}
+.submit-btn a:hover{
+  color: #ccc;
+}
+
+  .nextBtn {
+  text-decoration: none;
+  display: block;
+  color: #331300;
+  margin: 25px auto 0;
+  padding: 20px 80px;
+  background: #d4af37;
+  border: none;
+  border-radius: 30px;
+  font-size: 26px;
+  cursor: pointer;
+}
+.nextBtn a{
+  color: #331300;
+  text-decoration: none;
+}
+.nextBtn a:hover{
+  color: #ccc;
+}
+/* MOBILE OPTIMIZATION */
+/* MOBILE OPTIMIZATION */
+@media (max-width: 600px) {
+  .measurement-guides img {
+    height: 220px;
+  }
+}
+
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .options{
+    grid-template-columns:1fr;
+  }
+
+}
+footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    background-color: #d4af37; /* Dark Brown */
+    color: #f5e6b8; /* Golden */
+    font-size: 0.9rem;
+    
+}
+#p{
+font-family: 'CINZEL', serif;
+}
+
+
+</style>
+<script>
+  // Check if sessionId already exists in browser
+  let sessionId = localStorage.getItem('sessionId');
+
+  // If not, create a new one
+  if (!sessionId) {
+    sessionId = Date.now(); // simple unique ID
+    localStorage.setItem('sessionId', sessionId);
+  }
+</script>
+</head><!-- NAVBAR -->
+<header class="navbar">
+  <div class="nav-wrap">
+
+    <!-- LOGO (Always goes Home) -->
+    <a href="index.html" class="logo">MODASOU</a>
+
+    <!-- MENU -->
+    <nav class="menu">
+      <a href="/index.html">Home</a>
+      <a href="/about.html">About Us</a>
+      <a href="/services.html">Services</a>
+      <a href="/designers.html">Designers</a>
+      <a href="/blog.html">Blog</a>
+      <a href="/contact.html">Contact</a>
+    </nav>
+
+  </div>
+</header>
+
+<body>
+
+
+<!-- HEADER -->
+<div class="header">
+  <h1>How to Take Your Measurements Of Your Skirt</h1>
+  <p>Follow the guide below and choose a convenient method</p>
+</div>
+
+<div class="container">
+
+  <!-- MEASUREMENT GUIDE -->
+  <div class="guide">
+    <h2>Measurement Guide</h2>
+    <p>Please follow the image carefully while taking measurements</p>
+    <div class="measurement-guides">
+    <img src="/size skirt/1.jpg" alt="Measurement Guide Image1">
+     <img src="/size skirt/2.jpg" alt="Measurement Guide Image2">
+      
+
+</div>
+</div>
+    <!-- Replace measurement-guide.jpg with your actual image -->
+  <section class="measurement-section">
+  <div class="options-wrapper">
+<div class="measurement-input-section option-1">
+  <h2>Enter Your Measurements (in Inches)</h2>
+<form id="measurementForm">
+  <div class="measurement-form">
+
+    <div class="measure-row">
+      <label>1-Skirt waist round:</label>
+      <div class="input-wrap">
+        <input type="number" name="skirt-waist-round" step="0.1" placeholder="0" required>
+        <span>in</span>
+      </div>
+    </div>
+
+    <div class="measure-row">
+      <label>2-Hip round:</label>
+      <div class="input-wrap">
+        <input type="number" name="hip-round" step="0.1" placeholder="0" required>
+        <span>in</span>
+      </div>
+    </div>
+
+    <div class="measure-row">
+      <label>3-Skirt length:</label>
+      <div class="input-wrap">
+        <input type="number" name="skirt-length" step="0.1" placeholder="0" required>
+        <span>in</span>
+      </div></div></div>
+</form>
+    </div>
+
+<p class="note">
+  Your measurements are safe with us. Our team will contact you after submission.
+</p>
+
+<button id="nextBtn" type="submit" class="nextBtn">
+  Submit Measurements
+</button>
+  <!-- ✅ FORM CLOSES HERE -->
+ 
+ <div>
+ 
+<br>
+    <a href="/final-submit.html" class="submit-btn">
+  Next
+</a>
+</div>
+ 
+    
+  
+  <br><br>
+
+
+<footer>
+  <p id="p">© 2025 MODASOU - LUXURY, CUSTOMIZED</p>
+</footer></div></section></div>
+<script>
+const SUPABASE_URL = "https://gztneesmxwfhdmhqikel.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA";
+
+const supabase = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+const sessionId = localStorage.getItem("sessionId");
+
+// 🔴 CHANGE THIS PER PAGE (see below)
+const MEASUREMENT_COLUMN = "measurements_page7";
+
+document.getElementById("measurementSubmitBtn").addEventListener("click", async () => {
+
+  const form = document.querySelector("form");
+  const formData = new FormData(form);
+
+  let measurements = {};
+  formData.forEach((value, key) => {
+    measurements[key] = value;
+  });
+
+  const { error } = await supabase
+    .from("service_1")
+    .update({
+      [MEASUREMENT_COLUMN]: measurements,
+      measurements_updated_at: new Date().toISOString()
+    })
+    .eq("session_id", sessionId);
+
+  if (error) {
+    alert("Measurements not saved");
+    console.error(error);
+    return;
+  }
+
+  // go to next page
+  window.location.href = "NEXT_PAGE.html";
+});
+</script>
+
+<script>
+document.getElementById("measurementForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData(e.target);
+  const data = Object.fromEntries(formData.entries());
+
+  data.session_id = localStorage.getItem("sessionId");
+
+  const { error } = await supabase
+    .from("skirt_measurements")
+    .insert([data]);
+
+  if (error) {
+    alert("Error saving skirt measurements");
+    console.error(error);
+  } else {
+    alert("Skirt measurements saved successfully");
+  }
+});
+</script>
+</body></html>

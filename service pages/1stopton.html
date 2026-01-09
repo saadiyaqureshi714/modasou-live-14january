@@ -3,410 +3,343 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fabric Upload</title>
-<script>
-  // Check if sessionId already exists in browser
-  let sessionId = localStorage.getItem('sessionId');
+<title>Modasou - Fabric & Design Upload</title>
 
-  // If not, create a new one
-  if (!sessionId) {
-    sessionId = Date.now(); // simple unique ID
-    localStorage.setItem('sessionId', sessionId);
-  }
-</script>
+<!-- Supabase Library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #fce775;
-    color: #331300;
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
+  body { background-color: #ffe6a7; color: #331300; }
+
+  /* NAVBAR */
+  .navbar {
+    width: 100%; display: flex; justify-content: space-around; align-items: center;
+    padding: 10px 30px; background: #432818; position: sticky; top: 0; z-index: 1000;
   }
+  .logo-container { display: flex; align-items: center; gap: 15px; }
+  .logo-img { width: 60px; height: 60px; border: 2px solid #bb9457; border-radius: 50%; }
+  .logo-text { font-family: 'Cinzel', serif; font-size: 32px; font-weight: 600; background: linear-gradient(90deg, #ffe6a7, #bb9457, #ffe6a7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .menu-item a { text-decoration: none; color: #f5e6b8; font-size: 18px; }
 
-/* HEADER */
-.site-header {
-  background: #fff;
-  border-bottom: 2px solid var(--light-golden);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-/* CONTAINER */
-.nav-container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 15px 25px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* LOGO */
-.logo {
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--golden);
-  text-decoration: none;
-  letter-spacing: 1px;
-}
-
-.logo:hover {
-  color: var(--chocolate);
-}
-
-/* NAV MENU */
-.nav-menu a {
-  margin: 0 14px;
-  text-decoration: none;
-  color: var(--dark-brown);
-  font-weight: 500;
-  position: relative;
-  padding-bottom: 5px;
-}
-
-/* HOVER EFFECT */
-.nav-menu a::after {
-  content: '';
-  position: absolute;
-  width: 0%;
-  height: 2px;
-  left: 0;
-  bottom: 0;
-  background: var(--golden);
-  transition: 0.3s ease;
-}
-
-.nav-menu a:hover::after {
-  width: 100%;
-}
-
-/* ACTIVE PAGE */
-.nav-menu a.active {
-  color: var(--golden);
-}
-
-.nav-menu a.active::after {
-  width: 100%;
-}
-
-
-
-.topbar {
-  background: #4d2d18;
-  color: white;
-  padding: 15px;
-  text-align: center;}
-
-  .container{
-    max-width: 80%;
-  margin: 40px auto;
-  background: #f5e6b0;
-  padding: 30px;
-  border-radius: 8px;
-     display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* CONTAINER */
+  .container { max-width: 90%; margin: 30px auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #dcab6b; padding: 20px; border-radius: 12px; }
   
-}
+  .upload-box { background-color: #fffaf0; border: 2px solid #331300; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+  .upload-box h2 { font-size: 20px; color: #6f1d1b; margin-bottom: 15px; text-decoration: underline; }
   
-
-  .upload-box {
-    width: 100%;
-
-    border: 2px solid #331300;
-    border-radius: 12px;
-    padding: 20px;
-    max-width: 400px;
-    margin: 50px auto;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    background-color: #fffaf0;
-  }
-
-  .upload-box h3 {
-    color: #b28b00;
-  }
-
-  input[type="file"] {
-    display: none;
-  }
-
-  label.choose-btn, button.send-btn {
-    display: inline-block;
-    padding: 10px 20px;
-    margin: 10px 5px;
-    font-size: 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-
-  label.choose-btn {
-    background-color: #331300;
-    color: #ffd700;
-  }
-
-  label.choose-btn:hover {
-    background-color: #4b2000;
-  }
-
-  button.send-btn {
-    background-color: #b28b00;
-    color: #331300;
-  }
-
-  button.send-btn:hover {
-    background-color: #ffd700;
-  }
-
-  .preview img {
-    max-width: 100%;
-    margin-top: 15px;
-    border-radius: 8px;
-  }
-
-  .nav-buttons {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 30px;
+  /* FILE UPLOAD STYLING */
+  .upload-btn { background: #99582a; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-bottom: 10px; font-weight: bold; }
+  
+  /* Previews are hidden by default */
+  .video-preview, .image-preview {
+  display: block; /* Change from hidden to block container */
+  min-height: 10px;
 }
 
-.nav-btn {
-  padding: 12px 26px;
-  font-size: 16px;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.15s ease;
-  box-shadow: 0 6px 0 rgba(0,0,0,0.25);
-  display: inline-block;
+.video-preview video, .image-preview img {
+  width: 100%;
+  max-height: 200px;
+  display: none; /* Keep the actual element hidden until file is chosen */
 }
 
-/* LEFT */
-.left-btn {
-    margin-left: 30%;
-  background-color: #331300;
-  color: #ffd700;
-}
+  /* MEASUREMENTS & INPUTS */
+  .form-section { background: #FFF9C4; border: 1px solid #4b2000; border-radius: 10px; padding: 15px; margin: 15px 0; text-align: left; }
+  .form-section h3 { font-size: 16px; margin-bottom: 10px; color: #432818; }
+  .row { display: flex; align-items: center; margin-bottom: 8px; gap: 10px; }
+  .row label { width: 70px; font-size: 14px; font-weight: bold; }
+  .row input { flex: 1; padding: 6px; border: 1px solid #99582a; border-radius: 4px; }
+  
+  .inline-options { display: flex; gap: 10px; margin-top: 10px; }
+  .inline-card { flex: 1; border: 1px solid #bb9457; padding: 10px; border-radius: 8px; cursor: pointer; background: white; font-size: 13px; display: flex; align-items: center; gap: 5px; }
+  .designer-note textarea { width: 100%; height: 60px; margin-top: 10px; padding: 10px; border-radius: 6px; border: 1px solid #99582a; resize: none; }
 
-/* RIGHT */
-.right-btn {
-    margin-right: 30%;
-  background-color: #b28b00;
-  color: #331300;
-}
+  .final-submit { background: #4CAF50; color: white; width: 100%; padding: 15px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 15px; transition: 0.3s; }
+  .final-submit:hover { background: #388E3C; }
+  .final-submit:disabled { background: #ccc !important; cursor: not-allowed; }
 
-/* HOVER */
-.nav-btn:hover {
-  filter: brightness(1.1);
-}
+  .header-info { text-align: center; margin-top: 20px; }
+  .header-info h2 { font-size: 36px; color: #6f1d1b; text-decoration: underline; }
 
-/* CLICK FEEL */
-.nav-btn:active {
-  transform: translateY(4px);
-  box-shadow: 0 2px 0 rgba(0,0,0,0.25);
-}
-
+  footer { text-align: center; padding: 20px; background-color: #432818; color: #ffe6a7; margin-top: 40px; }
+  .nav-buttons { display: flex; justify-content: center; gap: 20px; margin: 20px 0; }
+  .nav-btn { padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; background: #4b2000; color: #fff; }
 </style>
 </head>
-<header class="site-header">
-  <div class="nav-container">
-
-    <!-- LOGO (Click → Home) -->
-    <a href="/index.html" class="logo">MODASOU</a>
-
-    <!-- NAV MENU -->
-    <nav class="nav-menu">
-      <a href="/index.html" class="active">Home</a>
-      <a href="/about.html">About Us</a>
-      <a href="/services.html">Services</a>
-      <a href="/designers.html">Designers</a>
-      <a href="/blog.html">Blog</a>
-      <a href="/contact.html">Contact Us</a>
-    </nav>
-
-  </div>
-</header>
 
 <body>
-    <div class="container">
 
-<div class="upload-box">
-  <h3>Upload Fabric Photo</h3>
-
-  <!-- Choose File Button -->
-  <label class="choose-btn" for="fabricUpload">Choose Fabric Image</label>
-  <input type="file" id="fabricUpload" accept="image/*" required>
-
-  <!-- Preview -->
-  <div class="preview">
-    <img id="fabricPreview" alt="Fabric Preview">
+<header class="navbar">
+  <div class="logo-container">
+    <img src="/ModasouLogo.png" class="logo-img" alt="Logo">
+    <h1 class="logo-text">MODASOU</h1>
   </div>
+  <nav class="menu-item"><a href="/index.html">Home</a></nav>
+</header>
 
-  <!-- Send Button -->
-  <button class="send-btn" id="sendFabric">Send to Admin</button>
+<div class="header-info">
+  <h2>Stitch Only</h2>
+  <h3>Material and design are ready.</h3>
+  <p>Our designer will stitch the outfit to your measurements.</p>
 </div>
 
+<div class="container">
+  <!-- LEFT BOX: FABRIC DETAILS -->
+  <div class="upload-box">
+    <h2>Fabric Details</h2>
+    
+    <div class="form-section">
+      <h3>1. Upload Fabric Video</h3>
+      <button type="button" class="upload-btn" onclick="document.getElementById('fabricVideoInput').click()">Choose Video</button>
+      <input type="file" id="fabricVideoInput" accept="video/*" hidden onchange="handlePreview(this, 'videoPreview')">
+      <div class="video-preview">
+        <video id="videoPreview" controls></video>
+      </div>
+      <p style="font-size: 11px;">Max 30s. MP4/WebM/OGG</p>
+    </div>
+    <p id="urlDisplay" style="color: gray; font-size: 12px;"></p>
+    
 
-
-<div class="upload-box">
-  <h3>Upload Design Photo</h3>
-
-  <!-- Choose File Button -->
-  <label class="choose-btn" for="designUpload">Choose Design Image</label>
-  <input type="file" id="designUpload" accept="image/*" required>
-
-  <!-- Preview -->
-  <div class="preview">
-    <img id="designPreview" alt="designPreview">
-  </div>
-
-  <!-- Send Button -->
-  <button class="send-btn" id="sendDesign">Send to Admin</button>
-</div>
+    <div class="form-section">
+      <h3>2. Fabric Length</h3>
+      <p style="font-size: 12px; font-weight: bold;">Top Fabric:</p>
+      <div class="row">
+        <label>Meters:</label><input type="number" id="topMeter" step="0.01" placeholder="0.0">
+        <label>Cm:</label><input type="number" id="topCm" placeholder="0">
+      </div>
+      <p style="font-size: 12px; font-weight: bold; margin-top:10px;">Bottom Fabric:</p>
+      <div class="row">
+        <label>Meters:</label><input type="number" id="bottomMeter" step="0.01" placeholder="0.0">
+        <label>Cm:</label><input type="number" id="bottomCm" placeholder="0">
+      </div>
     </div>
 
-    <!-- buttons-->
+    <div class="form-section">
+      <h3>3. Preferences & Notes</h3>
+      <div class="inline-options">
+        <label class="inline-card"><input type="radio" name="lining" value="With Lining" checked> With Lining</label>
+        <label class="inline-card"><input type="radio" name="lining" value="Without Lining"> Without Lining</label>
+      </div>
+      <div class="designer-note">
+        <textarea id="designerNote" placeholder="Write instructions for the designer..."></textarea>
+      </div>
+    </div>
 
-    <div class="nav-buttons">
-  <a href="/#" id="measurementBtn" target="_blank" class="nav-btn left-btn ">Add your measurements</a>
-  <a href="/send-your-cloth.html" class="nav-btn right-btn">Send your measurement cloth</a>
+    <button class="final-submit" id="submitFabricBtn" onclick="submitFabricData()">SUBMIT FABRIC DETAILS</button>
+  </div>
+
+  <!-- RIGHT BOX: DESIGN UPLOAD -->
+  <div class="upload-box">
+    <h2>Design Image</h2>
+    <div class="form-section" style="height: 100%;">
+      <h3>Upload Reference Image</h3>
+      <button type="button" class="upload-btn" onclick="document.getElementById('designUpload').click()">Choose Image</button>
+      <input type="file" id="designUpload" accept="image/*" hidden onchange="handlePreview(this, 'imagePreview')">
+      
+      <div class="image-preview">
+        <img id="imagePreview" alt="Design Preview">
+      </div>
+      
+      <button class="final-submit" id="submitDesignBtn" style="margin-top: 40px;" onclick="submitDesignData()">SUBMIT DESIGN IMAGE</button>
+    </div>
+  </div>
 </div>
 
+<div class="nav-buttons">
+  <a href="javascript:void(0)" id="measurementBtn" class="nav-btn">Add your measurements</a>
+  <a href="/send-your-cloth.html" class="nav-btn">Send your measurement cloth</a>
+</div>
+
+<footer>
+  <p>© 2025 MODASOU - LUXURY, CUSTOMIZED</p>
+</footer>
+
+
 <script>
-  const params = new URLSearchParams(window.location.search);
-  const service = params.get("service");
-
-  document.getElementById("measurementBtn").addEventListener("click", function () {
-    switch (service) {
-      case "blouse":
-        window.location.href = "measurement-blouse.html";
-        break;
-
-      case "dress":
-        window.location.href = "measurement-dress.html";
-        break;
-
-      case "top":
-        window.location.href = "measurement-Tops.html";
-        break;
-       
-      case "kurta":
-        window.location.href = "measurement-kurta.html";
-        break;
+  // 1. SUPABASE CONNECTION
+  const S_URL = 'https://gztneesmxwfhdmhqikel.supabase.co'; 
+  const S_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA';
   
-      case "skirt":
-        window.location.href = "measurement-skirt.html";
-        break;
+  const m_db = window.supabase.createClient(S_URL, S_KEY);
 
-      case "lehenga":
-        window.location.href = "measurement-lehenga.html";
-        break;
-       
-      case "pant":
-        window.location.href = "measurement-pants.html";
-        break;
-  
-      default:
-        alert("Please select a service first");
+  // 2. METER/CM AUTO-SYNC
+  function setupSync(meterId, cmId) {
+    const meterInput = document.getElementById(meterId);
+    const cmInput = document.getElementById(cmId);
+    if (!meterInput || !cmInput) return;
+
+    meterInput.addEventListener('input', () => {
+      const val = parseFloat(meterInput.value);
+      cmInput.value = !isNaN(val) ? Math.round(val * 100) : '';
+    });
+
+    cmInput.addEventListener('input', () => {
+      const val = parseFloat(cmInput.value);
+      meterInput.value = !isNaN(val) ? (val / 100).toFixed(2) : '';
+    });
+  }
+
+  // 3. PAGE INITIALIZATION
+  document.addEventListener('DOMContentLoaded', () => {
+    setupSync('topMeter', 'topCm');
+    setupSync('bottomMeter', 'bottomCm');
+    
+    if (!localStorage.getItem('modasou_session_id')) {
+      localStorage.setItem('modasou_session_id', 'sess_' + Math.random().toString(36).substr(2, 9));
     }
   });
-</script>
 
+  // 4. PREVIEW LOGIC
+  function handlePreview(input, previewId) {
+    const file = input.files[0];
+    const previewElement = document.getElementById(previewId);
+    if (file && previewElement) {
+      previewElement.src = URL.createObjectURL(file);
+      previewElement.style.display = 'block'; 
+      if (previewElement.tagName === 'VIDEO') previewElement.load();
+    }
+  }
+// 5. SUBMIT FABRIC DATA (Final Version: Flexible Measurements)
+  async function submitFabricData() {
+    const btn = document.getElementById('submitFabricBtn');
+    const videoFile = document.getElementById('fabricVideoInput').files[0];
+    const sessionId = localStorage.getItem('modasou_session_id');
+    
+    // Video is still mandatory
+    if (!videoFile) return alert("Please select a fabric video first!");
+    
+    btn.disabled = true;
+    btn.innerText = "Uploading...";
 
+    try {
+      const fileName = `fabric_${sessionId}_${Date.now()}.mp4`;
+      
+      // Step A: Upload video to storage
+      
+      const { data: upData, error: upError } = await m_db.storage
+        .from('fabrics') 
+        .upload(fileName, videoFile);
 
+      if (upError) throw upError;
 
+      // Step B: Get the public URL
+      const { data: urlData } = m_db.storage.from('fabrics').getPublicUrl(fileName);
+      const videoUrl = urlData.publicUrl;
+       localStorage.setItem("fabricVideoLink", videoUrl); // <--- ADD THIS LINE ONLY
 
-<script>
-  function setupUpload(fileInputId, previewImgId, sendBtnId, labelName) {
-    const fileInput = document.getElementById(fileInputId);
-    const previewImg = document.getElementById(previewImgId);
-    const sendBtn = document.getElementById(sendBtnId);
-
-    // Preview image
-    fileInput.addEventListener("change", () => {
-      const file = fileInput.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = e => {
-        previewImg.src = e.target.result;
-        previewImg.style.display = "block";
-      };
-      reader.readAsDataURL(file);
-    });
-
-    // Send button
-    sendBtn.addEventListener("click", () => {
-      const file = fileInput.files[0];
-      if (!file) {
-        alert(`Please choose a ${labelName} image first`);
-        return;
+      
+      // CORRECT PLACE: Show the URL on the screen
+      if (document.getElementById('urlDisplay')) {
+        document.getElementById('urlDisplay').innerText = "Uploaded to: " + videoUrl;
       }
+      // Step C: Save data to table (Measurements are now optional)
+      const { error: dbError } = await m_db
+        .from('fabric_submissions')
+        .upsert([{
+          session_id: sessionId,
+          video_url: videoUrl,
+          
+          // Sending 'null' if the input is empty allows the database to accept partial data
+          top_meter: document.getElementById('topMeter').value || null,
+          top_cm: document.getElementById('topCm').value || null,
+          bottom_meter: document.getElementById('bottomMeter').value || null,
+          bottom_cm: document.getElementById('bottomCm').value || null,
+          lining_preference: document.querySelector('input[name="lining"]:checked').value,
+          note: document.getElementById('designerNote').value || null,
+          created_at: new Date().toISOString()
+        }]);
 
-      // 🔗 PLACE FIREBASE / EMAILJS CODE HERE
-      console.log(`${labelName} ready to send:`, file.name);
+      if (dbError) throw dbError;
 
-      alert(`${labelName} sent to admin successfully!`);
-    });
+      alert("Success! Fabric details saved.");
+      btn.innerText = "SUBMITTED ✓";
+      btn.style.background = "#2E7D32";
+
+    } catch (err) {
+      console.error(err);
+      alert("Fabric Error: " + (err.message || "Unknown error"));
+      btn.disabled = false;
+      btn.innerText = "SUBMIT FABRIC DETAILS";
+    }
   }
 
-  // FABRIC UPLOAD
-  setupUpload(
-    "fabricUpload",
-    "fabricPreview",
-    "sendFabric",
-    "Fabric"
-  );
+  // 6. SUBMIT DESIGN DATA (Fixed created_at here too)
+  async function submitDesignData() {
+    const btn = document.getElementById('submitDesignBtn');
+    const imageFile = document.getElementById('designUpload').files[0];
+    const sessionId = localStorage.getItem('modasou_session_id');
 
-  // DESIGN UPLOAD
-  setupUpload(
-    "designUpload",
-    "designPreview",
-    "sendDesign",
-    "Design"
-  );
-</script>
+    if (!imageFile) return alert("Please select a design image first!");
 
-<script>
-document.getElementById("nextBtn").onclick = async () => {
+    btn.disabled = true;
+    btn.innerText = "Uploading...";
 
-  const fabricFile = document.getElementById("fabricImg").files[0];
-  const designFile = document.getElementById("designImg").files[0];
+    try {
+      const fileName = `design_${sessionId}_${Date.now()}.jpg`;
+      
+      const { error: upError } = await m_db.storage
+        .from('designs')
+        .upload(fileName, imageFile);
 
-  if (!fabricFile || !designFile) {
-    alert("Please upload both Fabric and Design images");
-    return;
+      if (upError) throw upError;
+
+      const { data: urlData } = m_db.storage.from('designs').getPublicUrl(fileName);
+      localStorage.setItem("fabricImageLink", urlData.publicUrl); // <--- ADD THIS LINE ONLY
+       localStorage.setItem("fabricNotes", document.getElementById('designerNote').value || "None");
+      
+      // NEW: Save Fabric Dimensions & Lining
+      const topQty = (document.getElementById('topMeter').value || "0") + " m " + (document.getElementById('topCm').value || "0") + " cm";
+      const botQty = (document.getElementById('bottomMeter').value || "0") + " m " + (document.getElementById('bottomCm').value || "0") + " cm";
+      const lining = document.querySelector('input[name="lining"]:checked')?.value || "Not Specified";
+
+      localStorage.setItem("fabricTopQty", topQty);
+      localStorage.setItem("fabricBottomQty", botQty);
+      localStorage.setItem("fabricLining", lining);
+      // =================================================
+
+      const { error: dbError } = await m_db
+        .from('design_submissions')
+        .upsert([{ 
+          session_id: sessionId, 
+          image_url: urlData.publicUrl,
+           created_at: new Date().toISOString()
+           // <--- FIX ADDED HERE
+        }]);
+
+      if (dbError) throw dbError;
+
+      alert("Design uploaded successfully!");
+      btn.innerText = "SUBMITTED ✓";
+      btn.style.background = "#2E7D32";
+    } catch (err) {
+      console.error(err);
+      alert("Design Error: " + (err.message || "Unknown error"));
+      btn.disabled = false;
+      btn.innerText = "SUBMIT DESIGN IMAGE";
+    }
   }
 
-  // Upload Fabric Image
-  const fabricRef = firebase.storage()
-    .ref(`uploads/${sessionId}/fabric_${Date.now()}`);
-  await fabricRef.put(fabricFile);
-  const fabricURL = await fabricRef.getDownloadURL();
-
-  // Upload Design Image
-  const designRef = firebase.storage()
-    .ref(`uploads/${sessionId}/design_${Date.now()}`);
-  await designRef.put(designFile);
-  const designURL = await designRef.getDownloadURL();
-
-  // Save BOTH URLs in Firestore
-  await firestore.collection("submissions").add({
-    sessionId: sessionId,
-    formName: "Service1_Images",
-    fabricImage: fabricURL,
-    designImage: designURL,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  // Navigation Logic
+  document.getElementById("measurementBtn")?.addEventListener("click", function () {
+    const params = new URLSearchParams(window.location.search);
+    const service = params.get("service");
+    if(!service) return alert("Please select a service first");
+    
+    const routes = {
+      blouse: "measurement-blouse.html",
+      dress: "measurement-dress.html",
+      top: "measurement-Tops.html",
+      kurta: "measurement-kurta.html",
+      skirt: "measurement-skirt.html",
+      lehenga: "measurement-lehenga.html",
+      pant: "measurement-pants.html"
+    };
+    window.location.href = routes[service] || alert("Service route not found");
   });
-
-  // Go to next page
-  
-};
 </script>
-
-</body>
-</html>
-
-</body>
-</html>
+<script>
+  // Force the browser to recognize this is Service 1
+  // This clears any old "service2" flags from previous tests
+  localStorage.setItem("active_service", "service1");
+  console.log("Flow set to: Service 1"); 
+</script>
+</body></html>

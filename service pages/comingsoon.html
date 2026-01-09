@@ -4,7 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Coming Soon</title>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script src="assets/js/app.js"></script>
+</head>
 <style>
 /* ===== COLOR PALETTE ===== */
 :root {
@@ -27,12 +30,73 @@
 body {
   height: 100vh;
   background: linear-gradient(135deg, var(--dark-brown), var(--chocolate-brown), var(--coffee-brown));
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  
   color: var(--ivory);
 }
 
+
+.nav-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 15px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* LOGO */
+.logo {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--golden);
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+
+.logo:hover {
+  color: var(--chocolate);
+}
+
+/* NAV MENU */
+.nav-menu a {
+  margin: 0 14px;
+  text-decoration: none;
+  color: var(--dark-brown);
+  font-weight: 500;
+  position: relative;
+  padding-bottom: 5px;
+}
+
+/* HOVER EFFECT */
+.nav-menu a::after {
+  content: '';
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  left: 0;
+  bottom: 0;
+  background: var(--golden);
+  transition: 0.3s ease;
+}
+
+.nav-menu a:hover::after {
+  width: 100%;
+}
+
+/* ACTIVE PAGE */
+.nav-menu a.active {
+  color: var(--golden);
+}
+
+.nav-menu a.active::after {
+  width: 100%;
+}
+
+.soon{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 /* ===== MAIN CARD ===== */
 .coming-soon {
   background: rgba(255, 248, 239, 0.08);
@@ -106,18 +170,38 @@ body {
     font-size: 16px;
   }
 }
+    
 </style>
-</head>
+
+
+
 
 <body>
 
+
+  
+<header class="site-header">
+  <div class="nav-container">
+
+    <!-- LOGO (Click → Home) -->
+    <a href="index.html" class="logo">MODASOU</a>
+
+    <!-- NAV MENU -->
+    <nav class="nav-menu">
+      <a href="/index.html" class="active">Home</a>
+      
+    </nav>
+
+  </div>
+</header>
+<div class="soon">
 <div class="coming-soon">
   <h1>Coming Soon</h1>
   <div class="divider"></div>
   <p>We are crafting something elegant and timeless for you.</p>
-  <a href="#" class="notify-btn">Notify Me</a>
-  <div class="footer-text">© 2025 | Premium Brown & Gold Theme</div>
-</div>
+  <!--<a href="#" class="notify-btn">Notify Me</a>-->
+  <div class="footer-text">MODASOU © 2026 | LUXURY, CUSTOMIZED CLOTHING BRAND</div>
+</div></div>
 
 </body>
 </html>

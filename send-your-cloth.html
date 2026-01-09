@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <title>Send Your Cloth</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
 :root{
   --chocolate:#3b1f0f;
@@ -12,166 +13,32 @@
   --gold:#d4af37;
   --light-gold:#f6e7b2;
 }
+*{ margin:0; padding:0; box-sizing:border-box; font-family:Poppins, Arial, sans-serif; }
+.navbar{ background:#fff; padding:15px 50px; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--light-gold); }
+.logo{ font-size:26px; font-weight:700; letter-spacing:2px; color:var(--gold); }
+.navbar ul{ list-style:none; display:flex; gap:30px; }
+.navbar ul li a{ text-decoration:none; color:#000; font-weight:500; }
+.navbar ul li a:hover{ color:var(--gold); }
+.page-bg{ min-height:100vh; background:linear-gradient(to bottom,var(--dark-brown),var(--chocolate)); padding:60px 15px; }
+.form-card{ max-width:800px; margin:auto; background:var(--light-gold); padding:40px; border-radius:20px; }
+.form-card h2{ color:var(--gold); margin-bottom:8px; }
+.form-card h3{ color:#5a4a2f; margin-bottom:25px; font-size: 1.1rem;}
+.form-group{ margin-bottom:16px; }
+input, textarea, select{ width:100%; padding:14px 16px; border-radius:8px; border:1px solid #ccc; font-size:15px; background: #fff; }
+textarea{ resize:none; height:120px; }
+.mobile-wrap{ display:flex; border:1px solid #ccc; border-radius:8px; overflow:hidden; background:#fff; }
+.country-code{ padding:14px 16px; background:#eee; font-weight:600; border-right: 1px solid #ccc;}
+.mobile-wrap input{ border:none; outline:none; flex:1; }
+button{ background:#331300; color:#fff; border:none; padding:14px 60px; border-radius:8px; font-size: 20px; cursor:pointer; width: 100%;}
+button:hover{ background:#b8962e; }
+button:disabled{ background: #999; cursor: not-allowed; }
+label{ display:block; margin-bottom:6px; font-weight:500; color: #3b1f0f; }
 
-/* RESET */
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Poppins, Arial, sans-serif;
-}
-
-/* NAVBAR */
-.navbar{
-  background:#fff;
-  padding:15px 50px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border-bottom:2px solid var(--light-gold);
-}
-
-.logo{
-  font-size:26px;
-  font-weight:700;
-  letter-spacing:2px;
-  color:var(--gold);
-}
-
-.navbar ul{
-  list-style:none;
-  display:flex;
-  gap:30px;
-}
-
-.navbar ul li a{
-  text-decoration:none;
-  color:#000;
-  font-weight:500;
-}
-
-.navbar ul li a:hover{
-  color:var(--gold);
-}
-
-/* PAGE BG */
-.page-bg{
-  min-height:100vh;
-  background:linear-gradient(to bottom,var(--dark-brown),var(--chocolate));
-  padding:60px 15px;
-}
-
-/* FORM CARD */
-.form-card{
-  max-width:800px;
-  margin:auto;
-  background:var(--light-gold);
-  padding:40px;
-  border-radius:20px;
-}
-
-.form-card h2{
-  color:var(--gold);
-  margin-bottom:8px;
-}
-
-.form-card p{
-  color:#5a4a2f;
-  margin-bottom:25px;
-}
-
-/* INPUTS */
-.form-group{
-  margin-bottom:16px;
-}
-
-input, textarea{
-  width:100%;
-  padding:14px 16px;
-  border-radius:8px;
-  border:1px solid #ccc;
-  font-size:15px;
-}
-
-textarea{
-  resize:none;
-  height:120px;
-}
-
-/* MOBILE FIELD */
-.mobile-wrap{
-  display:flex;
-  border:1px solid #ccc;
-  border-radius:8px;
-  overflow:hidden;
-  background:#fff;
-}
-
-.country-code{
-  padding:14px 16px;
-  background:#eee;
-  font-weight:600;
-}
-
-.mobile-wrap input{
-  border:none;
-  outline:none;
-  flex:1;
-}
-
-/* BUTTON */
-button{
-  background:#331300;
-  color:#fff;
-  border:none;
-  padding:14px 60px;
-  border-radius:8px;
-  font-size:15px;
-  cursor:pointer;
-  font-size: 20px;
-}
-.next{
-  position: relative;
-  margin-left: 20px;
-}
-
-.next a{
-  
-  text-decoration: none;
-  font-size: 20px;
-  color: #eee;
-}
-button:hover{
-  background:#b8962e;
-}
-
-/* RESPONSIVE */
-@media(max-width:768px){
-  .navbar{
-    flex-direction:column;
-    gap:10px;
-  }
-  .navbar ul{
-    flex-wrap:wrap;
-    justify-content:center;
-  }
-}
+@media(max-width:768px){ .navbar{ flex-direction:column; gap:10px; } .navbar ul{ flex-wrap:wrap; justify-content:center; } }
 </style>
-<script>
-  // Check if sessionId already exists in browser
-  let sessionId = localStorage.getItem('sessionId');
-
-  // If not, create a new one
-  if (!sessionId) {
-    sessionId = Date.now(); // simple unique ID
-    localStorage.setItem('sessionId', sessionId);
-  }
-</script>
 </head>
-
 <body>
 
-<!-- NAVBAR -->
 <nav class="navbar">
   <div class="logo">MODASOU</div>
   <ul>
@@ -182,145 +49,141 @@ button:hover{
   </ul>
 </nav>
 
-<!-- FORM PAGE -->
 <section class="page-bg">
   <div class="form-card">
-
     <h2>Send Your Measurement Cloth</h2>
     <h3>Enter your pickup address. We will arrange cloth pickup.</h3>
-    <br><br>
 
-  <form id="pickupForm">
-
-
-
-      <!-- NAME -->
+    <form id="pickupForm">
       <div class="form-group">
-   <label style="display:block;margin-bottom:6px;font-weight:500;">
-    Enter your full name
-  </label>    <!-- NAME -->
-<input
-  type="text"
-  id="fullname"
-  name="fullname"
-  placeholder="Full Name"
-  required
-  oninput="this.value=this.value.replace(/[^A-Za-z\s]/g,'')"
-><br><br>
+        <label>Enter your full name</label>
+        <input type="text" id="fullname" name="fullname" placeholder="Full Name" required oninput="this.value=this.value.replace(/[^A-Za-z\s]/g,'')">
+      </div>
 
-<!-- MOBILE -->
- <label style="display:block;margin-bottom:6px;font-weight:500;">
-    Enter your watsapp number
-  </label>
-<div class="mobile-wrap">
-  <span class="country-code">+91</span>
-  <input
-    type="tel"
-    id="watsapp_number"
-    name="watsapp_number"
-    placeholder="10 digit watsapp number"
-    maxlength="10"
-    pattern="[6-9][0-9]{9}"
-    required
-    oninput="this.value=this.value.replace(/[^0-9]/g,'')"
-  >
-</div>
-<br>
-<!-- PICKUP DATE -->
-<div class="form-group">
-  <label style="display:block;margin-bottom:6px;font-weight:500;">
-    Pickup Date
-  </label>
-  <input
-    type="date"
-    id="pickup_date"
-    name="pickup_date"
-    required
-    min="2026-01-01"
-  >
-</div>
+      <div class="form-group">
+        <label>Enter your WhatsApp number</label>
+        <div class="mobile-wrap">
+          <span class="country-code">+91</span>
+          <input type="tel" id="watsapp_number" name="watsapp_number" placeholder="10 digit number" maxlength="10" pattern="[6-9][0-9]{9}" required oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+        </div>
+      </div>
 
-<!-- PICKUP TIME SLOT -->
-<div class="form-group">
-  <label style="display:block;margin-bottom:6px;font-weight:500;">
-    Pickup Time Slot
-  </label>
-  <select
-  id="pickup_time"
-    name="pickup_time"
-    required
-    style="width:100%;padding:14px 16px;border-radius:8px;border:1px solid #ccc;font-size:15px;"
-  >
-    <option value="">Select Time Slot</option>
-    <option value="9:00 AM - 1:00 PM">9:00 AM – 1:00 PM</option>
-    <option value="1:00 PM - 6:00 PM">1:00 PM – 6:00 PM</option>
-    <option value="6:00 PM - 10:00 PM">6:00 PM – 10:00 PM</option>
-  </select>
-</div>
+      <div class="form-group">
+        <label>Pickup Date</label>
+        <input type="date" id="pickup_date" name="pickup_date" required min="2024-01-01">
+      </div>
 
+      <div class="form-group">
+        <label>Pickup Time Slot</label>
+        <select id="pickup_time" name="pickup_time" required>
+          <option value="">Select Time Slot</option>
+          <option value="9:00 AM - 1:00 PM">9:00 AM – 1:00 PM</option>
+          <option value="1:00 PM - 6:00 PM">1:00 PM – 6:00 PM</option>
+          <option value="6:00 PM - 10:00 PM">6:00 PM – 10:00 PM</option>
+        </select>
+      </div>
 
-<!-- ADDRESS -->
- <label style="display:block;margin-bottom:6px;font-weight:500;">
-    Enter your full address
-  </label>
-<textarea
-id="address"
-  name="address"
-  placeholder="Full Address (House no, Area, City)"
-  required
-></textarea>
-<br><br>
-<!-- PINCODE -->
- <label style="display:block;margin-bottom:6px;font-weight:500;">
-    City pincode
-  </label>
-<input
-  type="text"
-  id="pincode"
-  name="pincode"
-  placeholder="Pincode"
-  maxlength="6"
-  pattern="[0-9]{6}"
-  required
-  oninput="this.value=this.value.replace(/[^0-9]/g,'')"
->
-</div>
+      <div class="form-group">
+        <label>Enter your full address</label>
+        <textarea id="address" name="address" placeholder="House no, Area, City" required></textarea>
+      </div>
 
-      <button type="submit">Schedule Cloth Pickup</button><br><br>
-      <button class="next" type="next"><a href="/finalsubmit.html">Next</a></button>
+      <div class="form-group">
+        <label>City pincode</label>
+        <input type="text" id="pincode" name="pincode" placeholder="6-digit Pincode" maxlength="6" pattern="[0-9]{6}" required oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+      </div>
 
+      <button type="submit" id="submitBtn">Schedule Cloth Pickup</button>
     </form>
   </div>
 </section>
-<script type="module">
-import { db } from "./firebase.js";
-import { doc, setDoc } from
-"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const form = document.getElementById("pickupForm");
 
-// reuse your existing sessionId
-const sessionId = localStorage.getItem("sessionId");
+<script>
+  // 1. INITIALIZE EMAILJS 
+  // IMPORTANT: You MUST replace this with your actual Public Key from EmailJS
+  emailjs.init("V5fGF5JF2JAOD_AcW"); 
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+  const S_URL = 'https://gztneesmxwfhdmhqikel.supabase.co'; 
+  const S_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA';
+  const m_db = window.supabase.createClient(S_URL, S_KEY);
 
-  await setDoc(doc(db, "orders", sessionId), {
-    pickup: {
-      fullname: document.getElementById("fullname").value,
-      watsapp_number: document.getElementById("watsapp_number").value,
-      pickup_date: document.getElementById("pickup_date").value,
-      pickup_time: document.getElementById("pickup_time").value,
-      address: document.getElementById("address").value,
-      pincode: document.getElementById("pincode").value
+  async function handleFinalOrder(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.innerText = "Processing Order...";
+    btn.disabled = true;
+
+    const sessionId = localStorage.getItem('modasou_session_id');
+
+    try {
+      if (!sessionId) {
+        throw new Error("No session found. Please go back and submit fabric details first.");
+      }
+
+      // 1. FETCH FABRIC DATA
+      const { data: fabricRow, error: fError } = await m_db
+        .from('fabric_submissions')
+        .select('*')
+        .eq('session_id', sessionId)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (fError) throw fError;
+      if (!fabricRow) throw new Error("Fabric data not found. Please re-submit your fabric video.");
+
+      // 2. FETCH DESIGN DATA
+      const { data: designRow } = await m_db
+        .from('design_submissions')
+        .select('*')
+        .eq('session_id', sessionId)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      // 3. PREPARE EMAIL DATA
+      
+        // 4. SEND EMAIL
+      // Use "TailorEmailService" and "template_nz5r9d7" as your Service and Template IDs
+      const uniqueOrderId = "MODASOU_" + Math.floor(1000 + Math.random() * 9000);
+      const response = await emailjs.send('TailorEmailService', 'template_nz5r9d7', {
+        order_id: uniqueOrderId,
+
+        user_name: document.getElementById('fullname').value,
+        user_phone: document.getElementById('watsapp_number').value,
+        pickup_date: document.getElementById('pickup_date').value,
+        pickup_time: document.getElementById('pickup_time').value,
+        message: document.getElementById('address').value + " (Pincode: " + document.getElementById('pincode').value + ")",
+        fabric_video_url: fabricRow.video_url,
+        design_image_url: designRow ? designRow.image_url : "No design uploaded",
+        lining_pref: fabricRow.lining_preference || "N/A",
+        designer_note: fabricRow.note || "None",
+        fabric_measurements: `Top: ${fabricRow.top_meter || 0}m, Bottom: ${fabricRow.bottom_meter || 0}m`
+      });
+
+      
+      
+      console.log("EmailJS Success:", response);
+      
+      alert("Success! Your order has been placed.");
+      localStorage.removeItem('modasou_session_id'); 
+      window.location.href = "/thank-you.html";
+
+    } catch (err) {
+      console.error("Full Error Object:", err);
+      
+      // Improved error message logic to catch EmailJS "undefined" issue
+      let errorMsg = "Unknown Error";
+      if (err.message) errorMsg = err.message;
+      else if (err.text) errorMsg = err.text; // EmailJS errors often use .text
+      else errorMsg = JSON.stringify(err);
+
+      alert("Order Error: " + errorMsg);
+      btn.innerText = "Schedule Cloth Pickup";
+      btn.disabled = false;
     }
-  }, { merge: true });
+  }
 
-  // move to FINAL page
-  window.location.href = "final-submit.html";
-});
-</script>
-
-
-</body>
-</html>
+  document.getElementById('pickupForm').addEventListener('submit', handleFinalOrder);
+</script></body></html>

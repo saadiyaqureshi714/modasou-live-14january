@@ -7,15 +7,18 @@
 <title>ModaSou Hero</title>
 
 <!-- Google Font -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&diplsay=swap" rel="stylesheet">
    
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&diplsay=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
+
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 
  <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 
 
 
@@ -30,20 +33,13 @@
 
   <nav class="menu">
 
-  <div class="menu-item">
-    <a href="#">Home</a>
-    <div class="dropdown">
-      <a href="/how-it-works.html">How it works</a>
-      
-      
-    </div>
-  </div>
+  
 
   <div class="menu-item">
     <a href="#">About Us</a>
     <div class="dropdown">
-      <a href="/aboutjourney.html">Journey of Modasou</a>
-      <a href="/aboutstruggles.html">Struggles of Fashion</a>
+      <a href="/service pages/what-about.html">What is MODASOU?</a>
+      <a href="/aboutjourney.html">Story of MODASOU</a>
       <a href="/birthabout.html">Birth Of Modasou</a>
       
     </div>
@@ -53,7 +49,7 @@
     <a href="#">Services</a>
     <div class="dropdown">
       <div class="sub-item has-submenu">
-      <a href="#">Fabric ready, Design ready, Need Stitching?</a>
+      <a href="#">Stitch Only</a>
       <div class="sub-dropdown">
         <a href="/service pages/1stopton.html?service=blouse"> Blouse</a>
        <a href="/service pages/1stopton.html?service=dress">Dress, Maxi</a>
@@ -67,7 +63,7 @@
       </div>
       </div>
        <div class="sub-item has-submenu">
-      <a href="#">Fabric ready, Need Design & Stitching?</a>
+      <a href="#">Design And Stitch</a>
        <div class="sub-dropdown">
         <a href="/service pages/2page.html?service=blouse"> blouse</a>
          <a href="/service pages/2page.html?service=dress"> Dress, Maxi</a>
@@ -79,7 +75,7 @@
         </div>
         </div>
          <div class="sub-item has-submenu">
-      <a href="#">Have an idea? Need Fabri, Design & Stitching?</a>
+      <a href="#">Idea To Outfit</a>
       <div class="sub-dropdown">
         <a href="/service pages/comingsoon.html"> COMING SOON</a></div>
       
@@ -98,21 +94,18 @@
   </div>
 
   <div class="menu-item">
-    <a href="#">Blog</a>
-    <div class="dropdown">
-      <a href="/service pages/comingsoon.html">--</a>
-      
-    </div>
+    <a href="/service pages/comingsoon.html">Blog</a>
+    
   </div>
 <div class="menu-item">
-    <a href="#">Contact Us</a>
-    <div class="dropdown">
+    <a href="/contact.html">Contact Us</a>
+    <!--<div class="dropdown">
       
-      <a href="#">WhatsApp</a>
-      <a href="#">Email Us</a>
-    </div>
+      <a href="#"></a>
+      <a href="#"></a>
+    </div>-->
   </div>
-</nav>
+
 
   <div >
     <i class="fa-solid fa-magnifying-glass"></i>
@@ -120,6 +113,12 @@
     <i class="fa-solid fa-cart-shopping"></i>
     
   </div>
+
+
+
+
+  
+  </nav>
 </header>
 <body>
 
@@ -139,7 +138,7 @@
         Designed exclusively for you by skilled fashion designers.
         Perfect measurements, premium fabrics, and styles that reflect your personality.
       </p>
-      <a href="/service pages/1stoption.html" class="cta">Start Your Custom Order →</a>
+      <!--<a href="/service pages/1stoption.html" class="cta">Start Your Custom Order →</a>-->
     </section>
 
     <section class="banner b2">
@@ -147,7 +146,7 @@
       <p>
         Discover a curated community of talented designers ready to bring your vision to life.
       </p>
-      <a href="designers" class="cta">Explore Designers →</a>
+     <!---<a href="designers" class="cta">Explore Designers →</a>-->
     </section>
 
     <section class="banner b3">
@@ -156,7 +155,7 @@
         Our expert designers will create a custom design for your fabric,
         and our tailors will bring it to life.
       </p>
-      <a href="designer" class="cta">Design My Outfit →</a>
+      <!--<a href="designer" class="cta">Design My Outfit →</a>-->
     </section>
 
     <section class="banner b4">
@@ -164,7 +163,7 @@
       <p>
         Skilled tailors ensure perfect fitting and premium finishing.
       </p>
-      <a href="designer" class="cta">Make My Outfit →</a>
+      <!--<a href="designer" class="cta">Make My Outfit →</a>-->
     </section>
 
     <section class="banner b5">
@@ -173,7 +172,7 @@
         From design to fabric selection to tailoring —
         MODASOU delivers a complete end-to-end experience.
       </p>
-      <a href="/service pages/comingsoon.html" class="cta">Start My Custom Look →</a>
+      <!--<a href="/service pages/comingsoon.html" class="cta">Start My Custom Look →</a>-->
     </section>
 
   </div>
@@ -187,6 +186,19 @@
 
 </section>
 
+<!-- Introduction Video Section -->
+<section class="modasou-video-section">
+  <div class="video-wrapper">
+    <h2>How it works?</h2>
+
+    <div class="video-frame">
+      <video controls poster="video-poster.jpg">
+        <source src="modasou-intro.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  </div>
+</section>
 
 
 
@@ -201,6 +213,10 @@
     <span>Premium Fabric</span>
     <span>Party Wear</span>
     <span>Wedding Lehnga</span>
+    <span>Blouse</span>
+    <span>Dress</span>
+    <span>Formal Wear</span>
+    <spzn>Casual Wear</spzn>
   </div>
 </section>
 
@@ -258,7 +274,7 @@
 </section>
 
 <!-- CONTACT -->
-
+<br>
 <!-- FOOTER -->
 <footer>
   <p id="p">© 2025 MODASOU - LUXURY, CUSTOMIZED</p>

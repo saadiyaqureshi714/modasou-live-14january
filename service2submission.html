@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>MODASOU | Final Submission</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Modern EmailJS SDK (v4) -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<!-- ================= STYLE ================= -->
+<style>
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #8b4513;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+  height: 100px;
+  background: linear-gradient(135deg, #331300, #8b4513);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+}
+
+.logo-circle {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background-image: url("ModasouLogo.png");
+  background-size: cover;
+
+  color: #331300;
+  font-weight: 900;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-btn {
+  color: #fff;
+  text-decoration: none;
+  border: 1.5px solid #d4af37;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.home-btn:hover {
+  background: #d4af37;
+  color: #331300;
+}
+
+/* ===== FORM ===== */
+.form-card {
+  max-width: 480px;
+  margin: 40px auto;
+  background: #fffaf3;
+  padding: 30px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+}
+
+.form-card h2 {
+  text-align: center;
+  color: #331300;
+  margin-bottom: 25px;
+}
+
+.field {
+  margin-bottom: 18px;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #331300;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1.8px solid #8b4513;
+  font-size: 14px;
+}
+
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: #d4af37;
+}
+
+/* ===== SUBMIT BUTTON ===== */
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #8b4513, #331300);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.submit-btn:active {
+  transform: scale(0.97);
+}
+
+/* ===== SUCCESS POPUP ===== */
+.popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-box {
+  background: #fff;
+  padding: 30px;
+  border-radius: 14px;
+  text-align: center;
+  width: 90%;
+  max-width: 360px;
+}
+
+.popup-box h3 {
+  color: #331300;
+}
+
+.popup-box button {
+  margin-top: 15px;
+  padding: 10px 18px;
+  background: #8b4513;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  background: #331300;
+  color: #f3d9a5;
+  text-align: center;
+  padding: 16px;
+  font-size: 13px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar">
+  <div class="logo-circle"></div>
+  
+  <a href="index.html" class="home-btn">Home</a>
+</nav>
+
+<!-- ===== FORM ===== -->
+<div class="form-card">
+  <h2>Final Details</h2>
+
+  <form id="finalForm">
+
+    <div class="field">
+      <label>Full Name</label>
+      <input type="text" id="name" name="name" required
+        pattern="[A-Za-z\s]+"
+        title="Only letters allowed">
+    </div>
+
+    <div class="field">
+      <label>WhatsApp Number</label>
+      <input type="tel" id="whatsapp" name="watsapp" required
+        pattern="[0-9]{10}" maxlength="10">
+    </div>
+
+    <div class="field">
+      <label>Email Address</label>
+      <input type="email" id="email" name="email" required>
+    </div>
+
+    <div class="field">
+      <label>Residential Address</label>
+      <textarea id="address" rows="3" name="address" required></textarea>
+    </div>
+
+    <div class="field">
+      <label>Pincode</label>
+      <input type="text" id="pincode" name="pincode"
+        pattern="[0-9]{6}" maxlength="6" required>
+    </div>
+
+    <!-- IMPORTANT: button type=button (NO page reset) -->
+    <button type="button" class="submit-btn" id="submitBtn">
+      Submit Order
+    </button>
+
+  </form>
+</div>
+
+<!-- ===== SUCCESS POPUP ===== -->
+<div class="popup" id="successPopup">
+  <div class="popup-box">
+    <h3>Submitted Successfully 🎉</h3>
+    <p>Your order details are saved.</p>
+    <button onclick="goNext()">Next</button>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  © 2025 MODASOU • Premium Custom Tailoring
+</footer>
+
+
+
+
+
+<script>
+  // 1. Initialize EmailJS and Supabase
+  emailjs.init("V5fGF5JF2JAOD_AcW"); 
+  const m_db = window.supabase.createClient(
+    'https://gztneesmxwfhdmhqikel.supabase.co', 
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA'
+  );
+
+  async function handleFinalOrder(e) {
+    e.preventDefault(); 
+    
+    const btn = document.getElementById('submitBtn');
+    if (!btn) { console.error("Button not found"); return; }
+
+    const sessionId = localStorage.getItem('modasou_session_id');
+
+    if (!sessionId) {
+      alert("Error: No session found. Please start over.");
+      return;
+    }
+
+    btn.innerText = "Processing Order...";
+    btn.disabled = true;
+
+    try {
+      // --- STEP 1: FETCH SUPABASE DATA ---
+      const { data: allRows, error: fetchError } = await m_db
+        .from('service_2')
+        .select('*')
+        .eq('session_id', sessionId);
+
+      if (fetchError) throw new Error("Database Fetch Error: " + fetchError.message);
+      if (!allRows || allRows.length === 0) throw new Error("No data found. Did you save Service 2 data?");
+
+      // --- STEP 2: MERGE DATA ---
+      let mergedData = {};
+      allRows.forEach(row => {
+          if (row.top_mtr) mergedData.top_mtr = row.top_mtr;
+          if (row.top_cm) mergedData.top_cm = row.top_cm;
+          if (row.bottom_mtr) mergedData.bottom_mtr = row.bottom_mtr;
+          if (row.bottom_cm) mergedData.bottom_cm = row.bottom_cm;
+          if (row.lining_preference) mergedData.lining_preference = row.lining_preference;
+          if (row.designer_note) mergedData.designer_note = row.designer_note;
+          if (row.fabric_video_url) mergedData.fabric_video_url = row.fabric_video_url;
+          if (row.design_image_url) mergedData.design_image_url = row.design_image_url;
+          if (row.google_image_url) mergedData.google_image_url = row.google_image_url;
+      });
+
+      // --- STEP 3: FETCH MEASUREMENTS & SERVICE NAME (FIXED) ---
+      
+      // 1. FIX: Check 'selectedService' (Old Script) FIRST, then 'selected_service_type' (New Script)
+      const serviceType = localStorage.getItem("selectedService") || localStorage.getItem("selected_service_type") || "Custom Order";
+
+      // 2. Fetch Measurements
+      const rawMeasures = localStorage.getItem("measurements") || localStorage.getItem("current_measurement_data") || "{}";
+      const measurementsObj = JSON.parse(rawMeasures);
+      
+      let formattedMeasures = "";
+      for (const [key, value] of Object.entries(measurementsObj)) {
+         if(value) formattedMeasures += `${key.replace(/_/g, ' ')}: ${value}\n`;
+      }
+
+      // --- STEP 4: PREPARE LINKS ---
+      const videoHtml = mergedData.fabric_video_url 
+        ? `<a href="${mergedData.fabric_video_url}" target="_blank">Watch Video</a>` : "Not Provided";
+      const designHtml = mergedData.design_image_url 
+        ? `<a href="${mergedData.design_image_url}" target="_blank">View Image</a>` : "Not Provided";
+
+      // --- STEP 5: GOOGLE LINK (Verified) ---
+      // This sends the HTML link. If your EmailJS template uses {{{ }}}, it will be clickable.
+      const googleHtml = mergedData.google_image_url 
+        ? `<a href="${mergedData.google_image_url}" target="_blank" style="color: blue; text-decoration: underline;">See Google Image</a>` 
+        : "Not Provided";
+
+      const topQty = mergedData.top_mtr ? `${mergedData.top_mtr}m / ${mergedData.top_cm || 0}cm` : "Not Provided";
+      const botQty = mergedData.bottom_mtr ? `${mergedData.bottom_mtr}m / ${mergedData.bottom_cm || 0}cm` : "Not Provided";
+
+      // Generate Order ID
+      const uniqueOrderId = "MODASOU_" + Math.floor(1000 + Math.random() * 9000);
+
+      // --- STEP 6: SEND EMAIL ---
+      await emailjs.send('TailorEmailService', 'template_jpeqr8e', { 
+        order_id: uniqueOrderId,
+        
+        // Customer Info
+        customer_name: document.getElementById('name').value, 
+        whatsapp: document.getElementById('whatsapp').value, 
+        email: document.getElementById('email').value,
+        address: document.getElementById('address').value,
+        pincode: document.getElementById('pincode').value,
+
+        // Fabric Details
+        fabric_top_qty: topQty,
+        fabric_bottom_qty: botQty,
+        fabric_lining: mergedData.lining_preference || "N/A",
+        fabric_notes: mergedData.designer_note || "None",
+        
+        // Links
+        video_link: videoHtml,
+        reference_image_link: designHtml,
+        google_image_url: googleHtml, 
+
+        // Measurements & Service Name
+        service_type: serviceType, // This will now show "Kurta", "Dress", etc.
+        measurements_list: formattedMeasures || "No measurements found",
+        
+        order_date: new Date().toLocaleString()
+      });
+  
+      // Success
+      document.getElementById("successPopup").style.display = "flex";
+      localStorage.removeItem('modasou_session_id'); 
+
+    } catch (err) {
+      console.error("Order process failed:", err);
+      alert("Order Error: " + err.message);
+      btn.innerText = "Submit Order";
+      btn.disabled = false;
+    }
+  }
+
+  document.getElementById('submitBtn').addEventListener('click', handleFinalOrder);
+</script></body></html>

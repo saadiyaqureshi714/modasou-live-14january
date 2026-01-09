@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modasou - Fabric & Design Upload</title>
+
+<!-- Supabase Library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
+  body { background-color: #ffe6a7; color: #331300; }
+
+  /* NAVBAR */
+  .navbar {
+    width: 100%; display: flex; justify-content: space-around; align-items: center;
+    padding: 10px 30px; background: #432818; position: sticky; top: 0; z-index: 1000;
+  }
+  .logo-container { display: flex; align-items: center; gap: 15px; }
+  .logo-img { width: 60px; height: 60px; border: 2px solid #bb9457; border-radius: 50%; }
+  .logo-text { font-family: 'Cinzel', serif; font-size: 32px; font-weight: 600; background: linear-gradient(90deg, #ffe6a7, #bb9457, #ffe6a7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .menu-item a { text-decoration: none; color: #f5e6b8; font-size: 18px; }
+
+  /* CONTAINER */
+  .container { max-width: 90%; margin: 30px auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #dcab6b; padding: 20px; border-radius: 12px; }
+  
+  .upload-box { background-color: #fffaf0; border: 2px solid #331300; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+  .upload-box h2 { font-size: 20px; color: #6f1d1b; margin-bottom: 15px; text-decoration: underline; }
+  
+  /* FILE UPLOAD STYLING */
+  .upload-btn { background: #99582a; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-bottom: 10px; font-weight: bold; }
+  .video-preview video, .image-preview img { width: 100%; max-height: 200px; border-radius: 8px; margin-top: 10px; border: 2px solid #bb9457; display: none; background: #000; }
+
+  /* MEASUREMENTS & INPUTS */
+  .form-section { background: #FFF9C4; border: 1px solid #4b2000; border-radius: 10px; padding: 15px; margin: 15px 0; text-align: left; }
+  .form-section h3 { font-size: 16px; margin-bottom: 10px; color: #432818; }
+  .row { display: flex; align-items: center; margin-bottom: 8px; gap: 10px; }
+  .row label { width: 70px; font-size: 14px; font-weight: bold; }
+  .row input { flex: 1; padding: 6px; border: 1px solid #99582a; border-radius: 4px; }
+  
+  /* LINING & NOTES */
+  .inline-options { display: flex; gap: 10px; margin-top: 10px; }
+  .inline-card { flex: 1; border: 1px solid #bb9457; padding: 10px; border-radius: 8px; cursor: pointer; background: white; font-size: 13px; display: flex; align-items: center; gap: 5px; }
+  .designer-note textarea { width: 100%; height: 60px; margin-top: 10px; padding: 10px; border-radius: 6px; border: 1px solid #99582a; resize: none; }
+
+  /* SUBMIT BUTTONS */
+  .final-submit { background: #4CAF50 !important; color: white !important; width: 100%; padding: 15px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 15px; transition: 0.3s; }
+  .final-submit:hover { background: #388E3C !important; }
+  .final-submit:disabled { background: #ccc !important; cursor: not-allowed; }
+
+  /* HEADER INFO */
+  .header-info { text-align: center; margin-top: 20px; }
+  .header-info h2 { font-size: 36px; color: #6f1d1b; text-decoration: underline; }
+
+  /* FOOTER */
+  footer { text-align: center; padding: 20px; background-color: #432818; color: #ffe6a7; margin-top: 40px; }
+
+  .nav-buttons { display: flex; justify-content: center; gap: 20px; margin: 20px 0; }
+  .nav-btn { padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; background: #4b2000; color: #fff; }
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+  <div class="logo-container">
+    <img src="/ModasouLogo.png" class="logo-img" alt="Logo">
+    <h1 class="logo-text">MODASOU</h1>
+  </div>
+  <nav class="menu-item"><a href="/index.html">Home</a></nav>
+</header>
+
+<div class="header-info">
+  <h2>Stitch Only</h2>
+  <h3>Material and design are ready.</h3>
+  <p>Our designer will stitch the outfit to your measurements.</p>
+</div>
+
+<div class="container">
+  <!-- LEFT BOX: FABRIC DETAILS -->
+  <div class="upload-box">
+    <h2>Fabric Details</h2>
+    
+    <!-- Video Section -->
+    <div class="form-section">
+      <h3>1. Upload Fabric Video</h3>
+      <button type="button" class="upload-btn" onclick="document.getElementById('fabricVideoInput').click()">Choose Video</button>
+      <input type="file" id="fabricVideoInput" accept="video/*" hidden onchange="handlePreview(this, 'videoPreview')">
+      <div class="video-preview">
+        <video id="videoPreview" controls></video>
+      </div>
+      <p style="font-size: 11px;">Max 30s. MP4/WebM/OGG</p>
+    </div>
+
+    <!-- Measurements Section -->
+    <div class="form-section">
+      <h3>2. Fabric Length</h3>
+      <p style="font-size: 12px; font-weight: bold;">Top Fabric:</p>
+      <div class="row">
+        <label>Meters:</label><input type="number" id="topMeter" step="0.01" placeholder="0.0">
+        <label>Cm:</label><input type="number" id="topCm" placeholder="0">
+      </div>
+      <p style="font-size: 12px; font-weight: bold; margin-top:10px;">Bottom Fabric:</p>
+      <div class="row">
+        <label>Meters:</label><input type="number" id="bottomMeter" step="0.01" placeholder="0.0">
+        <label>Cm:</label><input type="number" id="bottomCm" placeholder="0">
+      </div>
+    </div>
+
+    <!-- Lining & Notes Section -->
+    <div class="form-section">
+      <h3>3. Preferences & Notes</h3>
+      <div class="inline-options">
+        <label class="inline-card"><input type="radio" name="lining" value="With Lining" checked> With Lining</label>
+        <label class="inline-card"><input type="radio" name="lining" value="Without Lining"> Without Lining</label>
+      </div>
+      <div class="designer-note">
+        <textarea id="designerNote" placeholder="Write instructions for the designer..."></textarea>
+      </div>
+    </div>
+
+    <button class="final-submit" id="submitFabricBtn" onclick="submitFabricData()">SUBMIT FABRIC DETAILS</button>
+  </div>
+
+  <!-- RIGHT BOX: DESIGN UPLOAD -->
+  <div class="upload-box">
+    <h2>Design Image</h2>
+    <div class="form-section" style="height: 100%;">
+      <h3>Upload Reference Image</h3>
+      <button type="button" class="upload-btn" onclick="document.getElementById('designUpload').click()">Choose Image</button>
+      <input type="file" id="designUpload" accept="image/*" hidden onchange="handlePreview(this, 'imagePreview')">
+      
+      <div class="image-preview">
+        <img id="imagePreview" alt="Design Preview">
+      </div>
+      
+      <button class="final-submit" id="submitDesignBtn" style="margin-top: 40px;" onclick="submitDesignData()">SUBMIT DESIGN IMAGE</button>
+    </div>
+  </div>
+</div>
+
+<div class="nav-buttons">
+  <a href="javascript:void(0)" id="measurementBtn" class="nav-btn">Add your measurements</a>
+  <a href="/send-your-cloth.html" class="nav-btn">Send your measurement cloth</a>
+</div>
+
+<footer>
+  <p>© 2025 MODASOU - LUXURY, CUSTOMIZED</p>
+</footer>
+
+<script>
+  // 1. SUPABASE CONFIGURATION (Replace with your actual keys)
+  const SUPABASE_URL = 'https://gztneesmxwfhdmhqikel.supabase.co'; 
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA';
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  // --- AUTO-CONVERSION LOGIC ---
+
+// Helper function to handle the math
+function setupSync(meterId, cmId) {
+    const meterInput = document.getElementById(meterId);
+    const cmInput = document.getElementById(cmId);
+
+    // When Meter is typed, update Cm
+    meterInput.addEventListener('input', () => {
+        if (meterInput.value) {
+            cmInput.value = Math.round(parseFloat(meterInput.value) * 100);
+        } else {
+            cmInput.value = '';
+        }
+    });
+
+    // When Cm is typed, update Meter
+    cmInput.addEventListener('input', () => {
+        if (cmInput.value) {
+            meterInput.value = (parseFloat(cmInput.value) / 100).toFixed(2);
+        } else {
+            meterInput.value = '';
+        }
+    });
+}
+
+// Apply the sync to Top and Bottom fields once the window loads
+window.addEventListener('DOMContentLoaded', () => {
+    setupSync('topMeter', 'topCm');
+    setupSync('bottomMeter', 'bottomCm');
+});
+
+  // 2. SESSION MANAGEMENT
+  // Generates a unique ID if one doesn't exist to track user data across pages
+  if (!localStorage.getItem('modasou_session_id')) {
+    localStorage.setItem('modasou_session_id', 'sess_' + Math.random().toString(36).substr(2, 9));
+  }
+  const sessionId = localStorage.getItem('modasou_session_id');
+
+  // 3. UI PREVIEW LOGIC
+  function handlePreview(input, previewId) {
+    const file = input.files[0];
+    const previewElement = document.getElementById(previewId);
+    if (file) {
+      previewElement.src = URL.createObjectURL(file);
+      previewElement.style.display = 'block';
+    }
+  }
+
+  // 4. SUBMIT FABRIC DATA (Box 1)
+  async function submitFabricData() {
+    const btn = document.getElementById('submitFabricBtn');
+    const videoFile = document.getElementById('fabricVideoInput').files[0];
+    
+    // Validation
+    if (!videoFile) return alert("Please select a fabric video first!");
+    
+    btn.disabled = true;
+    btn.innerText = "Uploading...";
+
+    try {
+      // Step A: Upload Video to Storage (Bucket name must be 'fabrics')
+      const fileExt = videoFile.name.split('.').pop();
+      const fileName = `fabric_${sessionId}_${Date.now()}.${fileExt}`;
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('fabrics') 
+        .upload(fileName, videoFile);
+
+      if (uploadError) throw uploadError;
+
+      // Get Public URL
+      const { data: urlData } = supabase.storage.from('fabrics').getPublicUrl(fileName);
+      const videoUrl = urlData.publicUrl;
+
+      // Step B: Save Data to Database (Table name: 'fabric_submissions')
+      const { error: dbError } = await supabase
+        .from('fabric_submissions')
+        .insert([{
+          session_id: sessionId,
+          video_url: videoUrl,
+          top_meter: document.getElementById('topMeter').value,
+          top_cm: document.getElementById('topCm').value,
+          bottom_meter: document.getElementById('bottomMeter').value,
+          bottom_cm: document.getElementById('bottomCm').value,
+          lining_preference: document.querySelector('input[name="lining"]:checked').value,
+          note: document.getElementById('designerNote').value,
+          created_at: new Date()
+        }]);
+
+      if (dbError) throw dbError;
+
+      alert("Success! Fabric details and video have been uploaded.");
+      btn.innerText = "SUBMITTED ✓";
+      btn.style.background = "#2E7D32";
+
+    } catch (err) {
+      console.error(err);
+      alert("Error: " + err.message);
+      btn.disabled = false;
+      btn.innerText = "SUBMIT FABRIC DETAILS";
+    }
+  }
+
+  // 5. SUBMIT DESIGN DATA (Box 2)
+  async function submitDesignData() {
+    const btn = document.getElementById('submitDesignBtn');
+    const imageFile = document.getElementById('designUpload').files[0];
+
+    if (!imageFile) return alert("Please select a design image first!");
+
+    btn.disabled = true;
+    btn.innerText = "Uploading...";
+
+    try {
+      // Upload to Storage (Bucket: 'designs')
+      const fileName = `design_${sessionId}_${Date.now()}.jpg`;
+      const { error: uploadError } = await supabase.storage
+        .from('designs')
+        .upload(fileName, imageFile);
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage.from('designs').getPublicUrl(fileName);
+      
+      // Save to DB
+      const { error: dbError } = await supabase
+        .from('design_submissions')
+        .insert([{ 
+          session_id: sessionId, 
+          image_url: urlData.publicUrl 
+        }]);
+
+      if (dbError) throw dbError;
+
+      alert("Design image uploaded successfully!");
+      btn.innerText = "SUBMITTED ✓";
+    } catch (err) {
+      alert("Error: " + err.message);
+      btn.disabled = false;
+      btn.innerText = "SUBMIT DESIGN IMAGE";
+    }
+  }
+
+  // Measurement Navigation Logic
+  document.getElementById("measurementBtn").addEventListener("click", function () {
+    const params = new URLSearchParams(window.location.search);
+    const service = params.get("service");
+    if(!service) return alert("Please select a service first");
+    
+    const routes = {
+      blouse: "measurement-blouse.html",
+      dress: "measurement-dress.html",
+      top: "measurement-Tops.html",
+      kurta: "measurement-kurta.html",
+      skirt: "measurement-skirt.html",
+      lehenga: "measurement-lehenga.html",
+      pant: "measurement-pants.html"
+    };
+    window.location.href = routes[service] || alert("Service not found");
+  });
+</script>
+</body>
+</html>

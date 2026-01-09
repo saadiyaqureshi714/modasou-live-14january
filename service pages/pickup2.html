@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Send Your Cloth - Service 2</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+:root{ --chocolate:#3b1f0f; --dark-brown:#2a140a; --gold:#d4af37; --light-gold:#f6e7b2; }
+*{ margin:0; padding:0; box-sizing:border-box; font-family:Poppins, Arial, sans-serif; }
+.navbar{ background:#fff; padding:15px 50px; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--light-gold); }
+.logo{ font-size:26px; font-weight:700; letter-spacing:2px; color:var(--gold); }
+.navbar ul{ list-style:none; display:flex; gap:30px; }
+.navbar ul li a{ text-decoration:none; color:#000; font-weight:500; }
+.navbar ul li a:hover{ color:var(--gold); }
+.page-bg{ min-height:100vh; background:linear-gradient(to bottom,var(--dark-brown),var(--chocolate)); padding:60px 15px; }
+.form-card{ max-width:800px; margin:auto; background:var(--light-gold); padding:40px; border-radius:20px; }
+.form-card h2{ color:var(--gold); margin-bottom:8px; }
+.form-card h3{ color:#5a4a2f; margin-bottom:25px; font-size: 1.1rem;}
+.form-group{ margin-bottom:16px; }
+input, textarea, select{ width:100%; padding:14px 16px; border-radius:8px; border:1px solid #ccc; font-size:15px; background: #fff; }
+textarea{ resize:none; height:120px; }
+.mobile-wrap{ display:flex; border:1px solid #ccc; border-radius:8px; overflow:hidden; background:#fff; }
+.country-code{ padding:14px 16px; background:#eee; font-weight:600; border-right: 1px solid #ccc;}
+.mobile-wrap input{ border:none; outline:none; flex:1; }
+button{ background:#331300; color:#fff; border:none; padding:14px 60px; border-radius:8px; font-size: 20px; cursor:pointer; width: 100%;}
+button:hover{ background:#b8962e; }
+button:disabled{ background: #999; cursor: not-allowed; }
+label{ display:block; margin-bottom:6px; font-weight:500; color: #3b1f0f; }
+@media(max-width:768px){ .navbar{ flex-direction:column; gap:10px; } .navbar ul{ flex-wrap:wrap; justify-content:center; } }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo">MODASOU</div>
+  <ul>
+    <li><a href="/index.html">Home</a></li>
+    <li><a href="measurements.html">Measurements</a></li>
+    <li><a href="designers.html">Designers</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="page-bg">
+  <div class="form-card">
+    <h2>Schedule Cloth Pickup</h2>
+    <h3>Service 2: Material Ready, Design Needed</h3>
+
+    <form id="pickupForm">
+      <div class="form-group">
+        <label>Enter your full name</label>
+        <input type="text" id="fullname" placeholder="Full Name" required>
+      </div>
+
+      <div class="form-group">
+        <label>Enter your WhatsApp number</label>
+        <div class="mobile-wrap">
+          <span class="country-code">+91</span>
+          <input type="tel" id="watsapp_number" placeholder="10 digit number" maxlength="10" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Pickup Date</label>
+        <input type="date" id="pickup_date" required min="2026-01-01">
+      </div>
+
+      <div class="form-group">
+        <label>Pickup Time Slot</label>
+        <select id="pickup_time" required>
+          <option value="">Select Time Slot</option>
+          <option value="9:00 AM - 1:00 PM">9:00 AM – 1:00 PM</option>
+          <option value="1:00 PM - 6:00 PM">1:00 PM – 6:00 PM</option>
+          <option value="6:00 PM - 10:00 PM">6:00 PM – 10:00 PM</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Enter your full address</label>
+        <textarea id="address" placeholder="House no, Area, City" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>City pincode</label>
+        <input type="text" id="pincode" placeholder="6-digit Pincode" maxlength="6" required>
+      </div>
+
+      <button type="submit" id="submitBtn">Schedule Cloth Pickup</button>
+    </form>
+  </div>
+</section>
+
+
+
+<script>
+  // 1. Initialize EmailJS and Supabase
+  emailjs.init("V5fGF5JF2JAOD_AcW"); 
+  const m_db = window.supabase.createClient(
+    'https://gztneesmxwfhdmhqikel.supabase.co', 
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA'
+  );
+
+  async function handleFinalOrder(e) {
+    // PREVENT PAGE RELOAD
+    e.preventDefault();
+    
+    const btn = document.getElementById('submitBtn');
+    const sessionId = localStorage.getItem('modasou_session_id');
+
+    // Basic Validation
+    if (!sessionId) {
+      alert("Error: No session found. Please go back to Service 2 and submit your fabric first.");
+      return;
+    }
+
+    btn.innerText = "Processing Order...";
+    btn.disabled = true;
+
+    try {
+      // 1. Fetch Fabric data from service_2 table
+      console.log("Fetching fabric for session:", sessionId);
+      const { data: fabricRow, error: fetchError } = await m_db
+        .from('service_2')
+        .select('*')
+        .eq('session_id', sessionId)
+        .maybeSingle(); 
+
+      if (fetchError) throw new Error("Database Fetch Error: " + fetchError.message);
+      if (!fabricRow) throw new Error("Fabric details not found in database. Please click 'Submit Fabric' on the previous page.");
+
+      // 2. Insert into the NEW table: service_2_pickups
+      const { error: insertError } = await m_db
+        .from('service_2_pickups')
+        .upsert([{
+          session_id: sessionId,
+          full_name: document.getElementById('fullname').value,
+          whatsapp_number: document.getElementById('watsapp_number').value,
+          pickup_date: document.getElementById('pickup_date').value,
+          pickup_time: document.getElementById('pickup_time').value,
+          full_address: document.getElementById('address').value,
+          pincode: document.getElementById('pincode').value
+        }]);
+
+      if (insertError) throw new Error("Database Save Error: " + insertError.message);
+     // 4. Send Email
+      const uniqueOrderId = "MODASOU_" + Math.floor(1000 + Math.random() * 9000);
+      await emailjs.send('TailorEmailService', 'template_nz5r9d7', {
+      order_id: uniqueOrderId,
+
+      // 3. Prepare Email Parameters
+  
+        order_id: uniqueOrderId,
+        user_name: document.getElementById('fullname').value,
+        user_phone: document.getElementById('watsapp_number').value,
+        pickup_date: document.getElementById('pickup_date').value,
+        pickup_time: document.getElementById('pickup_time').value,
+        message: document.getElementById('address').value + " (" + document.getElementById('pincode').value + ")",
+        
+        // Data from Service 2 Table
+        fabric_video_url: fabricRow.fabric_video_url || "No video",  
+        // 1. Existing Design Image
+        design_image_url: fabricRow.design_image_url || "", 
+        
+        // 2. NEW: Add the Google Image mapping
+        google_image_url: fabricRow.google_image_url || "", 
+        // -----------------------
+
+        lining_pref: fabricRow.lining_preference || "N/A",
+        designer_note: fabricRow.designer_note || "None",
+        fabric_measurements: `Top: ${fabricRow.top_mtr || 0}m, Bottom: ${fabricRow.bottom_mtr || 0}m`
+      });
+  
+      
+
+      
+      alert("Order Successful! We will contact you soon.");
+      
+      // Clear session and redirect
+      localStorage.removeItem('modasou_session_id'); 
+      window.location.href = "thank-you.html";
+
+    } catch (err) {
+      console.error("Order process failed:", err);
+      alert("Order Error: " + err.message);
+      
+      // Reset button so user can try again
+      btn.innerText = "Schedule Cloth Pickup";
+      btn.disabled = false;
+    }
+  }
+
+  // Attach the event listener carefully
+  const orderForm = document.getElementById('pickupForm');
+  if (orderForm) {
+      orderForm.addEventListener('submit', handleFinalOrder);
+  } else {
+      console.error("Form with ID 'pickupForm' not found!");
+  }
+</script></body></html>

@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <title>How to Take Measurements | MODASOU</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script src="assets/js/app.js"></script>
+</head>
 
 <style>
   
@@ -371,6 +375,47 @@ button:hover{
   transform: scale(1.04);
   box-shadow: 0 12px 30px rgba(0,0,0,0.25);
 }
+
+        /* BUTTONS */
+        .btn-container {
+            text-align: center;
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+ .submit-btn {
+            background: var(--chocolate);
+            color: white;
+            border: none;
+            padding: 15px 60px;
+            border-radius: 30px;
+            font-size: 22px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: var(--golden);
+            color: #331300;
+        }
+
+        .next-btn {
+            background: var(--golden);
+            color: #331300;
+            text-decoration: none;
+            padding: 15px 80px;
+            border-radius: 30px;
+            font-size: 22px;
+            font-weight: bold;
+            /* Hidden until saved */
+        }
+
+        .next-btn:hover {
+            background: #fff;
+        }
+
 .note{
 margin-top: 40px;
 text-align: center;
@@ -379,25 +424,7 @@ font-size: 18px;
 
 }
 
-  .submit-btn {
-  text-decoration: none;
-  display: block;
-  color: #331300;
-  margin: 25px auto 0;
-  padding: 20px 80px;
-  background: #d4af37;
-  border: none;
-  border-radius: 30px;
-  font-size: 26px;
-  cursor: pointer;
-}
-.submit-btn a{
-  color: #331300;
-  text-decoration: none;
-}
-.submit-btn a:hover{
-  color: #ccc;
-}
+ /
 /* MOBILE OPTIMIZATION */
 @media (max-width: 600px) {
   .measurement-guides img {
@@ -427,17 +454,8 @@ font-family: 'CINZEL', serif;
 
 
 </style>
-<script>
-  // Check if sessionId already exists in browser
-  let sessionId = localStorage.getItem('sessionId');
 
-  // If not, create a new one
-  if (!sessionId) {
-    sessionId = Date.now(); // simple unique ID
-    localStorage.setItem('sessionId', sessionId);
-  }
-</script>
-</head><!-- NAVBAR -->
+<!-- NAVBAR -->
 <header class="navbar">
   <div class="nav-wrap">
 
@@ -493,7 +511,7 @@ font-family: 'CINZEL', serif;
     <div class="measure-row">
       <label>1-Bust round:</label>
       <div class="input-wrap">
-        <input type="number" name="bust_round" step="0.1" placeholder="0" required>
+        <input type="number" name="bust_round" step="0.1" placeholder="0" >
         <span>in</span>
       </div>
     </div>
@@ -501,7 +519,7 @@ font-family: 'CINZEL', serif;
     <div class="measure-row">
       <label>2-Waist round:</label>
       <div class="input-wrap">
-        <input type="number" name="waist_round" step="0.1" placeholder="0" required>
+        <input type="number" name="waist_round" step="0.1" placeholder="0" >
         <span>in</span>
       </div>
     </div>
@@ -509,7 +527,7 @@ font-family: 'CINZEL', serif;
     <div class="measure-row">
       <label>3-Hip round:</label>
       <div class="input-wrap">
-        <input type="number" name="hip-round" step="0.1" placeholder="0" required>
+        <input type="number" name="hip-round" step="0.1" placeholder="0" >
         <span>in</span>
       </div>
     </div>
@@ -517,7 +535,7 @@ font-family: 'CINZEL', serif;
     <div class="measure-row">
       <label>4-Nape to bust length:</label>
       <div class="input-wrap">
-        <input type="number" name="nape_to_bust_length" step="0.1" placeholder="0" required>
+        <input type="number" name="nape_to_bust_length" step="0.1" placeholder="0" >
         <span>in</span>
       </div>
     </div>
@@ -525,131 +543,117 @@ font-family: 'CINZEL', serif;
     <div class="measure-row">
       <label>5-Nape to waist length:</label>
       <div class="input-wrap">
-        <input type="number" name="nape_to_waist_length" step="0.1" placeholder="0" required>
+        <input type="number" name="nape_to_waist_length" step="0.1" placeholder="0" >
         <span>in</span>
       </div>
     </div>
       <div class="measure-row">
       <label>6-Nape to hip length:</label>
       <div class="input-wrap">
-        <input type="number" name="nape_to_hip_length" step="0.1" placeholder="0" required>
+        <input type="number" name="nape_to_hip_length" step="0.1" placeholder="0" >
         <span>in</span>
       </div>
     </div>
     <div class="measure-row">
       <label>7-Nape to short top/<br> kurta length:</label>
       <div class="input-wrap">
-        <input type="number" name="nape-to-short-top/kurta-length" step="0.1" placeholder="0" required>
+        <input type="number" name="nape-to-short-top/kurta-length" step="0.1" placeholder="0" >
         <span>in</span>
       </div>
     </div>
     <div class="measure-row">
       <label>8-Across shoulder:</label>
       <div class="input-wrap">
-        <input type="number" name="Across_shoulder" step="0.1" placeholder="0" required>
+        <input type="number" name="Across_shoulder" step="0.1" placeholder="0" >
         <span>in</span>
       </div>
     </div>
     <div class="measure-row">
       <label>9-Across chest:</label>
       <div class="input-wrap">
-        <input type="number" name="Across_chest" step="0.1" placeholder="0" required>
+        <input type="number" name="Across_chest" step="0.1" placeholder="0" >
         <span>in</span>
       </div>
     </div>
     <div class="measure-row">
       <label>10-Armhole:</label>
       <div class="input-wrap">
-        <input type="number" name="Armhole" step="0.1" placeholder="0" required>
+        <input type="number" name="Armhole" step="0.1" placeholder="0" >
         <span>in</span>
       </div>
     </div>
     <div class="measure-row">
       <label>11-Short sleeve length:</label>
       <div class="input-wrap">
-        <input type="number" name="short-sleeve-length" step="0.1" placeholder="0" required>
+        <input type="number" name="short-sleeve-length" step="0.1" placeholder="0" >
         <span>in</span>
       </div>
     </div>
     <div class="measure-row">
       <label>12-Short sleeve round:</label>
       <div class="input-wrap">
-        <input type="number" name="short-sleeve-round" step="0.1" placeholder="0" required>
+        <input type="number" name="short-sleeve-round" step="0.1" placeholder="0" >
         <span>in</span>
       </div>
     </div>
     <div class="measure-row">
       <label>13-Elbow sleeve length:</label>
       <div class="input-wrap">
-        <input type="number" name="elbowSleeveLength" step="0.1" placeholder="0" required>
+        <input type="number" name="elbowSleeveLength" step="0.1" placeholder="0" >
         <span>in</span>
       </div>
     </div>
     <div class="measure-row">
       <label>14-Elbow sleeve round:</label>
       <div class="input-wrap">
-        <input type="number" name="elbowSleeveRound" step="0.1" placeholder="0" required>
+        <input type="number" name="elbowSleeveRound" step="0.1" placeholder="0">
         <span>in</span>
       </div>
     </div>
     <div class="measure-row">
       <label>15-Full sleeve length:</label>
       <div class="input-wrap">
-        <input type="number" name="fullSleeveLength" step="0.1" placeholder="0" required>
+        <input type="number" name="fullSleeveLength" step="0.1" placeholder="0" >
         <span>in</span>
       </div>
     </div>
     <div class="measure-row">
       <label>16-Full sleeve round:</label>
       <div class="input-wrap">
-        <input type="number" name="fullSleeveRound" step="0.1" placeholder="0" required>
+        <input type="number" name="fullSleeveRound" step="0.1" placeholder="0" >
         <span>in</span>
       </div>
     </div>
     <div class="measure-row">
       <label>17-Front neck depth:</label>
       <div class="input-wrap">
-        <input type="number" name="front-neck-depth" step="0.1" placeholder="0" required>
+        <input type="number" name="front-neck-depth" step="0.1" placeholder="0" >
         <span>in</span>
       </div>
     </div>
   <div class="measure-row">
       <label>18-Back neck depth:</label>
       <div class="input-wrap">
-        <input type="number" name="back-neck-depth" step="0.1" placeholder="0" required>
+        <input type="number" name="back-neck-depth" step="0.1" placeholder="0" >
         <span>in</span>
       </div>
     </div>
-  </div></div></section>
-    </div>
-
+    
+            <div class="btn-container">
+                <button type="submit" id="nextBtn" class="submit-btn">Save Measurements</button>
+                
+<a href="#" id="submit-btn" class="next-btn">Go to Final Step</a>
+</div>
+                
+        </form>
+  </div>
+</div>
 <p class="note">
   Your measurements are safe with us. Our team will contact you after submission.
 </p>
 
-<button id="nextBtn" type="submit" class="submit-btn">
-  Submit Measurements
-</button>
-
-</form>   <!-- ✅ FORM CLOSES HERE -->
-
-
-
-
-
-
-
-
  
- <div>
-
-    <button  type="submit" class="submit-btn"><a href="/final-submit.html" >
-  Next
-</a>
-</button>
-  </div> 
-    
-  
+    </div></section></div>
   
   <br><br>
 
@@ -657,39 +661,111 @@ font-family: 'CINZEL', serif;
 <footer>
   <p id="p">© 2025 MODASOU - LUXURY, CUSTOMIZED</p>
 </footer>
-<script type="module">
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const db = getFirestore();
-const sessionId = localStorage.getItem("sessionId");
 
-document.getElementById("nextBtn").addEventListener("click", async () => {
+<script>
+(function() {
+    // 1. INITIALIZE SUPABASE 
+    const S_URL = "https://gztneesmxwfhdmhqikel.supabase.co";
+    const S_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA";
 
-  const measurements = {};
+    const topsClient = window.supabase.createClient(S_URL, S_KEY);
 
-  document.querySelectorAll(".measure-row").forEach(row => {
-    const label = row.querySelector("label")?.innerText.trim();
-    const input = row.querySelector("input")?.value;
-
-    if (label && input) {
-      measurements[label] = input + " in";
+    // 2. HANDLE SESSION ID (Updated to match other pages)
+    let modasouSession = localStorage.getItem('modasou_session_id');
+    if (!modasouSession) {
+        modasouSession = "SESS_" + Date.now();
+        localStorage.setItem('modasou_session_id', modasouSession);
     }
-  });
 
-  await setDoc(
-    doc(db, "measurements", sessionId),
-    measurements,
-    { merge: true }
-  );
+    // 3. SUBMIT MEASUREMENTS LOGIC
+    // Using 'nextBtn' as the submit button per your script
+    const mainSubmitBtn = document.getElementById("nextBtn");
 
-});
+    if (mainSubmitBtn) {
+        mainSubmitBtn.addEventListener("click", async () => {
+            console.log("Submit button clicked...");
+            
+            mainSubmitBtn.innerText = "Saving...";
+            mainSubmitBtn.disabled = true;
+
+            const form = document.getElementById("measurementForm");
+            const formData = new FormData(form);
+            let measurementsObj = {};
+            
+            // Collect data
+            formData.forEach((value, key) => {
+                measurementsObj[key] = (value.trim() === "") ? null : parseFloat(value);
+            });
+
+            // =======================================================
+            // 4. LINK TO FINAL FORM (EMAIL)
+            // =======================================================
+            // Fixed: Changed 'dataObj' to 'measurementsObj'
+            localStorage.setItem("measurements", JSON.stringify(measurementsObj));
+            localStorage.setItem("selectedService", "Tops"); 
+            // =======================================================
+
+            try {
+                // 5. SAVE TO DATABASE
+                const { error } = await topsClient
+                    .from("orders") 
+                    .upsert({
+                        session_id: modasouSession,
+                        service: "tops", // Changed from 'blouse' to 'tops'
+                        
+                        // Saves to the new column 'tops_measurements'
+                        tops_measurements: measurementsObj, 
+                        
+                        created_at: new Date().toISOString()
+                    }, { onConflict: "session_id" });
+
+                if (error) throw error;
+
+                alert("✅ Tops measurements saved successfully!");
+                mainSubmitBtn.innerText = "SUBMITTED ✓";
+                mainSubmitBtn.style.background = "#28a745"; // Success Green
+                mainSubmitBtn.disabled = false;
+
+                // Optional: Redirect if this is the Next button
+                // window.location.href = "final-form.html"; 
+
+            } catch (err) {
+                console.error("Submission Error:", err);
+                alert("❌ Error: " + err.message);
+                mainSubmitBtn.disabled = false;
+                mainSubmitBtn.innerText = "Submit Measurements";
+            }
+        });
+    } else {
+        console.error("Could not find the button with ID 'nextBtn'");
+    }
+})();
 </script>
 
 
-</body>
-</html>
+<script>
+  const nextButton = document.getElementById("nextBtn");
 
+  if (nextButton) {
+    nextButton.addEventListener("click", function(e) {
+      e.preventDefault();
 
+      // Get the current flag
+      const userFlow = localStorage.getItem("active_service");
+      
+      // DEBUG: Log what the browser sees in the Console (F12)
+      console.log("Current User Flow Value:", userFlow);
 
-
-  
+      // LOGIC
+      if (userFlow === "service2") {
+        console.log("Redirecting to Service 2 Submission...");
+        window.location.href = "/service2submission.html";
+      } else {
+        // If userFlow is "service1" OR null OR anything else -> Go here
+        console.log("Redirecting to Standard Final Form...");
+        window.location.href = "/final-submit.html";
+      }
+    });
+  }
+</script></body></html>

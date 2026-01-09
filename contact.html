@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- CRITICAL: This line fixes the "small font" issue on phones -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | Modasou</title>
+
+    <!-- 1. ICONS (FontAwesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- 2. FONTS (Cinzel & Montserrat) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- 3. STYLES (CSS) -->
+    <style>
+        /* --- GLOBAL RESETS --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #3b2416; /* Dark Brown Background */
+            color: #fff8ef; /* Cream Text */
+            line-height: 1.6;
+        }
+
+        a { text-decoration: none; }
+
+        /* --- NAVIGATION BAR --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background-color: #2a1a10; /* Slightly darker brown for header */
+            border-bottom: 1px solid #d4af37;
+        }
+
+        .logo {
+            font-family: 'Cinzel', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #d4af37; /* Gold */
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: #fff8ef;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: #d4af37; /* Gold on hover */
+        }
+
+        .nav-icons i {
+            color: #d4af37;
+            font-size: 18px;
+            margin-left: 15px;
+            cursor: pointer;
+        }
+
+        /* --- CONTACT HERO SECTION --- */
+        .contact-hero {
+            height: 40vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('cloth.jpg'); /* Uses your image if available, else dark overlay */
+            background-size: cover;
+            background-position: center;
+            border-bottom: 2px solid #d4af37;
+        }
+
+        .contact-hero h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 50px;
+            color: #d4af37;
+            margin-bottom: 10px;
+        }
+
+        .contact-hero p {
+            font-size: 18px;
+            max-width: 600px;
+            color: #fff8ef;
+        }
+
+        /* --- SOCIAL LINKS SECTION --- */
+        .connect-section {
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .connect-section h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 32px;
+            margin-bottom: 40px;
+            color: #fff8ef;
+        }
+
+        /* The Grid */
+        .social-grid {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* The Cards */
+        .social-card {
+            background: rgba(255, 255, 255, 0.05); /* Glass effect */
+            border: 1px solid #d4af37;
+            border-radius: 15px;
+            width: 200px;
+            padding: 40px 20px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Hover Effect */
+        .social-card:hover {
+            transform: translateY(-10px);
+            background: #d4af37; /* Gold Background */
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Icon Styling */
+        .social-card i {
+            font-size: 45px;
+            margin-bottom: 20px;
+            color: #d4af37;
+            transition: color 0.3s;
+        }
+
+        /* Text Styling */
+        .social-card span {
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            color: #fff8ef;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+
+        /* Change Text/Icon color on hover */
+        .social-card:hover i, 
+        .social-card:hover span {
+            color: #3b2416; /* Dark Brown Text */
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background-color: #2a1a10;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #d4af37;
+            margin-top: 50px;
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            .nav-links { display: none; } /* Simplified for example */
+            .logo { font-size: 24px; }
+            .contact-hero h1 { font-size: 36px; }
+            .social-card { width: 140px; padding: 25px 10px; }
+            .social-card i { font-size: 30px; }
+            .social-card span { font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. NAVIGATION BAR -->
+    <nav>
+        <div class="logo">MODASOU</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+        </div>
+        <div class="nav-icons">
+            <i class="fas fa-search"></i>
+            <i class="fas fa-heart"></i>
+            <i class="fas fa-shopping-cart"></i>
+        </div>
+    </nav>
+
+    <!-- 2. HERO TITLE -->
+    <div class="contact-hero">
+        <h1>Get in Touch</h1>
+        <p>We'd love to hear from you. Follow us or chat directly.</p>
+    </div>
+
+    <!-- 3. SOCIAL ICONS SECTION -->
+    <div class="connect-section">
+        <h2>Connect With Our Team</h2>
+        
+        <div class="social-grid">
+            
+            <!-- INSTAGRAM -->
+            <!-- REPLACE '#' WITH YOUR LINK -->
+            <a href="#" target="_blank" class="social-card">
+                <i class="fab fa-instagram"></i>
+                <span>Instagram</span>
+            </a>
+            <!-- FACEBOOK -->
+<!-- REPLACE '#' WITH YOUR LINK -->
+<a href="https://www.facebook.com/555014794366574?ref=_xav_ig_profile_page_web" target="_blank" class="social-card">
+    <i class="fab fa-facebook-f"></i>
+    <span>Facebook</span>
+</a>
+            <!-- LINKEDIN -->
+            <!-- REPLACE '#' WITH YOUR LINK -->
+            <a href="https://l.instagram.com/?u=https%3A%2F%2Fwww.linkedin.com%2Fcompany%2Fmodasou%2F%3Futm_source%3Dig%26utm_medium%3Dsocial%26utm_content%3Dlink_in_bio%26fbclid%3DPAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnz5l9m4vyUo4KHKidJQkh4NkMZhnzCqE-q8Dhta5gX_lBBuJPQc42MoTrKgo_aem_KGdhSqptNIMuuw8HUCXAng&e=AT3Aw2a_T4wrkVgE4S6q3DVhR-iT3NnuFu95Psqo1ZHdMuXE9CU1dMYMV7lycBNOPNKhmcgFk8z032ddzF3nWMvJmgMcQgmycURkgHtD9w" target="_blank" class="social-card">
+                <i class="fab fa-linkedin-in"></i>
+                <span>LinkedIn</span>
+            </a>
+
+            <!-- WHATSAPP -->
+            <!-- REPLACE NUMBER WITH YOURS (No + or -) -->
+            <a href="/service pages/comingsoon.html" target="_blank" class="social-card">
+                <i class="fab fa-whatsapp"></i>
+                <span>WhatsApp</span>
+            </a>
+
+            <!-- EMAIL -->
+            <!-- REPLACE WITH YOUR EMAIL -->
+            <a href="/service pages/comingsoon.html" class="social-card">
+                <i class="fas fa-envelope"></i>
+                <span>Email</span>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- 4. FOOTER -->
+    <footer>
+        &copy; 2026 Modasou. All Rights Reserved.
+    </footer>
+
+</body>
+</html>

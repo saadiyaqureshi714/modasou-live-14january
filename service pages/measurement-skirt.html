@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pants Measurements | MODASOU</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --chocolate: #4b2e1f;
+            --dark-brown: #2b1a12;
+            --golden: #d4af37;
+            --light-golden: #f5e6b0;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #331300;
+            color: #fffdf7;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: #fff;
+            border-bottom: 2px solid var(--light-golden);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-wrap {
+            max-width: 1200px;
+            margin: auto;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--golden);
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .menu a {
+            margin: 0 14px;
+            text-decoration: none;
+            color: var(--dark-brown);
+            font-weight: 500;
+        }
+
+        /* HEADER */
+        .header {
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--light-golden);
+        }
+
+        .header h1 {
+            color: var(--golden);
+            margin-bottom: 10px;
+            font-family: 'Cinzel', serif;
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 30px 20px;
+        }
+
+        /* MEASUREMENT GUIDE IMAGES */
+        .guide {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .measurement-guides {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #fffdf7;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .measurement-guides img {
+            display: block;
+            width: 100%;
+            height: auto;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            border: 2px solid #d4af37;
+        }
+
+        /* FORM SECTION */
+        .measurement-input-section {
+            width: 90%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background: #f5e6b0;
+            border-radius: 20px;
+            color: #331300;
+        }
+
+        .measurement-input-section h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .measure-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .measure-row label {
+            font-weight: 600;
+            font-size: 18px;
+            flex: 1;
+        }
+
+        .input-wrap {
+            display: flex;
+            align-items: center;
+            border: 2px solid #d4af37;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .input-wrap input {
+            width: 100px;
+            padding: 10px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .input-wrap span {
+            background: #f5e6b0;
+            padding: 10px 14px;
+            font-weight: 600;
+            color: #4b2e1f;
+        }
+
+        /* BUTTONS */
+        .btn-container {
+            text-align: center;
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .submit-btn {
+            background: var(--chocolate);
+            color: white;
+            border: none;
+            padding: 15px 60px;
+            border-radius: 30px;
+            font-size: 22px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: var(--golden);
+            color: #331300;
+        }
+
+        .next-btn {
+            background: var(--golden);
+            color: #331300;
+            text-decoration: none;
+            padding: 15px 80px;
+            border-radius: 30px;
+            font-size: 22px;
+            font-weight: bold;
+            /* Hidden until saved */
+        }
+
+        .next-btn:hover {
+            background: #fff;
+        }
+
+        .note {
+            text-align: center;
+            margin-top: 20px;
+            color: #fffdf7;
+            font-style: italic;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: #d4af37;
+            color: #331300;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 600px) {
+            .measure-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .input-wrap { width: 100%; }
+            .input-wrap input { flex: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="navbar">
+    <div class="nav-wrap">
+        <a href="index.html" class="logo">MODASOU</a>
+        <nav class="menu">
+            <a href="index.html">Home</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+    </div>
+</header>
+
+<div class="header">
+    <h1>Skirt Measurement Form</h1>
+    <p>Please follow the guide below for a perfect customized fit.</p>
+</div>
+
+<div class="container">
+    <div class="guide">
+        <div class="measurement-guides">
+            
+    <img src="/size skirt/1.jpg" alt="Measurement Guide Image1">
+     <img src="/size skirt/2.jpg" alt="Measurement Guide Image2">
+        </div>
+    </div>
+
+    <div class="measurement-input-section">
+        <h2>Enter Measurements (Inches)</h2>
+        <form id="skirtForm">
+>
+        
+    <div class="measure-row">
+      <label>1-Skirt waist round:</label>
+      <div class="input-wrap">
+        <input type="number" name="skirt-waist-round" step="0.1" placeholder="0" >
+        <span>in</span>
+      </div>
+    </div>
+
+    <div class="measure-row">
+      <label>2-Hip round:</label>
+      <div class="input-wrap">
+        <input type="number" name="hip-round" step="0.1" placeholder="0" >
+        <span>in</span>
+      </div>
+    </div>
+
+    <div class="measure-row">
+      <label>3-Skirt length:</label>
+      <div class="input-wrap">
+        <input type="number" name="skirt-length" step="0.1" placeholder="0">
+        <span>in</span>
+      </div></div>
+            
+
+            <div class="btn-container">
+                <button type="submit" id="submitBtn" class="submit-btn">Save Measurements</button>
+                
+<a href="#" id="nextBtn" class="next-btn">Go to Final Step</a>
+</div>
+                
+        </form>
+    </div>
+
+    <p class="note">Your data is secured. Our tailoring team will review these for accuracy.</p>
+</div>
+
+<footer>
+    <p>© 2025 MODASOU - LUXURY, CUSTOMIZED</p>
+</footer>
+
+
+<script>
+(function() {
+    // 1. Setup Supabase
+    const S_URL = "https://gztneesmxwfhdmhqikel.supabase.co";
+    const S_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA";
+    
+    const skirtClient = window.supabase.createClient(S_URL, S_KEY);
+
+    // 2. SESSION ID: Updated to match all other pages
+    let modasouSession = localStorage.getItem('modasou_session_id');
+    if (!modasouSession) {
+        modasouSession = "SESS_" + Date.now();
+        localStorage.setItem('modasou_session_id', modasouSession);
+    }
+
+    // 3. Form Submission
+    const form = document.getElementById("skirtForm");
+
+    if (form) {
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById("submitBtn");
+            const nextBtn = document.getElementById("nextBtn");
+            
+            btn.innerText = "Saving...";
+            btn.disabled = true;
+
+            const formData = new FormData(e.target);
+            const measurements = {};
+
+            // Convert to clean numbers/strings
+            formData.forEach((value, key) => {
+                measurements[key] = (value.trim() === "") ? null : value;
+            });
+
+            // =======================================================
+            // 4. LINK TO FINAL FORM (EMAIL)
+            // =======================================================
+            localStorage.setItem("measurements", JSON.stringify(measurements));
+            localStorage.setItem("selectedService", "Skirt");
+            // =======================================================
+
+            try {
+                // 5. SAVE TO DATABASE
+                const { error } = await skirtClient
+                    .from("orders")
+                    .upsert({
+                        session_id: modasouSession,
+                        service: "skirt", 
+
+                        // ✅ Saves to 'skirt_measurements' (Fixed from pant_measurements)
+                        skirt_measurements: measurements,
+                        
+                        updated_at: new Date().toISOString()
+                    }, { onConflict: 'session_id' });
+
+                if (error) throw error;
+
+                // Success Feedback
+                btn.innerText = "Measurements Saved ✓";
+                btn.style.background = "#28a745"; // Success Green
+                
+                // Show the Next button
+                if (nextBtn) {
+                    nextBtn.style.display = "inline-block";
+                    nextBtn.scrollIntoView({ behavior: 'smooth' });
+                }
+                
+                alert("✅ Skirt measurements saved successfully!");
+
+            } catch (err) {
+                console.error(err);
+                alert("❌ Error saving data: " + err.message);
+                btn.innerText = "Save Measurements";
+                btn.disabled = false;
+            }
+        });
+    } else {
+        console.error("Form 'skirtForm' not found!");
+    }
+})();
+</script>
+
+
+
+<script>
+  const nextButton = document.getElementById("nextBtn");
+
+  if (nextButton) {
+    nextButton.addEventListener("click", function(e) {
+      e.preventDefault();
+
+      // Get the current flag
+      const userFlow = localStorage.getItem("active_service");
+      
+      // DEBUG: Log what the browser sees in the Console (F12)
+      console.log("Current User Flow Value:", userFlow);
+
+      // LOGIC
+      if (userFlow === "service2") {
+        console.log("Redirecting to Service 2 Submission...");
+        window.location.href = "/service2submission.html";
+      } else {
+        // If userFlow is "service1" OR null OR anything else -> Go here
+        console.log("Redirecting to Standard Final Form...");
+        window.location.href = "/final-submit.html";
+      }
+    });
+  }
+</script></body></html>
