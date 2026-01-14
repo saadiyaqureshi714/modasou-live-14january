@@ -42,10 +42,8 @@ label{ display:block; margin-bottom:6px; font-weight:500; color: #3b1f0f; }
 <nav class="navbar">
   <div class="logo">MODASOU</div>
   <ul>
-    <li><a href="index.html">Home</a></li>
-    <li><a href="measurements.html">Measurements</a></li>
-    <li><a href="designers.html">Designers</a></li>
-    <li><a href="contact.html">Contact</a></li>
+    <li><a href="/index.html">Home</a></li>
+    
   </ul>
 </nav>
 
@@ -98,92 +96,134 @@ label{ display:block; margin-bottom:6px; font-weight:500; color: #3b1f0f; }
   </div>
 </section>
 
-
 <script>
-  // 1. INITIALIZE EMAILJS 
-  // IMPORTANT: You MUST replace this with your actual Public Key from EmailJS
-  emailjs.init("V5fGF5JF2JAOD_AcW"); 
-
-  const S_URL = 'https://gztneesmxwfhdmhqikel.supabase.co'; 
+  // 1. SETUP SUPABASE
+  const S_URL = 'https://gztneesmxwfhdmhqikel.supabase.co';
   const S_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA';
-  const m_db = window.supabase.createClient(S_URL, S_KEY);
+  
+  let m_db;
+  
+  function initSupabase() {
+    if (typeof window.supabase !== 'undefined') {
+      m_db = window.supabase.createClient(S_URL, S_KEY);
+      return true;
+    }
+    return false;
+  }
 
   async function handleFinalOrder(e) {
     e.preventDefault();
+
     const btn = document.getElementById('submitBtn');
+    
+    // Helper to get values safely
+    function getValue(id) { 
+        const el = document.getElementById(id);
+        return el ? el.value.trim() : ""; 
+    }
+
+    // --- VALIDATION BEFORE SENDING ---
+    const userName = getValue('fullname'); // Make sure your input ID is 'fullname'
+    const userPhone = getValue('watsapp_number'); // Make sure your input ID is 'watsapp_number'
+    
+    if (!userName || !userPhone) {
+        alert("Please fill in your Name and WhatsApp Number.");
+        return;
+    }
+    // --------------------------------
+
     btn.innerText = "Processing Order...";
     btn.disabled = true;
 
-    const sessionId = localStorage.getItem('modasou_session_id');
-
     try {
-      if (!sessionId) {
-        throw new Error("No session found. Please go back and submit fabric details first.");
+      if (!m_db && !initSupabase()) throw new Error("Supabase not initialized");
+
+      const sessionId = localStorage.getItem('modasou_session_id');
+      
+      // If session is missing, generate a temporary one or alert user. 
+      // For now, we proceed to allow debugging, but in production, this should block.
+      if (!sessionId) console.warn("Warning: Session ID is missing.");
+
+      // 1. FETCH DATA FROM DB (Using maybeSingle to avoid errors if empty)
+      const { data: fabricRow } = await m_db.from('fabric_submissions').select('*').eq('session_id', sessionId).order('created_at', { ascending: false }).limit(1).maybeSingle();
+      const { data: designRow } = await m_db.from('design_submissions').select('*').eq('session_id', sessionId).order('created_at', { ascending: false }).limit(1).maybeSingle();
+      const { data: measureRow } = await m_db.from('measurement_submissions').select('*').eq('session_id', sessionId).order('created_at', { ascending: false }).limit(1).maybeSingle();
+
+      // 2. PREPARE DATA - MAPPING FRONTEND TO BACKEND
+      const uniqueOrderId = "ORD-" + Math.floor(10000 + Math.random() * 90000);
+      
+      // Format measurements for the email
+      let measurementText = "Not Provided";
+      if (measureRow) {
+          // Remove ID fields to make it cleaner
+          const { id, created_at, session_id, ...cleanMeasurements } = measureRow;
+          measurementText = Object.entries(cleanMeasurements)
+            .map(([k, v]) => `${k}: ${v}`).join(', ');
       }
 
-      // 1. FETCH FABRIC DATA
-      const { data: fabricRow, error: fError } = await m_db
-        .from('fabric_submissions')
-        .select('*')
-        .eq('session_id', sessionId)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
+      // 3. CONSTRUCT PAYLOAD (Must match index.ts EXACTLY)
+      const payload = {
+          order_id: uniqueOrderId,
+          
+          // --- FIX 1: MATCHING VARIABLE NAMES ---
+          user_name: userName,               // Backend expects 'user_name', NOT 'customer_name'
+          user_phone: userPhone,             // Backend expects 'user_phone', NOT 'whatsapp'
+          
+          pickup_date: getValue('pickup_date') || "Not Specified",
+          pickup_time: getValue('pickup_time') || "Not Specified",
+          
+          // Backend template maps 'message' to the Address field
+          message: `${getValue('address')}, Pincode: ${getValue('pincode')}`, 
+          
+          fabric_video_url: fabricRow?.video_url || "Not Provided",
+          design_image_url: designRow?.image_url || "Not Provided",
+          lining_pref: fabricRow?.lining_preference || "Not Provided",
+          designer_note: fabricRow?.note || "None",
+          fabric_measurements: measurementText
+      };
 
-      if (fError) throw fError;
-      if (!fabricRow) throw new Error("Fabric data not found. Please re-submit your fabric video.");
+      console.log("Sending Payload:", payload); // Check console if it fails again
 
-      // 2. FETCH DESIGN DATA
-      const { data: designRow } = await m_db
-        .from('design_submissions')
-        .select('*')
-        .eq('session_id', sessionId)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      // 3. PREPARE EMAIL DATA
-      
-        // 4. SEND EMAIL
-      // Use "TailorEmailService" and "template_nz5r9d7" as your Service and Template IDs
-      const uniqueOrderId = "MODASOU_" + Math.floor(1000 + Math.random() * 9000);
-      const response = await emailjs.send('TailorEmailService', 'template_nz5r9d7', {
-        order_id: uniqueOrderId,
-
-        user_name: document.getElementById('fullname').value,
-        user_phone: document.getElementById('watsapp_number').value,
-        pickup_date: document.getElementById('pickup_date').value,
-        pickup_time: document.getElementById('pickup_time').value,
-        message: document.getElementById('address').value + " (Pincode: " + document.getElementById('pincode').value + ")",
-        fabric_video_url: fabricRow.video_url,
-        design_image_url: designRow ? designRow.image_url : "No design uploaded",
-        lining_pref: fabricRow.lining_preference || "N/A",
-        designer_note: fabricRow.note || "None",
-        fabric_measurements: `Top: ${fabricRow.top_meter || 0}m, Bottom: ${fabricRow.bottom_meter || 0}m`
+      // 4. SEND TO EDGE FUNCTION
+      const response = await fetch(`${S_URL}/functions/v1/send_admin_email`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${S_KEY}`
+        },
+        body: JSON.stringify(payload)
       });
 
+      // 5. HANDLE RESPONSE
+      if (!response.ok) {
+          const errText = await response.text();
+          throw new Error(`Server Error: ${errText}`);
+      }
+
+      const result = await response.json();
+      console.log("Success:", result);
+
+      alert("Success! Your pickup has been scheduled.");
       
-      
-      console.log("EmailJS Success:", response);
-      
-      alert("Success! Your order has been placed.");
-      localStorage.removeItem('modasou_session_id'); 
+      // Cleanup and Redirect
+      localStorage.removeItem('modasou_session_id');
       window.location.href = "/thank-you.html";
 
     } catch (err) {
-      console.error("Full Error Object:", err);
-      
-      // Improved error message logic to catch EmailJS "undefined" issue
-      let errorMsg = "Unknown Error";
-      if (err.message) errorMsg = err.message;
-      else if (err.text) errorMsg = err.text; // EmailJS errors often use .text
-      else errorMsg = JSON.stringify(err);
-
-      alert("Order Error: " + errorMsg);
+      console.error("Order Error:", err);
+      alert("Submission Failed: " + err.message);
       btn.innerText = "Schedule Cloth Pickup";
       btn.disabled = false;
     }
   }
 
-  document.getElementById('pickupForm').addEventListener('submit', handleFinalOrder);
+  window.addEventListener('DOMContentLoaded', () => {
+    initSupabase();
+    const form = document.getElementById('pickupForm');
+    if(form) {
+        form.addEventListener('submit', handleFinalOrder);
+    } else {
+        console.error("Critical: 'pickupForm' ID not found in HTML");
+    }
+  });
 </script></body></html>

@@ -37,10 +37,7 @@ label{ display:block; margin-bottom:6px; font-weight:500; color: #3b1f0f; }
   <div class="logo">MODASOU</div>
   <ul>
     <li><a href="/index.html">Home</a></li>
-    <li><a href="measurements.html">Measurements</a></li>
-    <li><a href="designers.html">Designers</a></li>
-    <li><a href="contact.html">Contact</a></li>
-  </ul>
+   </ul>
 </nav>
 
 <section class="page-bg">
@@ -145,47 +142,116 @@ label{ display:block; margin-bottom:6px; font-weight:500; color: #3b1f0f; }
 
       if (insertError) throw new Error("Database Save Error: " + insertError.message);
      // 4. Send Email
-      const uniqueOrderId = "MODASOU_" + Math.floor(1000 + Math.random() * 9000);
-      await emailjs.send('TailorEmailService', 'template_nz5r9d7', {
-      order_id: uniqueOrderId,
-
-      // 3. Prepare Email Parameters
+     let designerName = localStorage.getItem("saved_designer_name") || "Not Selected";
   
+      
+
+
+
+      const uniqueOrderId = "MODASOU_" + Math.floor(1000 + Math.random() * 9000);
+      // Prepare clickable variants for Google link
+      // Ensure the Google URL is absolute and safely encoded
+      const ensureUrl = (u) => {
+        if (!u) return "";
+        let t = String(u).trim();
+        // strip quotes
+        t = t.replace(/^["']|["']$/g, "");
+        
+        // Save original in case unwrapping fails
+        const original = t;
+
+        // unwrap Google redirect links
+        try {
+          // If it doesn't start with http, it might fail URL parsing, so temporary add it for parsing check
+          let tempT = t.match(/^https?:\/\//i) ? t : `https://${t}`;
+          const test = new URL(tempT);
+          
+          if (test.hostname.includes("google.com")) {
+             const sp = new URLSearchParams(test.search);
+             const qParam = sp.get("q") || sp.get("imgurl");
+             if (qParam) {
+               t = decodeURIComponent(qParam);
+             }
+          }
+        } catch (e) {
+          // If URL parsing fails, stick to original
+          t = original;
+        }
+
+        // Ensure protocol
+        if (!/^https?:\/\//i.test(t)) {
+             t = `https://${t}`;
+        }
+        
+        // Final sanity check: if it is just "https://", return empty
+        if (t === "https://") return "";
+
+        try {
+          // Validate final URL
+          const u = new URL(t);
+          if (!u.protocol.startsWith("http")) return "";
+          if (!u.hostname) return "";
+          return t; // return as-is to avoid client rewrites causing blocks
+        } catch {
+          return "";
+        }
+      };
+      
+      const googleRaw = ensureUrl(fabricRow.google_image_url || "");
+      // Create the anchor. If googleRaw is empty/invalid, show text.
+      const googleAnchor = (googleRaw && googleRaw.length > 10)
+        ? `<a href="${googleRaw}" target="_blank" rel="noopener noreferrer" style="color:#1a73e8;text-decoration:none;">View Google Image</a>`
+        : "Not Provided";
+
+      await emailjs.send('TailorEmailService', 'template_nz5r9d7', {
         order_id: uniqueOrderId,
         user_name: document.getElementById('fullname').value,
         user_phone: document.getElementById('watsapp_number').value,
         pickup_date: document.getElementById('pickup_date').value,
         pickup_time: document.getElementById('pickup_time').value,
         message: document.getElementById('address').value + " (" + document.getElementById('pincode').value + ")",
-        
-        // Data from Service 2 Table
-        fabric_video_url: fabricRow.fabric_video_url || "No video",  
-        // 1. Existing Design Image
-        design_image_url: fabricRow.design_image_url || "", 
-        
-        // 2. NEW: Add the Google Image mapping
-        google_image_url: fabricRow.google_image_url || "", 
-        // -----------------------
+        // Address fields
+        address_text: document.getElementById('address').value,
+        pincode_text: document.getElementById('pincode').value,
+
+        // Links
+        video_link: fabricRow.fabric_video_url || "No video",
+        reference_image_link: fabricRow.design_image_url || "No design",
+        designer_name: fabricRow.designer_name || "Not Selected",
+        // Keep payload small: send only clickable anchor
+        google_image_anchor: googleAnchor,
 
         lining_pref: fabricRow.lining_preference || "N/A",
-        designer_note: fabricRow.designer_note || "None",
+        designer_note: String(fabricRow.designer_note || "None").slice(0, 2000), // limit size
         fabric_measurements: `Top: ${fabricRow.top_mtr || 0}m, Bottom: ${fabricRow.bottom_mtr || 0}m`
       });
-  
-      
 
       
       alert("Order Successful! We will contact you soon.");
       
       // Clear session and redirect
       localStorage.removeItem('modasou_session_id'); 
-      window.location.href = "thank-you.html";
+      window.location.href = "/thank-you.html";
 
     } catch (err) {
       console.error("Order process failed:", err);
-      alert("Order Error: " + err.message);
-      
-      // Reset button so user can try again
+      // Better error extraction
+      let msg = "Unknown Error";
+      if (typeof err === 'string') {
+        msg = err;
+      } else if (err && err.message) {
+        msg = err.message;
+      } else if (err && err.text) {
+        // EmailJS often returns { status: 400, text: "..." }
+        msg = err.text;
+      } else {
+        try {
+            msg = JSON.stringify(err);
+        } catch {
+            msg = "An error occurred but could not be read.";
+        }
+      }
+      alert("Order Error: " + msg);
       btn.innerText = "Schedule Cloth Pickup";
       btn.disabled = false;
     }

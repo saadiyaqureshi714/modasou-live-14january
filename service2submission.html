@@ -278,6 +278,8 @@ body {
           if (row.designer_note) mergedData.designer_note = row.designer_note;
           if (row.fabric_video_url) mergedData.fabric_video_url = row.fabric_video_url;
           if (row.design_image_url) mergedData.design_image_url = row.design_image_url;
+          if (row.designer_name) mergedData.designer_name = row.designer_name;
+          
           if (row.google_image_url) mergedData.google_image_url = row.google_image_url;
       });
 
@@ -297,15 +299,46 @@ body {
 
       // --- STEP 4: PREPARE LINKS ---
       const videoHtml = mergedData.fabric_video_url 
-        ? `<a href="${mergedData.fabric_video_url}" target="_blank">Watch Video</a>` : "Not Provided";
+        ? `<a href="${mergedData.fabric_video_url}" target="_blank" rel="noopener noreferrer">Watch Video</a>` : "Not Provided";
       const designHtml = mergedData.design_image_url 
-        ? `<a href="${mergedData.design_image_url}" target="_blank">View Image</a>` : "Not Provided";
+        ? `<a href="${mergedData.design_image_url}" target="_blank" rel="noopener noreferrer">View Image</a>` : "Not Provided";
 
-      // --- STEP 5: GOOGLE LINK (Verified) ---
-      // This sends the HTML link. If your EmailJS template uses {{{ }}}, it will be clickable.
-      const googleHtml = mergedData.google_image_url 
-        ? `<a href="${mergedData.google_image_url}" target="_blank" style="color: blue; text-decoration: underline;">See Google Image</a>` 
-        : "Not Provided";
+      // --- STEP 5: GOOGLE LINK (Normalized and Encoded) ---
+      const ensureUrl = (u) => {
+        if (!u) return "";
+        let t = String(u).trim();
+        // strip quotes
+        t = t.replace(/^["']|["']$/g, "");
+        
+        const original = t;
+        // unwrap Google redirect links (q or imgurl param)
+        try {
+          let tempT = t.match(/^https?:\/\//i) ? t : `https://${t}`;
+          const test = new URL(tempT);
+          if (test.hostname.includes("google.com")) {
+             const sp = new URLSearchParams(test.search);
+             const qParam = sp.get("q") || sp.get("imgurl");
+             if (qParam) t = decodeURIComponent(qParam);
+          }
+        } catch {
+             t = original;
+        }
+
+        if (!/^https?:\/\//i.test(t)) t = `https://${t}`;
+        // Sanity check
+        if (t === "https://") return "";
+
+        // Final validation: ensure URL is http(s) and has hostname
+        try {
+          const u2 = new URL(t);
+          if (!u2.protocol.startsWith("http")) return "";
+          if (!u2.hostname) return "";
+          return t;
+        } catch {
+          return "";
+        }
+      };
+      const googleRaw = ensureUrl(mergedData.google_image_url || "");
 
       const topQty = mergedData.top_mtr ? `${mergedData.top_mtr}m / ${mergedData.top_cm || 0}cm` : "Not Provided";
       const botQty = mergedData.bottom_mtr ? `${mergedData.bottom_mtr}m / ${mergedData.bottom_cm || 0}cm` : "Not Provided";
@@ -314,45 +347,76 @@ body {
       const uniqueOrderId = "MODASOU_" + Math.floor(1000 + Math.random() * 9000);
 
       // --- STEP 6: SEND EMAIL ---
-      await emailjs.send('TailorEmailService', 'template_jpeqr8e', { 
-        order_id: uniqueOrderId,
-        
-        // Customer Info
-        customer_name: document.getElementById('name').value, 
-        whatsapp: document.getElementById('whatsapp').value, 
-        email: document.getElementById('email').value,
-        address: document.getElementById('address').value,
-        pincode: document.getElementById('pincode').value,
+      const selectedDesigner = localStorage.getItem("saved_designer_name") || "Not Selected";
+// Prepare links for EmailJS
+const videoLink = mergedData.fabric_video_url
+  ? `<a href="${mergedData.fabric_video_url}" target="_blank" rel="noopener noreferrer" style="color:#1a73e8;text-decoration:none;">Watch Video</a>`
+  : "Not Provided";
 
-        // Fabric Details
-        fabric_top_qty: topQty,
-        fabric_bottom_qty: botQty,
-        fabric_lining: mergedData.lining_preference || "N/A",
-        fabric_notes: mergedData.designer_note || "None",
-        
-        // Links
-        video_link: videoHtml,
-        reference_image_link: designHtml,
-        google_image_url: googleHtml, 
+const designLink = mergedData.design_image_url
+  ? `<a href="${mergedData.design_image_url}" target="_blank" rel="noopener noreferrer" style="color:#1a73e8;text-decoration:none;">View Image</a>`
+  : "Not Provided";
 
-        // Measurements & Service Name
-        service_type: serviceType, // This will now show "Kurta", "Dress", etc.
-        measurements_list: formattedMeasures || "No measurements found",
-        
-        order_date: new Date().toLocaleString()
-      });
+const googleLink = (googleRaw && googleRaw.length > 10)
+  ? `<a href="${googleRaw}" target="_blank" rel="noopener noreferrer" style="color:#1a73e8;text-decoration:none;">View Google Image</a>`
+  : "Not Provided";
+
+// Send email
+await emailjs.send('TailorEmailService', 'template_jpeqr8e', { 
+  order_id: uniqueOrderId,
   
+  // Customer Info
+  customer_name: document.getElementById('name').value, 
+  whatsapp: document.getElementById('whatsapp').value, 
+  email: document.getElementById('email').value,
+  address: document.getElementById('address').value,
+  pincode: document.getElementById('pincode').value,
+
+  // Fabric Details
+  fabric_top_qty: topQty,
+  fabric_bottom_qty: botQty,
+  fabric_lining: mergedData.lining_preference || "N/A",
+  fabric_notes: String(mergedData.designer_note || "None").slice(0, 2000),
+  
+  // Links (already HTML)
+  video_link: videoLink,
+  reference_image_link: designLink,
+  designer_name: mergedData.designer_name || "Not Selected",
+  // Only send the template's expected variable to reduce payload
+  google_image_url: googleLink,
+  
+  // Measurements & Service Name
+  service_type: serviceType,
+  measurements_list: (formattedMeasures || "No measurements found").slice(0, 3000),
+  order_date: new Date().toLocaleString()
+});
+
+
       // Success
-      document.getElementById("successPopup").style.display = "flex";
+      
       localStorage.removeItem('modasou_session_id'); 
+      window.location.href="/thank-you.html";
 
     } catch (err) {
       console.error("Order process failed:", err);
-      alert("Order Error: " + err.message);
+      
+      let msg = "Unknown Error";
+      if (typeof err === 'string') {
+        msg = err;
+      } else if (err && err.message) {
+        msg = err.message;
+      } else if (err && err.text) {
+        msg = err.text; // Check for EmailJS text error
+      } else {
+         try { msg = JSON.stringify(err); } catch {}
+      }
+
+      alert("Order Error: " + msg);
       btn.innerText = "Submit Order";
       btn.disabled = false;
     }
   }
 
   document.getElementById('submitBtn').addEventListener('click', handleFinalOrder);
-</script></body></html>
+</script>
+</body></html>

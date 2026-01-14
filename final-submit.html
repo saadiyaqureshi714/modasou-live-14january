@@ -7,7 +7,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <!-- Modern EmailJS SDK (v4) -->
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
 </head>
 <!-- ================= STYLE ================= -->
 <style>
@@ -229,141 +229,219 @@ body {
   © 2025 MODASOU • Premium Custom Tailoring
 </footer>
 
-
-
 <script>
-  // CONFIGURATION
-  const SUPABASE_URL = 'https://gztneesmxwfhdmhqikel.supabase.co'; 
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA';
+  // ========================================
+// FINAL SUBMIT - CORRECTED FOR UUID DATABASE
+// ========================================
+
+const SUPABASE_URL = 'https://gztneesmxwfhdmhqikel.supabase.co'; 
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA';
+
+const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+document.getElementById("submitBtn").addEventListener("click", async () => {
+  const btn = document.getElementById("submitBtn");
+
+  // Get form values
+  const name = document.getElementById("name").value.trim();
+  const whatsapp = document.getElementById("whatsapp").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const address = document.getElementById("address").value.trim();
+  const pincode = document.getElementById("pincode").value.trim();
+
+  // Validate
+  if (!name || !whatsapp || !email || !address || !pincode) {
+    alert("⚠️ Please fill in all details before submitting.");
+    return;
+  }
+
+  // Get session ID
+  const sessionId = localStorage.getItem("modasou_session_id");
   
-  const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  
-  emailjs.init({
-    publicKey: "V5fGF5JF2JAOD_AcW", 
-  });
+  if (!sessionId) {
+    alert("⚠️ Session not found. Please complete the measurement step first.");
+    return;
+  }
 
-  document.getElementById("submitBtn").addEventListener("click", async () => {
-    const btn = document.getElementById("submitBtn");
+  btn.innerText = "Processing...";
+  btn.disabled = true;
 
-    // 1. Contact Info
-    const name = document.getElementById("name").value.trim();
-    const whatsapp = document.getElementById("whatsapp").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const address = document.getElementById("address").value.trim();
-    const pincode = document.getElementById("pincode").value.trim();
+  try {
+    // Get all data from localStorage
+    const fabricVideoLink = localStorage.getItem("fabricVideoLink") || "";
+    const fabricImageLink = localStorage.getItem("fabricImageLink") || "";
+    const fabricNotes = localStorage.getItem("fabricNotes") || "";
+    const fabricTopQty = localStorage.getItem("fabricTopQty") || "";
+    const fabricBottomQty = localStorage.getItem("fabricBottomQty") || "";
+    const fabricLining = localStorage.getItem("fabricLining") || "";
+    const serviceType = localStorage.getItem("selectedService") || "Custom Order";
 
-    if (!name || !whatsapp || !email || !address || !pincode) {
-      alert("Please fill in all details before submitting.");
-      return;
+    // --- CHANGE 1: REMOVED MANUAL ID GENERATION ---
+    // The Database will provide the ID now.
+    console.log("Updating order for session:", sessionId);
+
+    // ========================================
+    // UPDATE THE EXISTING ORDER
+    // ========================================
+    const { data, error } = await _supabase
+      .from('orders')
+      .update({
+        // Do NOT send order_id here. The DB has already created it or will handle it.
+        name: name,
+        whatsapp: whatsapp,
+        email: email,
+        address: address,
+        pincode: pincode,
+        video_url: fabricVideoLink,
+        image_url: fabricImageLink,
+        note: fabricNotes,
+        top_meter: fabricTopQty.split(' ')[0] || null,
+        bottom_meter: fabricBottomQty.split(' ')[0] || null,
+        lining_preference: fabricLining,
+        status: 'submitted'
+      })
+      .eq('session_id', sessionId)
+      .select(); // --- CHANGE 2: ADDED .select() TO GET THE ID BACK ---
+
+    if (error) {
+      console.error("Database Error:", error);
+      throw new Error(error.message);
     }
 
-    // 2. RETRIEVE ALL SAVED DATA & IDENTIFY SERVICE
-    const service = localStorage.getItem("selectedService") || "General Order";
-    const fabricNotes = localStorage.getItem("fabricNotes") || "None";
-    const userFlow = localStorage.getItem("active_service"); // "service1" or "service2"
+    // Retrieve the Auto-Generated UUID from the database response
+    // Use optional chaining just in case data is empty
+    const savedOrder = data && data.length > 0 ? data[0] : null;
+    const finalOrderId = savedOrder ? savedOrder.order_id : "UNKNOWN_ID";
+    const orderCode = "MODASOU_" + String(Date.now()).slice(-4);
 
-    // --- PART 1: GET MEASUREMENTS ---
-    let measurementsRaw = "{}";
+    console.log("✅ Order updated successfully! ID:", finalOrderId);
 
-    if (userFlow === "service2") {
-        measurementsRaw = localStorage.getItem("service2_data") || "{}";
-    } else {
-        // Service 1 (Dress, Pants, etc)
-        measurementsRaw = localStorage.getItem("measurements") || "{}";
-    }
+    // ========================================
+    // SEND EMAIL NOTIFICATION
+    // ========================================
+    btn.innerText = "Sending confirmation...";
     
-    const measurementsObj = JSON.parse(measurementsRaw);
-
-    // --- PART 2: HANDLE LINKS (CORRECTED LOGIC) ---
-    
-    // A. VIDEO LINK (Standard)
-    const rawVideo = localStorage.getItem("fabricVideoLink");
-    const finalVideoLink = rawVideo 
-      ? `<a href="${rawVideo}" target="_blank" style="color: blue; text-decoration: underline;">See Fabric Video</a>`
-      : "Not Provided";
-
-    // B. DESIGN IMAGE (Visible for EVERYONE - Service 1 & 2)
-    const rawDesignImage = localStorage.getItem("fabricImageLink");
-    const finalDesignLink = rawDesignImage 
-      ? `<a href="${rawDesignImage}" target="_blank" style="color: blue; text-decoration: underline;">See Design Image</a>`
-      : "Not Provided";
-
-    // C. GOOGLE IMAGE (NEW! - Visible ONLY for Service 2)
-    // Ensure your Service 2 page saves this as "googleImageLink"
-    const rawGoogleImage = localStorage.getItem("googleImageLink"); 
-    let finalGoogleLink = "Not Available"; // Default for Service 1
-
-    if (userFlow === "service2" && rawGoogleImage) {
-        finalGoogleLink = `<a href="${rawGoogleImage}" target="_blank" style="color: blue; text-decoration: underline;">See Google Image</a>`;
-    }
-
-    // Retrieve Fabric Dimensions
-    const fabTop = localStorage.getItem("fabricTopQty") || "Not provided";
-    const fabBot = localStorage.getItem("fabricBottomQty") || "Not provided";
-    const fabLining = localStorage.getItem("fabricLining") || "Not specified";
-
-    // 3. Format Measurements
-    let measurementSummary = "";
-    let hasMeasurements = false;
-    
-    for (const [key, value] of Object.entries(measurementsObj)) {
-      if(value) {
-        const cleanKey = key.replace(/_/g, ' ').toUpperCase(); 
-        measurementSummary += `${cleanKey}: ${value}\n`;
-        hasMeasurements = true;
-      }
-    }
-    
-    if(!hasMeasurements) measurementSummary = "⚠️ No measurements were entered on the previous page.";
-
-    btn.innerText = "Processing...";
-    btn.disabled = true;
-
     try {
-      // 4. Send Email with ALL Details
-      const uniqueOrderId = "MODASOU_" + Math.floor(1000 + Math.random() * 9000);
+      const userFlow = localStorage.getItem("active_service");
+      let measurementsRaw = userFlow === "service2" 
+        ? localStorage.getItem("service2_data") || "{}" 
+        : localStorage.getItem("measurements") || "{}";
       
-      await emailjs.send(
-        "TailorEmailService", 
-        "template_jpeqr8e", 
-        { 
-          order_id: uniqueOrderId,
-          
-          fabric_top_qty: fabTop,
-          fabric_bottom_qty: fabBot,
-          fabric_lining: fabLining,
-          fabric_notes: fabricNotes,
-          
-          // --- UPDATED LINKS ---
-          video_link: finalVideoLink, 
-          reference_image_link: finalDesignLink, // This works for Service 1 now!
-          google_image_url: finalGoogleLink,    // This sends "Not Available" for Service 1
-          
-          measurements_list: measurementSummary,
-          customer_name: name,
-          whatsapp: whatsapp,
-          email: email,
-          address: address,
-          pincode: pincode,
-          service_type: service, 
-          
-          order_date: new Date().toLocaleString()
+      const measurementsObj = JSON.parse(measurementsRaw);
+      
+      // Format measurements
+      let measurementText = "";
+      for (const [key, value] of Object.entries(measurementsObj)) {
+        if(value) {
+          measurementText += `${key.replace(/_/g, ' ').toUpperCase()}: ${value}\n`;
+        }
+      }
+
+      // Send email
+      const { data: emailData, error: emailError } = await _supabase.functions.invoke(
+        'send_final_order_email',
+        {
+          body: {
+            order_id: finalOrderId, // Send the real UUID
+            order_code: orderCode,
+            customer_name: name,
+            whatsapp: whatsapp,
+            email: email,
+            address: address,
+            pincode: pincode,
+            service_type: serviceType,
+            measurement_category: serviceType,
+            fabric_top_qty: fabricTopQty,
+            fabric_bottom_qty: fabricBottomQty,
+            fabric_lining: fabricLining,
+            fabric_notes: fabricNotes,
+            // --- CHANGE 3: Changed key 'video_url' to 'video_link' to match Deno script ---
+            video_link: fabricVideoLink || "Not provided",
+            reference_image_link: fabricImageLink || "Not provided",
+            measurements_list: measurementText || "No measurements provided",
+            order_date: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+          },
         }
       );
 
-      // Success
-      document.getElementById("successPopup").style.display = "flex";
-      localStorage.clear(); 
+      if (emailError) {
+        console.warn("Email notification failed (invoke):", emailError);
+        try {
+          const fnUrl = `${SUPABASE_URL}/functions/v1/send_final_order_email`;
+          const resp = await fetch(fnUrl, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+              'apikey': SUPABASE_ANON_KEY,
+              'Content-Type': 'application/json',
+              'x-client-info': 'modasou-final-submit'
+            },
+            body: JSON.stringify({
+              order_id: finalOrderId,
+              order_code: orderCode,
+              customer_name: name,
+              whatsapp: whatsapp,
+              email: email,
+              address: address,
+              pincode: pincode,
+              service_type: serviceType,
+              measurement_category: serviceType,
+              fabric_top_qty: fabricTopQty,
+              fabric_bottom_qty: fabricBottomQty,
+              fabric_lining: fabricLining,
+              fabric_notes: fabricNotes,
+              video_link: fabricVideoLink || "Not provided",
+              reference_image_link: fabricImageLink || "Not provided",
+              measurements_list: measurementText || "No measurements provided",
+              order_date: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+            })
+          });
+          const raw = await resp.text();
+          if (!resp.ok) {
+            alert(`⚠️ Order saved, but email failed.\n\nStatus: ${resp.status}\nDetails: ${raw}`);
+          }
+        } catch (fallbackErr) {
+          alert(`⚠️ Order saved, but email failed.\n\nReason: ${fallbackErr.message}`);
+        }
+      } else {
+        console.log("Email sent successfully:", emailData);
+      }
 
-    } catch (err) {
-      console.error("Email Error:", err);
-      alert("Email failed: " + (err.text || err.message));
-      btn.innerText = "Submit Order";
-      btn.disabled = false;
+    } catch (emailErr) {
+      console.warn("Email notification failed (order still saved):", emailErr);
     }
-  });
 
-  function goNext() {
-    window.location.href = "index.html";
+    // ========================================
+    // SUCCESS!
+    // ========================================
+    alert(`✅ Order Submitted Successfully!\n\nOrder ID: ${orderCode}\n\nWe'll contact you soon on WhatsApp!`);
+    
+    // Clear localStorage
+    localStorage.removeItem('measurements');
+    localStorage.removeItem('service2_data');
+    localStorage.removeItem('fabricVideoLink');
+    localStorage.removeItem('fabricImageLink');
+    localStorage.removeItem('fabricNotes');
+    localStorage.removeItem('fabricTopQty');
+    localStorage.removeItem('fabricBottomQty');
+    localStorage.removeItem('fabricLining');
+    localStorage.removeItem('selectedService');
+    
+    // Redirect
+    setTimeout(() => {
+      window.location.href = "/thank-you.html";
+    }, 1500);
+
+  } catch (err) {
+    console.error("Submission Error:", err);
+    alert(`❌ Failed to submit order.\n\nError: ${err.message}\n\nPlease try again or contact support.`);
+    
+    btn.innerText = "Submit Order";
+    btn.disabled = false;
   }
+});
+
+function goNext() {
+  window.location.href = "index.html";
+}
 </script></body></html>

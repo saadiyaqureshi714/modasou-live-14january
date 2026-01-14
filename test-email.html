@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Test Email Function</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+    body { font-family: sans-serif; padding: 40px; background: #f4f4f4; text-align: center; }
+    .card { background: white; padding: 30px; border-radius: 10px; max-width: 500px; margin: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    button { padding: 15px 25px; font-size: 16px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    button:disabled { background: #ccc; }
+    #status { margin-top: 20px; font-weight: bold; white-space: pre-wrap; text-align: left; background: #eee; padding: 10px; border-radius: 5px; display: none; }
+    .error { color: red; }
+    .success { color: green; }
+</style>
+</head>
+<body>
+
+<div class="card">
+    <h2>📧 Test ZeptoMail Connection</h2>
+    <p>Click the button below to send a test email using your Supabase Edge Function.</p>
+    
+    <div style="margin-bottom: 15px;">
+        <label style="font-weight: bold; display: block; margin-bottom: 5px;">Paste ZeptoMail Token (Optional):</label>
+        <input type="text" id="manualToken" placeholder="Zoho-encz..." style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+        <small style="color: #666;">Leave empty to use the Secret stored in Supabase.</small>
+    </div>
+
+    <button id="testBtn">Send Test Email</button>
+    
+    <div id="status"></div>
+</div>
+
+<script>
+    // Configuration from your project
+    const SUPABASE_URL = 'https://gztneesmxwfhdmhqikel.supabase.co'; 
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA';
+
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    document.getElementById('testBtn').addEventListener('click', async () => {
+        const btn = document.getElementById('testBtn');
+        const statusDiv = document.getElementById('status');
+        
+        btn.disabled = true;
+        btn.innerText = "Sending...";
+        statusDiv.style.display = 'block';
+        statusDiv.innerText = "Attempting to invoke Edge Function...";
+        statusDiv.className = "";
+
+        try {
+            // Using raw fetch to get exact server response
+            const response = await fetch(`${SUPABASE_URL}/functions/v1/send_final_order_email`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    manual_key: document.getElementById('manualToken').value.trim(),
+                    order_id: "TEST-" + Date.now(),
+                    customer_name: "Test User",
+                    whatsapp: "1234567890",
+                    email: "shanthi2modasou@gmail.com", 
+                    address: "Test Address",
+                    pincode: "000000",
+                    service_type: "Test Service",
+                    fabric_top_qty: "N/A",
+                    fabric_bottom_qty: "N/A",
+                    fabric_lining: "N/A",
+                    fabric_notes: "This is a test email to verify ZeptoMail connection.",
+                    video_link: "",
+                    reference_image_link: "",
+                    measurements_list: "Test Measurements",
+                    order_date: new Date().toLocaleString()
+                })
+            });
+
+            if (!response.ok) {
+                const rawText = await response.text();
+                console.log("Raw Response:", rawText);
+                
+                // FORCE SHOW RAW TEXT if JSON parse fails or if it's a specific Zepto error
+                let cleanError = rawText;
+                try {
+                    const jsonErr = JSON.parse(rawText);
+                    cleanError = jsonErr.error || jsonErr.message || JSON.stringify(jsonErr);
+                } catch(e) {
+                    // It's not JSON, so it's likely the raw debug message or HTML
+                }
+
+                statusDiv.innerText = `❌ ERROR DETAILS:\n\n${cleanError}\n\n(Status: ${response.status})`;
+                statusDiv.className = "error";
+            } else {
+                const data = await response.json();
+                console.log("Success:", data);
+                statusDiv.innerText = `✅ SUCCESS!\n\nEmail sent successfully. Check your inbox (shanthi2modasou@gmail.com).`;
+                statusDiv.className = "success";
+            }
+
+        } catch (err) {
+            console.error("Network Error:", err);
+            statusDiv.innerText = `❌ NETWORK ERROR:\n${err.message}`;
+            statusDiv.className = "error";
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Send Test Email";
+        }
+    });
+</script>
+
+</body>
+</html>

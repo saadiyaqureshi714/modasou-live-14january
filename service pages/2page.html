@@ -300,9 +300,17 @@
           const card = document.createElement('div');
           card.className = 'design-card';
 
+         
           const img = document.createElement('img');
-          img.src = design.image_url;
+          // 1. CORRECT IMAGE SOURCE
+          img.src = design.image_url; 
           
+          // 2. STORE DESIGNER NAME (Hidden)
+          img.setAttribute('data-designer', design.designer_name); 
+        // <--- Just keep this
+
+          
+// --------------------
           // CLICK LOGIC: Hide Grid -> Show Preview
           img.onclick = function() {
               // Highlight this image (so Submit button can find it)
@@ -319,9 +327,12 @@
               // Show Preview
               const overlay = document.getElementById('preview-overlay');
               document.getElementById('preview-image-large').src = design.image_url;
-              document.getElementById('preview-designer-name').innerText = design.designer_name;
+              if(document.getElementById('preview-designer-name')) {
+                  document.getElementById('preview-designer-name').innerText = design.designer_name;
+              }
               overlay.style.display = 'block';
           };
+              
 
           const name = document.createElement('p');
           name.innerText = design.designer_name;
@@ -349,7 +360,7 @@
 
   // C. Run immediately
   // We use a small delay to ensure Supabase (m_db) is ready
-  setTimeout(loadSampleImages, 500);
+  
 </script>
 
 <!-- ======================================================= -->
@@ -463,53 +474,99 @@
     } catch (e) { alert(e.message); btn.disabled = false; btn.innerText = "SUBMIT FABRIC"; }
   }
 
-  async function submitDesignData() {
-    localStorage.setItem("active_service", "service2");
-    const btn = document.getElementById('submitDesignBtn'), file = document.getElementById('designUpload').files[0];
+
+
+
+
+
+async function submitDesignData() {
+  localStorage.setItem("active_service", "service2");
+  const btn = document.getElementById('submitDesignBtn');
+  const file = document.getElementById('designUpload').files[0];
+  const sampleImg = document.querySelector('#sample-images-container img.selected');
+  
+  if (!file && !sampleImg) return alert("Please upload an image or select a sample");
+  
+  btn.innerText = "Saving..."; 
+  btn.disabled = true;
+
+  try {
+    let finalUrl = "";
+    let designerName = "Custom Upload";
     
-    // THIS LINE WILL NOW WORK because my new code adds the 'selected' class
-    const sampleImg = document.querySelector('.sample-scroll img.selected') || document.querySelector('#sample-images-container img.selected');
-   // const sampleImg = document.querySelector('#sample-images-container img.selected');
-    if (!file && !sampleImg) return alert("Please upload an image or select a sample");
-    btn.innerText = "Saving..."; btn.disabled = true;
+    // Handle File Upload
+    if (file) {
+      const path = `design_${sessionId}_${Date.now()}.jpg`;
+      await m_db.storage.from('designs').upload(path, file);
+      finalUrl = m_db.storage.from('designs').getPublicUrl(path).data.publicUrl;
+    } 
+    // Handle Sample Design
+    else if (sampleImg) {
+      finalUrl = sampleImg.src;
+      designerName = sampleImg.getAttribute('data-designer');
+    }
 
-    try {
-      let finalUrl = sampleImg ? sampleImg.src : "";
-      if (file) {
-        const path = `design_${sessionId}_${Date.now()}.jpg`;
-        await m_db.storage.from('designs').upload(path, file);
-        finalUrl = m_db.storage.from('designs').getPublicUrl(path).data.publicUrl;
-      }
-
-      await m_db.from('service_2').upsert([{
-        session_id: sessionId,
+    // ✅ FIX: UPDATE ONLY design fields, preserve fabric
+    await m_db.from('service_2')
+      .update({
         design_image_url: finalUrl,
+        designer_name: designerName,
         created_at: new Date()
-      }], { onConflict: 'session_id' });
+      })
+      .eq('session_id', sessionId);
 
-      alert("Design saved! ✅");
-      btn.innerText = "SUBMITTED ✓";
-    } catch (e) { alert(e.message); btn.disabled = false; }
+    alert("Design saved! ✅");
+    btn.innerText = "SUBMITTED ✓";
+  } catch (e) { 
+    alert(e.message); 
+    btn.disabled = false; 
+    btn.innerText = "SUBMIT DESIGN";
+  }
+}
+
+
+async function submitGoogleDesign() {
+  localStorage.setItem("active_service", "service2");
+  let url = document.getElementById('googleUrl').value.trim();
+
+  if (!url) return alert("Please paste an image link first");
+
+  // ✅ CLEAN GOOGLE IMAGE URL
+  if (url.includes("google.com/imgres")) {
+    const params = new URLSearchParams(url.split("?")[1]);
+    url = params.get("imgrefurl") || url;
   }
 
-  async function submitGoogleDesign() {
-    localStorage.setItem("active_service", "service2");
-    const url = document.getElementById('googleUrl').value.trim();
-    if (!url) return alert("Please paste an image link first");
-    const btn = document.getElementById('submitGoogleBtn');
-    btn.innerText = "Saving Link...";
+  const btn = document.getElementById('submitGoogleBtn');
+  btn.innerText = "Saving Link...";
 
-    try {
-      await m_db.from('service_2').upsert([{
-        session_id: sessionId,
+  try {
+    const { error, data } = await m_db.from('service_2')
+      .update({
         google_image_url: url,
         created_at: new Date()
-      }], { onConflict: 'session_id' });
+      })
+      .eq('session_id', sessionId)
+      .select();
 
-      alert("Online design saved! ✅");
-      btn.innerText = "SAVED ✓";
-    } catch (e) { alert(e.message); }
+    if (error) throw error;
+
+    console.log("✅ GOOGLE SAVED:", data);
+    alert("Online design saved! ✅");
+    btn.innerText = "SAVED ✓";
+
+  } catch (e) {
+    console.error("GOOGLE ERROR:", e);
+    alert(e.message);
+    btn.innerText = "USE THIS IMAGE";
   }
+}
+
+
+
+
+  
+
 
   // NAVIGATION
   document.getElementById("measurementBtn").onclick = () => {
