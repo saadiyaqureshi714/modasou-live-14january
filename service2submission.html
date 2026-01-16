@@ -195,6 +195,22 @@ body {
       <label>Email Address</label>
       <input type="email" id="email" name="email" required>
     </div>
+   
+    
+      <div class="field">
+        <label>Pickup Date</label>
+        <input type="date" id="pickup_date" required min="2026-01-01">
+      </div>
+
+      <div class="field">
+        <label>Pickup Time Slot</label>
+        <select id="pickup_time" required>
+          <option value="">Select Time Slot</option>
+          <option value="9:00 AM - 1:00 PM">9:00 AM – 1:00 PM</option>
+          <option value="1:00 PM - 6:00 PM">1:00 PM – 6:00 PM</option>
+          <option value="6:00 PM - 10:00 PM">6:00 PM – 10:00 PM</option>
+        </select>
+      </div>
 
     <div class="field">
       <label>Residential Address</label>
@@ -369,6 +385,9 @@ await emailjs.send('TailorEmailService', 'template_jpeqr8e', {
   customer_name: document.getElementById('name').value, 
   whatsapp: document.getElementById('whatsapp').value, 
   email: document.getElementById('email').value,
+  pickup_date: document.getElementById('pickup_date').value,
+   pickup_time: document.getElementById('pickup_time').value,
+         
   address: document.getElementById('address').value,
   pincode: document.getElementById('pincode').value,
 

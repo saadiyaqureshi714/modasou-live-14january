@@ -195,6 +195,21 @@ body {
       <label>Email Address</label>
       <input type="email" id="email" name="email" required>
     </div>
+       
+     <div class="field">
+        <label>Pickup Date</label>
+        <input type="date" id="pickup_date" name="pickup_date" required min="2024-01-01">
+      </div>
+
+      <div class="field">
+        <label>Pickup Time Slot</label>
+        <select id="pickup_time" name="pickup_time" required>
+          <option value="">Select Time Slot</option>
+          <option value="9:00 AM - 1:00 PM">9:00 AM – 1:00 PM</option>
+          <option value="1:00 PM - 6:00 PM">1:00 PM – 6:00 PM</option>
+          <option value="6:00 PM - 10:00 PM">6:00 PM – 10:00 PM</option>
+        </select>
+      </div>
 
     <div class="field">
       <label>Residential Address</label>
@@ -238,7 +253,11 @@ const SUPABASE_URL = 'https://gztneesmxwfhdmhqikel.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA';
 
 const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+// Helper function to get form values safely
+function getValue(elementId) {
+  const element = document.getElementById(elementId);
+  return element ? element.value : '';
+}
 document.getElementById("submitBtn").addEventListener("click", async () => {
   const btn = document.getElementById("submitBtn");
 
@@ -290,6 +309,9 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
         name: name,
         whatsapp: whatsapp,
         email: email,
+                  pickup_date: getValue('pickup_date') || "Not Specified",
+          pickup_time: getValue('pickup_time') || "Not Specified",
+          
         address: address,
         pincode: pincode,
         video_url: fabricVideoLink,
@@ -347,6 +369,8 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
             customer_name: name,
             whatsapp: whatsapp,
             email: email,
+            pickup_date: getValue('pickup_date') || "Not Specified",
+            pickup_time: getValue('pickup_time') || "Not Specified",
             address: address,
             pincode: pincode,
             service_type: serviceType,
@@ -355,7 +379,6 @@ document.getElementById("submitBtn").addEventListener("click", async () => {
             fabric_bottom_qty: fabricBottomQty,
             fabric_lining: fabricLining,
             fabric_notes: fabricNotes,
-            // --- CHANGE 3: Changed key 'video_url' to 'video_link' to match Deno script ---
             video_link: fabricVideoLink || "Not provided",
             reference_image_link: fabricImageLink || "Not provided",
             measurements_list: measurementText || "No measurements provided",
