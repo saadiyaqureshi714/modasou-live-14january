@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sakshi | Fashion Designer</title>
 
 <style>
@@ -112,6 +113,29 @@ h3 {
 .profile-cta a:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 25px rgba(201,162,77,0.4);
+}
+@media(max-width: 900px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .content {
+    grid-template-columns: 1fr;
+  }
+}
+@media(max-width: 480px){
+    .designer-card {
+        margin: 20px;
+        padding: 20px;
+    }
+    .name {
+        font-size: 28px;
+    }
+    .avatar {
+        width: 100px;
+        height: 100px;
+    }
 }
 </style>
 </head>

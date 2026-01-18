@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>trupti | Fashion Designer</title>
 
 <style>
@@ -114,6 +115,25 @@ body {
   .content {
     grid-template-columns: 1fr;
   }
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+}
+@media(max-width: 480px){
+    .designer-card {
+        margin: 20px;
+        padding: 20px;
+    }
+    .header h1 {
+        font-size: 28px;
+    }
+    .avatar {
+        width: 100px;
+        height: 100px;
+        font-size: 40px;
+    }
 }
 </style>
 </head>

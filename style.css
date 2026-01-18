@@ -104,6 +104,7 @@ nav a:hover {
 .dropdown {
   position: absolute;
   top: 45px;
+  top: 100%;
   left: 0;
   background: #fff;
   min-width: 200px;
@@ -129,7 +130,7 @@ nav a:hover {
   padding: 12px 16px;
   text-decoration: none;
   font-size: 14px;
-  color: #444;
+  color: #331300;
 }
 
 .dropdown a:hover {
@@ -152,7 +153,7 @@ display: none;
 }
 .dropdown a:hover ,
 .sub-dropdown a:hover {
-  background: rgba(255, 2555, 255, 0.4);
+  background: rgba(255, 255, 255, 0.4);
 }
 
 /* ---------- HERO ---------- */
@@ -538,28 +539,180 @@ footer {
 #p{
 font-family: 'CINZEL', serif;
 }
-/* -------------------- RESPONSIVE -------------------- */
-@media (max-width: 768px) {
-    .category-grid {
-        flex-direction: column;
-        align-items: center;
-    }
 
-    .product-grid {
-        grid-template-columns: 1fr 1fr;
-    }
+/* =========================================
+   MEDIA QUERIES FOR RESPONSIVENESS
+   ========================================= */
+
+/* --- Mobile & Tablet Optimization (Max Width 991px) --- */
+@media screen and (max-width: 991px) {
+  /* Navbar Layout: Stacked & Compact */
+  .navbar {
+    flex-direction: column;
+    padding: 10px 0;
+    gap: 5px;
+  }
+  
+  /* Logo: Smaller & Centered */
+  .logo {
+    font-size: 22px;
+    margin: 0;
+  }
+  
+  .logo img {
+    width: 50px;
+    height: 50px;
+  }
+  
+  /* Menu: Visible, Wrapped, Small Text (No Script Required) */
+  .menu {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    overflow-x: visible;
+    gap: 10px;
+    padding: 5px;
+    background: transparent;
+    border: none;
+  }
+  
+  .menu-item {
+    width: auto;
+    text-align: center;
+    border-bottom: none;
+  }
+
+  .menu-item a {
+    font-size: 12px; 
+    padding: 5px 8px;
+    color: #f5e6b8;
+    display: block;
+  }
+
+  /* Icons: Hide on mobile */
+  .nav-icons,
+  .navbar i {
+    display: none;
+  }
+
+  /* Hero Section: Reduced Height & Text */
+  .hero, .slider, .banner {
+    height: 50vh; /* Takes half screen on mobile */
+    min-height: 300px;
+  }
+
+  .banner {
+    padding: 15px;
+    justify-content: center;
+  }
+
+  .banner h1 {
+    font-size: 20px; /* Small heading */
+    line-height: 1.3;
+    margin-bottom: 10px;
+  }
+
+  .banner p {
+    font-size: 11px; /* Small paragraph */
+    line-height: 1.4;
+    margin-bottom: 15px;
+  }
+
+  .cta {
+    padding: 8px 20px;
+    font-size: 12px;
+  }
+
+  /* Grids: 2 Columns (E-commerce Standard) */
+  .category-grid, .product-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 items per row */
+    gap: 10px; /* Small gap */
+    padding: 10px;
+  }
+
+  .category-card, .product-card {
+    padding: 8px;
+  }
+
+  /* Images: Small & Uniform */
+  .category-card img {
+    height: 120px; /* Force small height */
+    margin-bottom: 8px;
+  }
+
+  .category-card span, .product-card h3 {
+    font-size: 11px; /* Small label */
+    font-weight: 600;
+  }
+
+  /* Section Titles */
+  .categories h2, .products h2, .contact h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+  
+  /* Brand Strip */
+  .brand-track span {
+    font-size: 12px;
+    margin: 0 10px;
+  }
+
+  /* Sub-dropdowns: Indented & Nested */
+  .sub-dropdown {
+    position: static;
+    width: 100%;
+    min-width: 100%;
+    box-shadow: none;
+    background-color: #f5e6b8; /* Slightly darker */
+    display: none;
+  }
+
+  .has-submenu:hover .sub-dropdown {
+    display: block;
+  }
+
+  /* Indent Sub-dropdown Links */
+  .sub-dropdown a {
+    padding-left: 30px;
+    font-size: 13px;
+    border-left: 4px solid #d4af37;
+    color: #331300;
+  }
+
+  /* Ensure dropdown text is visible (Dark Brown) on mobile */
+  .dropdown a {
+    color: #331300;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+
+  /* Fix Dropdown: Align to Navbar width to prevent overflow and blinking */
+  .menu-item {
+    position: static;
+  }
+
+  .dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    box-shadow: none;
+    display: none;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: none;
+    z-index: 1001;
+  }
+  .menu-item:hover .dropdown,
+  .menu-item:focus-within .dropdown {
+    display: block;
+  }
 }
 
-@media (max-width: 480px) {
-    .product-grid {
-        grid-template-columns: 1fr;
-    }
 
-    .brand-track span {
-        margin: 0 1rem;
-        font-size: 1rem;
-    }
-}
+
+/* ...existing code... */
 /* Introduction Video Section */
 .modasou-video-section {
   background: linear-gradient(
@@ -611,33 +764,5 @@ font-family: 'CINZEL', serif;
 
   .modasou-video-section {
     padding: 50px 15px;
-  }
-}
-/* Add this at the bottom of your CSS file */
-
-@keyframes slider-5-banners {
-  /* SLIDE 1 */
-  0%, 15% {
-    transform: translateX(0);
-  }
-  /* MOVE TO SLIDE 2 */
-  20%, 35% {
-    transform: translateX(-100vw);
-  }
-  /* MOVE TO SLIDE 3 */
-  40%, 55% {
-    transform: translateX(-200vw);
-  }
-  /* MOVE TO SLIDE 4 */
-  60%, 75% {
-    transform: translateX(-300vw);
-  }
-  /* MOVE TO SLIDE 5 */
-  80%, 95% {
-    transform: translateX(-400vw);
-  }
-  /* REWIND TO START */
-  100% {
-    transform: translateX(0);
   }
 }

@@ -42,7 +42,7 @@
 
     .row { display: flex; align-items: center; margin-bottom: 8px; gap: 10px; }
     .row label { width: 70px; font-size: 14px; font-weight: bold; }
-    .row input { flex: 1; padding: 6px; border: 1px solid #99582a; border-radius: 50px; }
+    .row input { flex: 1; padding: 6px; border: 1px solid #99582a; border-radius: 8px; }
     
     .inline-options { display: flex; gap: 10px; margin-top: 10px; }
     .inline-card { flex: 1; border: 1px solid #bb9457; padding: 10px; border-radius: 8px; cursor: pointer; background: white; font-size: 13px; display: flex; align-items: center; gap: 5px; }
@@ -60,6 +60,66 @@
     .nav-btn { padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; background: #4b2000; color: #fff; }
     footer { text-align: center; padding: 20px; background-color: #432818; color: #ffe6a7; }
 
+    /* =========================================
+       MOBILE RESPONSIVENESS FOR 2PAGE.HTML
+       ========================================= */
+    @media screen and (max-width: 991px) {
+      body { overflow-x: hidden; }
+      /* 1. Container: Stack vertically */
+      .container {
+        grid-template-columns: 1fr !important;
+        width: 9 10px !important;
+        margin: 15px auto !important;
+        gap: 15px;
+      }
+
+      /* 2. Navbar: Compact */
+      .navbar {
+        flex-direction: column;
+        padding: 10px 0;
+        gap: 10px;
+      }
+      .logo-text { font-size: 24px; }
+      .logo-img { width: 50px; height: 50px; }
+
+      /* 3. Forms & Inputs */
+      .upload-box { padding: 15px !important; }
+      .form-section { padding: 10px !important; }
+      
+      .row {
+        flex-direction: row !important; /* Keep measurements side-by-side */
+        flex-wrap: wrap !important;
+        gap: 5px;
+    }
+      .row label {
+        width: auto !important;
+        font-size: 12px !important;
+        margin-right: 2px;
+      }
+      
+      .row input {
+        padding: 8px !important;
+        font-size: 14px;
+        min-width: 50px;
+      }
+
+      /* 4. Sample Images Grid (High Specificity to override body styles) */
+      body #sample-images-container {
+        grid-template-columns: repeat(2, 1fr) !important; /* 2 columns on mobile */
+      }
+      
+      .design-card img {
+        height: 180px !important; /* Smaller height for mobile */
+      }
+
+      /* 5. Google Card */
+      .google-card {
+        max-width: 96% !important;
+        padding: 15px;}
+      
+      .header-info h2 { font-size: 24px; }
+      .header-info h3 { font-size: 16px; }
+    }
     </style>
 </head>
 

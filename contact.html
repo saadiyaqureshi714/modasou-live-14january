@@ -184,10 +184,30 @@
 
         /* --- MOBILE RESPONSIVENESS --- */
         @media (max-width: 768px) {
-            .nav-links { display: none; } /* Simplified for example */
+            nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .nav-links {
+                gap: 20px;
+            }
             .logo { font-size: 24px; }
             .contact-hero h1 { font-size: 36px; }
-            .social-card { width: 140px; padding: 25px 10px; }
+            .social-grid {
+                gap: 15px;
+            }
+            .social-card { 
+                width: calc(33.33% - 20px);
+            }
+        }
+        @media (max-width: 480px) {
+            .social-grid {
+                gap: 10px;
+            }
+            .social-card {
+                width: calc(50% - 10px);
+                padding: 25px 10px;
+            }
             .social-card i { font-size: 30px; }
             .social-card span { font-size: 14px; }
         }
