@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <title>Designer Works Gallery</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/main-style.css">
+
 
 <style>
     body {
@@ -11,64 +13,7 @@
         font-family: "Poppins", sans-serif;
         background-color: #2b1b14; /* dark brown */
         color: #f5e6c8; /* light golden */
-    }  /* CONTAINER */
-.nav-container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 15px 25px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* LOGO */
-.logo {
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--golden);
-  text-decoration: none;
-  letter-spacing: 1px;
-}
-
-.logo:hover {
-  color: var(--chocolate);
-}
-
-/* NAV MENU */
-.nav-menu a {
-  margin: 0 14px;
-  text-decoration: none;
-  color: var(--dark-brown);
-  font-weight: 500;
-  position: relative;
-  padding-bottom: 5px;
-}
-
-/* HOVER EFFECT */
-.nav-menu a::after {
-  content: '';
-  position: absolute;
-  width: 0%;
-  height: 2px;
-  left: 0;
-  bottom: 0;
-  background: var(--golden);
-  transition: 0.3s ease;
-}
-
-.nav-menu a:hover::after {
-  width: 100%;
-}
-
-/* ACTIVE PAGE */
-.nav-menu a.active {
-  color: var(--golden);
-}
-
-.nav-menu a.active::after {
-  width: 100%;
-}
-
+    }  /* CONTAINE
     /* HEADER */
     .page-header {
         text-align: center;
@@ -190,19 +135,13 @@
 </head>
 
 <body>
-<header class="site-header">
-  <div class="nav-container">
 
-    <!-- LOGO (Click → Home) -->
-    <a href="index.html" class="logo">MODASOU</a>
-
-    <!-- NAV MENU -->
-    <nav class="nav-menu">
-      <a href="/index.html" class="active">Home</a>
-      
-    </nav>
-
+<header class="navbar">
+  <div class="logo-container">
+    <img src="/ModasouLogo.png" class="logo-img" alt="Logo">
+    <h1 class="logo-text">MODASOU</h1>
   </div>
+  <nav class="menu-item"><a href="/index.html">Home</a></nav>
 </header>
 <!-- HEADER -->
 <div class="page-header">

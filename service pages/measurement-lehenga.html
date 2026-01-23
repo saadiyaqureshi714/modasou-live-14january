@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lehenga Measurements | MODASOU</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/main-style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
@@ -21,43 +23,14 @@
         }
 
         /* NAVBAR */
-        .navbar {
-            background: #fff;
-            border-bottom: 2px solid var(--light-golden);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
+ 
 
-        .nav-wrap {
-            max-width: 1200px;
-            margin: auto;
-            padding: 15px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 26px;
-            font-weight: 700;
-            color: var(--golden);
-            text-decoration: none;
-            letter-spacing: 1px;
-        }
-
-        .menu a {
-            margin: 0 14px;
-            text-decoration: none;
-            color: var(--dark-brown);
-            font-weight: 500;
-        }
 
         /* HEADER */
         .header {
             padding: 40px 20px;
             text-align: center;
-            border-bottom: 2px solid var(--light-golden);
+            
         }
 
         .header h1 {
@@ -189,8 +162,8 @@
         footer {
             text-align: center;
             padding: 2rem;
-            background: #d4af37;
-            color: #331300;
+            background: #331300;
+            color: #f5e6b8;
             margin-top: 50px;
         }
 
@@ -201,22 +174,19 @@
             }
             .input-wrap { width: 100%; }
             .input-wrap input { flex: 1; }
-            .nav-wrap { flex-direction: column; gap: 10px; }
+            .nav-wrap { flex-direction: row; justify-content: space-between; }
             .menu { display: flex; gap: 10px; }
         }
     </style>
 </head>
 <body>
-
 <header class="navbar">
-    <div class="nav-wrap">
-        <a href="index.html" class="logo">MODASOU</a>
-        <nav class="menu">
-            <a href="index.html">Home</a>
-        </nav>
-    </div>
+  <div class="logo-container">
+    <img src="/ModasouLogo.png" class="logo-img" alt="Logo">
+    <h1 class="logo-text">MODASOU</h1>
+  </div>
+  <nav class="menu-item"><a href="/index.html">Home</a></nav>
 </header>
-
 <div class="header">
     <h1>Lehenga Measurement Form</h1>
     <p>Please provide the details for a perfect fit.</p>

@@ -4,6 +4,9 @@
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
+body{
+  background-color: #331300;
+}
 /* NAVBAR */
 .navbar {
   width: 100%;
@@ -19,6 +22,9 @@
   z-index: 1000;
   
 }
+
+
+/* Logo container */
 .logo {
   font-family: 'Cinzel', serif;
   font-size: 40px;
@@ -27,29 +33,76 @@
   background: linear-gradient(90deg, #f5e6b8, #d4af37, #b8962e);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  display: inline-block;
 }
-
-
-/*.logo {
-  font-family: ;
-  font-size: 26px;
-  font-weight: 700;
-  color: #533321;
-  text-decoration: none;
-  letter-spacing: 1px;
-}*/
 
 .logo:hover {
-  color: #4a2a18;
+  background: #4a2a18;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
-.logo img{
+
+/* Logo image container */
+.logo-img-container {
+  position: relative;
+  width: fit-content;
+  background: none;
+  -webkit-text-fill-color: initial;
+}
+
+/* Logo image */
+.logo img {
   width: 100%;
   height: 100px;
   border-radius: 50%;
   border: 1px solid #d4af37;
-  
+  display: block;
 }
 
+/* Trademark on logo image (corner without circle) 
+.trademark-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 22px;
+  color: #f5e6b8;
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 1px 1px 2px #3b2416;
+}*/
+.trademark-icon {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  font-size: 22px;
+  color: #f5e6b8;
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  font-family: 'Cinzel', serif;
+}
+
+/* Trademark on MODASOU text */
+.logo sup {
+  font-size: 0.35em;
+  vertical-align: super;
+  margin-left: 3px;
+  font-weight: 400;
+  background: linear-gradient(90deg, #f5e6b8, #d4af37, #b8962e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.logo:hover sup {
+  background: #4a2a18;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
 
 nav a {
@@ -73,6 +126,12 @@ nav a:hover {
      margin-left: 18px;
   font-size: 24px;
   color: #d4af37;
+  cursor: pointer;
+}
+
+/* Hamburger Menu (Hidden on Desktop) */
+.hamburger-menu {
+  display: none;
   cursor: pointer;
 }
 
@@ -351,10 +410,11 @@ background-position: center;
 
 /* -------------------- CATEGORY SECTION -------------------- */
 .categories {
-  
+  background: linear-gradient(to bottom, #fff6d5, #d4af37);
+
     text-align: center;
     padding: 4rem 1rem 2rem 1rem;
-    background-color: #d4af37; /* Light Golden */
+    
     
 }
 
@@ -425,12 +485,13 @@ background-position: center;
 .products {
     text-align: center;
     padding: 4rem 1rem 2rem 1rem;
-    background-color: #331300;
+    background: linear-gradient(to bottom, #fff6d5, #d4af37);
+    border-top: #331300 20px solid;
 }
 .products h2{
    font-size: 4cqi;
   font-family: 'Cinzel', serif;
-  color: #ffedf2;
+  color: #4a2a18;
   margin-bottom: 30px;
 }
 
@@ -442,7 +503,7 @@ background-position: center;
 }
 
 .product-card {
-    background-color: #f5e6b8; /* Chocolate */
+    background-color: #4a2a18; /* Chocolate */
     color: #2b1a12; /* Golden */
     padding: 1rem;
     border-radius: 15px;
@@ -536,66 +597,286 @@ footer {
     font-size: 0.9rem;
     
 }
+
+/* Footer links styling */
+.footer-links {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.footer-link {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #d4af37;
+  text-decoration: none;
+  letter-spacing: 1px;
+  padding: 10px 20px;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.footer-link:hover {
+  color: #f5e6b8;
+  text-decoration: underline;
+  transform: scale(1.05);
+}
+
 #p{
 font-family: 'CINZEL', serif;
+}
+
+
+/* Introduction Video Section */
+.modasou-video-section {
+  background: linear-gradient(to bottom, #fff6d5, #d4af37);
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.modasou-video-section .video-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.modasou-video-section h2 {
+  color: #4a2c2a;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.modasou-video-section .video-frame {
+  background: #331300;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.modasou-video-section .video-frame video {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  background-color: #000;
+  display: block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .modasou-video-section {
+    padding: 40px 15px;
+  }
+  
+  .modasou-video-section h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .modasou-video-section .video-frame {
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 15px;
+    border-radius: 15px;
+  }
 }
 
 /* =========================================
    MEDIA QUERIES FOR RESPONSIVENESS
    ========================================= */
 
-/* --- Mobile & Tablet Optimization (Max Width 991px) --- */
-@media screen and (max-width: 991px) {
-  /* Navbar Layout: Stacked & Compact */
+/* --- Mobile & Tablet Optimization (Max Width 768px) --- */
+@media screen and (max-width: 768px) {
+  /* Navbar Layout: Logo left, Hamburger right */
   .navbar {
-    flex-direction: column;
-    padding: 10px 0;
-    gap: 5px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    flex-wrap: wrap; /* Allow menu to appear below */
+    gap: 0;
   }
   
-  /* Logo: Smaller & Centered */
-  .logo {
-    font-size: 22px;
-    margin: 0;
-  }
-  
-  .logo img {
-    width: 50px;
-    height: 50px;
-  }
-  
-  /* Menu: Visible, Wrapped, Small Text (No Script Required) */
-  .menu {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    overflow-x: visible;
-    gap: 10px;
-    padding: 5px;
-    background: transparent;
-    border: none;
-  }
-  
-  .menu-item {
-    width: auto;
-    text-align: center;
-    border-bottom: none;
-  }
+  /* Logo: Restore size */
+  /* Logo: Restore size with trademark */
+.logo {
+  font-size: 24px;
+  margin: 0;
+  position: relative;
+  display: inline-block;
+}
 
-  .menu-item a {
-    font-size: 12px; 
-    padding: 5px 8px;
-    color: #f5e6b8;
-    display: block;
-  }
+.logo img {
+  width: 50px;
+  height: 50px;
+}
 
-  /* Icons: Hide on mobile */
-  .nav-icons,
-  .navbar i {
-    display: none;
-  }
+/* Trademark on logo image */
+.trademark-icon {
+  position: absolute;
+  top: -5px;
+  right: -8px;
+  font-size: 11px;
+  color: #d4af37;
+  font-weight: 700;
+  background: #3b2416;
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
 
+/* Trademark on text */
+.logo sup {
+  font-size: 0.4em;
+  vertical-align: super;
+  margin-left: 2px;
+  font-weight: 400;
+  color: #d4af37;
+}
+/* Hamburger Icon: Show on mobile */
+.hamburger-menu {
+  display: block;
+}
+.hamburger-menu i {
+  font-size: 28px;
+  color: #d4af37;
+}
+
+/* Menu: Hide by default, style for vertical layout */
+.menu {
+  position: relative;
+  left: 10%;
+  display: none; /* Hide the menu */
+  flex-direction: column;
+  width: 80%; /* Take full width */
+  background: #3b2416;
+  margin-top: 10px; /* Space from the navbar */
+  border-top: 1px solid #d4af37;
+  padding: 10px 0;
+  gap: 0;
+}
+
+/* Active Menu: Show it */
+.menu.active {
+  display: flex;
+}
+
+/* Menu Items: Style for vertical list */
+.menu-item {
+  background-color: #9b6a3f;
+  width: 100%;
+  text-align: left;
+  border-bottom: 1px solid rgba(245, 230, 184, 0.2);
+}
+
+.menu-item a {
+  font-size: 16px;
+  padding: 12px 20px;
+  white-space: normal;
+  display: block;
+  font-weight: 600;
+  color: #f5e6b8;
+}
+
+/* Add arrow indicator for items with dropdowns */
+.menu-item.has-dropdown > a::after {
+  content: " ▼";
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+/* Icons: Move to the bottom of the vertical menu */
+.menu > div:last-child {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  padding: 15px 0;
+  background-color: #2a1810;
+  border-top: 1px solid #d4af37;
+}
+
+.navbar i {
+  font-size: 22px;
+  margin-left: 0;
+}
+
+/* Dropdowns: Clear visual hierarchy */
+.dropdown {
+  position: static;
+  display: none;
+  width: 100%;
+  box-shadow: none;
+  background-color: #7a4b2a; /* Darker than parent */
+  min-width: auto;
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: none;
+  border-left: 3px solid #d4af37; /* Visual indicator */
+}
+
+/* Sub-dropdowns: Even more distinct */
+.sub-dropdown {
+  position: static;
+  display: none;
+  width: 100%;
+  box-shadow: none;
+  min-width: auto;
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: none;
+  background-color: #5a3520; /* Darkest level */
+  border-left: 3px solid #f5e6b8; /* Different color indicator */
+}
+
+/* Show dropdowns on hover/click */
+.menu-item:hover .dropdown, 
+.has-submenu:hover .sub-dropdown {
+  display: block;
+}
+
+/* Dropdown links: Clear indentation and styling */
+.dropdown a {
+  color: #f5e6b8;
+  padding: 10px 20px 10px 40px; /* Left indent */
+  font-size: 15px;
+  font-weight: 500;
+  background-color: #7a4b2a;
+  border-bottom: 1px solid rgba(245, 230, 184, 0.1);
+  display: block;
+}
+
+.dropdown a:hover {
+  background-color: #8b5a3a;
+}
+
+/* Sub-dropdown links: More indentation */
+.sub-dropdown a {
+  color: #f5e6b8;
+  padding: 10px 20px 10px 60px; /* More indent */
+  font-size: 14px;
+  font-weight: 400;
+  background-color: #5a3520;
+  border-bottom: 1px solid rgba(245, 230, 184, 0.1);
+  display: block;
+}
+
+.sub-dropdown a:hover {
+  background-color: #6a4530;
+}
+
+/* Add arrow indicator for sub-menu items */
+.has-submenu > a::after {
+  content: " ▶";
+  font-size: 11px;
+  margin-left: 8px;
+}
+  
   /* Hero Section: Reduced Height & Text */
   .hero, .slider, .banner {
     height: 50vh; /* Takes half screen on mobile */
@@ -658,69 +939,25 @@ font-family: 'CINZEL', serif;
     margin: 0 10px;
   }
 
-  /* Sub-dropdowns: Indented & Nested */
-  .sub-dropdown {
-    position: static;
-    width: 100%;
-    min-width: 100%;
-    box-shadow: none;
-    background-color: #f5e6b8; /* Slightly darker */
-    display: none;
-  }
-
-  .has-submenu:hover .sub-dropdown {
-    display: block;
-  }
-
-  /* Indent Sub-dropdown Links */
-  .sub-dropdown a {
-    padding-left: 30px;
-    font-size: 13px;
-    border-left: 4px solid #d4af37;
-    color: #331300;
-  }
-
-  /* Ensure dropdown text is visible (Dark Brown) on mobile */
-  .dropdown a {
-    color: #331300;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-  }
-
-  /* Fix Dropdown: Align to Navbar width to prevent overflow and blinking */
-  .menu-item {
-    position: static;
-  }
-
-  .dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    box-shadow: none;
-    display: none;
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-    transition: none;
-    z-index: 1001;
-  }
-  .menu-item:hover .dropdown,
-  .menu-item:focus-within .dropdown {
-    display: block;
-  }
+}
+.product-grid{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.product-card{
+  width: 60%;
 }
 
-
-
 /* ...existing code... */
-/* Introduction Video Section */
+/* Introduction Video Section 
 .modasou-video-section {
   background: linear-gradient(
     to bottom,
     #ffe6a7,
     #bb9457
   );
-  padding: 70px 20px;
+  padding: 50px 15px;
   display: flex;
   justify-content: center;
 }
@@ -732,13 +969,13 @@ font-family: 'CINZEL', serif;
 }
 
 .video-wrapper h2 {
-  font-size: 32px;
+  font-size: 26px;
   margin-bottom: 30px;
   color: #6f1d1b;
   letter-spacing: 1.5px;
 }
 
-/* Video Frame */
+/* Video Frame 
 .video-frame {
   background: #fff8e1;
   padding: 18px;
@@ -747,7 +984,7 @@ font-family: 'CINZEL', serif;
   box-shadow: 0 18px 45px rgba(67, 40, 24, 0.3);
 }
 
-/* Video Element */
+/* Video Element 
 .video-frame video {
   width: 100%;
   height: auto;
@@ -756,7 +993,7 @@ font-family: 'CINZEL', serif;
   background: #432818;
 }
 
-/* Mobile Adjustments */
+/* Mobile Adjustments*
 @media (max-width: 600px) {
   .video-wrapper h2 {
     font-size: 26px;
@@ -765,4 +1002,4 @@ font-family: 'CINZEL', serif;
   .modasou-video-section {
     padding: 50px 15px;
   }
-}
+}*/

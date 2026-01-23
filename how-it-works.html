@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>How It Works | MODASOU</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="main-style.css">
 
 <style>
 :root{
@@ -24,60 +25,6 @@ body{
   color:#2a1208;
   line-height:1.9;
 }
-
-/* ========== NAVBAR ========== */
-.navbar{
-  background:linear-gradient(90deg,var(--primary),var(--primary-light));
-  padding:18px 40px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.logo{
-  color:var(--gold);
-  font-size:26px;
-  font-weight:bold;
-  letter-spacing:1px;
-}
-
-.menu{
-  list-style:none;
-  display:flex;
-  gap:30px;
-  margin:0;
-  padding:0;
-}
-
-.menu li{position:relative}
-
-.menu a{
-  color:#fff;
-  text-decoration:none;
-  font-size:16px;
-}
-
-.menu a:hover{color:var(--gold)}
-
-.dropdown-menu{
-  display:none;
-  position:absolute;
-  top:34px;
-  background:#fff;
-  min-width:220px;
-  box-shadow:0 12px 30px rgba(0,0,0,.25);
-  padding:10px 0;
-}
-
-.dropdown:hover .dropdown-menu{display:block}
-
-.dropdown-menu a{
-  display:block;
-  padding:10px 20px;
-  color:#2a1208;
-}
-
-.dropdown-menu a:hover{background:var(--gold-soft)}
 
 /* ========== HERO ========== */
 .hero{
@@ -163,8 +110,8 @@ body{
 /* ========== MOBILE ========== */
 @media(max-width:768px){
   .navbar {
-    flex-direction: column;
-    gap: 15px;
+    flex-direction: row;
+    justify-content: space-between;
   }
   .menu {
     flex-direction: column;
@@ -183,21 +130,14 @@ body{
 <body>
 
 <!-- NAVBAR -->
-<nav class="navbar">
-  <div class="logo">MODASOU</div>
-  <ul class="menu">
-    <li><a href="index.html">Home</a></li>
-    <li class="dropdown">
-      <a href="#">About ▾</a>
-      <ul class="dropdown-menu">
-        <li><a href="about.html">About MODASOU</a></li>
-        <li><a href="how-it-works.html">How It Works</a></li>
-      </ul>
-    </li>
-    <li><a href="#">Designers</a></li>
-    <li><a href="#">Contact</a></li>
-  </ul>
-</nav>
+<header class="navbar">
+  <div class="logo-container">
+    <img src="/ModasouLogo.png" class="logo-img" alt="Logo">
+    <h1 class="logo-text">MODASOU</h1>
+  </div>
+  <nav class="menu-item"><a href="/index.html">Home</a></nav>
+</header>
+
 
 <!-- HERO -->
 <section class="hero">

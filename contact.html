@@ -13,6 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="main-style.css">
 
     <!-- 3. STYLES (CSS) -->
     <style>
@@ -31,48 +32,6 @@
         }
 
         a { text-decoration: none; }
-
-        /* --- NAVIGATION BAR --- */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 5%;
-            background-color: #2a1a10; /* Slightly darker brown for header */
-            border-bottom: 1px solid #d4af37;
-        }
-
-        .logo {
-            font-family: 'Cinzel', serif;
-            font-size: 28px;
-            font-weight: 700;
-            color: #d4af37; /* Gold */
-            letter-spacing: 2px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 30px;
-        }
-
-        .nav-links a {
-            color: #fff8ef;
-            font-weight: 600;
-            font-size: 14px;
-            text-transform: uppercase;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover, .nav-links a.active {
-            color: #d4af37; /* Gold on hover */
-        }
-
-        .nav-icons i {
-            color: #d4af37;
-            font-size: 18px;
-            margin-left: 15px;
-            cursor: pointer;
-        }
 
         /* --- CONTACT HERO SECTION --- */
         .contact-hero {
@@ -185,8 +144,8 @@
         /* --- MOBILE RESPONSIVENESS --- */
         @media (max-width: 768px) {
             nav {
-                flex-direction: column;
-                gap: 15px;
+                flex-direction: row;
+                justify-content: space-between;
             }
             .nav-links {
                 gap: 20px;
@@ -216,17 +175,14 @@
 <body>
 
     <!-- 1. NAVIGATION BAR -->
-    <nav>
-        <div class="logo">MODASOU</div>
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-        </div>
-        <div class="nav-icons">
-            <i class="fas fa-search"></i>
-            <i class="fas fa-heart"></i>
-            <i class="fas fa-shopping-cart"></i>
-        </div>
-    </nav>
+<header class="navbar">
+  <div class="logo-container">
+    <img src="/ModasouLogo.png" class="logo-img" alt="Logo">
+    <h1 class="logo-text">MODASOU</h1>
+  </div>
+  <nav class="menu-item"><a href="/index.html">Home</a></nav>
+</header>
+
 
     <!-- 2. HERO TITLE -->
     <div class="contact-hero">

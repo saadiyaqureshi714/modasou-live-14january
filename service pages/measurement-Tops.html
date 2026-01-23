@@ -3,9 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <title>How to Take Measurements | MODASOU</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/main-style.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
-<script src="assets/js/app.js"></script>
+
 </head>
 
 <style>
@@ -25,67 +28,8 @@
   --light-golden:#f5e6b0;
 }
 
-/* NAVBAR */
-.navbar{
-  background:#fff;
-  border-bottom:2px solid var(--light-golden);
-  position:sticky;
-  top:0;
-  z-index:1000;
-}
-
 /* WRAPPER */
-.nav-wrap{
-  max-width:1200px;
-  margin:auto;
-  padding:15px 25px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
 
-/* LOGO */
-.logo{
-  font-size:26px;
-  font-weight:700;
-  color:var(--golden);
-  text-decoration:none;
-  letter-spacing:1px;
-}
-
-.logo:hover{
-  color:var(--chocolate);
-}
-
-/* MENU */
-.menu a{
-  margin:0 14px;
-  text-decoration:none;
-  color:var(--dark-brown);
-  font-weight:500;
-  position:relative;
-  padding-bottom:5px;
-}
-
-/* HOVER LINE */
-.menu a::after{
-  content:'';
-  position:absolute;
-  left:0;
-  bottom:0;
-  width:0%;
-  height:2px;
-  background:var(--golden);
-  transition:0.3s;
-}
-
-.menu a:hover::after{
-  width:100%;
-}
-
-.menu a:hover{
-  color:var(--chocolate);
-}
 
 body{
   margin:0;
@@ -98,7 +42,7 @@ body{
 .header{
   padding:20px;
   text-align:center;
-  border-bottom:2px solid var(--light-golden);
+  
 }
 
 .header h1{
@@ -129,8 +73,8 @@ body{
   border:2px solid #4b2e1f;
 }
 
-.guide h2{
-  color:#f5e6b0;
+.header h2{
+  color:var(--golden);
   margin-bottom:15px;
   font-size: 30px;
   font-family: 'cinzel',serif;
@@ -439,8 +383,8 @@ font-size: 18px;
     grid-template-columns:1fr;
   }
   .nav-wrap {
-    flex-direction: column;
-    gap: 10px;
+    flex-direction: row;
+    justify-content: space-between;
   }
   .menu { display: flex; gap: 10px; }
 
@@ -448,7 +392,7 @@ font-size: 18px;
 footer {
     text-align: center;
     padding: 2rem 1rem;
-    background-color: #d4af37; /* Dark Brown */
+    background-color: #331300; /* Dark Brown */
     color: #f5e6b8; /* Golden */
     font-size: 0.9rem;
     
@@ -461,26 +405,22 @@ font-family: 'CINZEL', serif;
 </style>
 
 <!-- NAVBAR -->
-<header class="navbar">
-  <div class="nav-wrap">
-
-    <!-- LOGO (Always goes Home) -->
-    <a href="index.html" class="logo">MODASOU</a>
-
-    <!-- MENU -->
-    <nav class="menu">
-      <a href="/index.html">Home</a>
-    </nav>
-
-  </div>s
-</header>
 
 <body>
+  
+<!-- ===== NAVBAR ===== -->
+<header class="navbar">
+  <div class="logo-container">
+    <img src="/ModasouLogo.png" class="logo-img" alt="Logo">
+    <h1 class="logo-text">MODASOU</h1>
+  </div>
+  <nav class="menu-item"><a href="/index.html">Home</a></nav>
+</header>
 
 
 <!-- HEADER -->
 <div class="header">
-  <h1>How to Take Your Measurements Of Your Tops</h1>
+  <h2>How to Take Your Measurements Of Your Tops</h2>
   <p>Follow the guide below and choose a convenient method</p>
 </div>
 
@@ -488,8 +428,7 @@ font-family: 'CINZEL', serif;
 
   <!-- MEASUREMENT GUIDE -->
   <div class="guide">
-    <h2>Measurement Guide</h2>
-    <p>Please follow the image carefully while taking measurements</p>
+    
     <div class="measurement-guides">
     <img src="/tops measurement/1.jpg" alt="Measurement Guide Image1">
      <img src="/tops measurement/2.jpg" alt="Measurement Guide Image2">

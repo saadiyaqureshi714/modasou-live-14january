@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <title>The Story of MODASOU</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/main-style.css">
+
 
 <style>
 :root{
@@ -20,72 +22,6 @@ body{
   color: var(--dark);
   line-height: 1.8;
 }
-
-/* ================= NAVBAR ================= */
-.navbar{
-  background: var(--choco);
-  padding:18px 40px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.logo{
-  font-size:26px;
-  color: var(--gold);
-  font-weight:bold;
-  letter-spacing:1px;
-}
-
-.menu{
-  list-style:none;
-  display:flex;
-  gap:30px;
-  margin:0;
-  padding:0;
-}
-
-.menu li{
-  position:relative;
-}
-
-.menu a{
-  text-decoration:none;
-  color:#fff;
-  font-size:16px;
-}
-
-.menu a:hover{
-  color:var(--gold);
-}
-
-.dropdown-menu{
-  display:none;
-  position:absolute;
-  top:32px;
-  left:0;
-  background:#fff;
-  min-width:220px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.2);
-  padding:10px 0;
-  z-index:999;
-}
-
-.dropdown-menu a{
-  color:var(--dark);
-  padding:10px 20px;
-  display:block;
-  font-size:15px;
-}
-
-.dropdown-menu a:hover{
-  background:var(--light-gold);
-}
-
-.dropdown:hover .dropdown-menu{
-  display:block;
-}
-
 
 .story-container{
   max-width: 900px;
@@ -164,15 +100,6 @@ body{
   font-size:14px;
 }
 @media(max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    gap: 15px;
-  }
-  .menu {
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
-  }
   .page-title h1{
     font-size:32px;
   }
@@ -181,17 +108,19 @@ body{
   }
 }
 </style>
+
 </head>
 
 <body>
 
-<!-- ============ NAVBAR ============ -->
-<nav class="navbar">
-  <div class="logo">MODASOU</div>
-  <ul class="menu">
-    <li><a href="index.html">Home</a></li>
+<header class="navbar">
+  <div class="logo-container">
+    <img src="/ModasouLogo.png" class="logo-img" alt="Logo">
+    <h1 class="logo-text">MODASOU</h1>
+  </div>
+  <nav class="menu-item"><a href="/index.html">Home</a></nav>
+</header>
 
-</nav>
 
 
 <div class="story-container">

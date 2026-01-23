@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/main-style.css">
+
 <title>Coming Soon</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
-<script src="assets/js/app.js"></script>
 </head>
 <style>
 /* ===== COLOR PALETTE ===== */
@@ -34,64 +34,6 @@ body {
   color: var(--ivory);
 }
 
-
-.nav-container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 15px 25px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* LOGO */
-.logo {
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--golden);
-  text-decoration: none;
-  letter-spacing: 1px;
-}
-
-.logo:hover {
-  color: var(--chocolate);
-}
-
-/* NAV MENU */
-.nav-menu a {
-  margin: 0 14px;
-  text-decoration: none;
-  color: var(--dark-brown);
-  font-weight: 500;
-  position: relative;
-  padding-bottom: 5px;
-}
-
-/* HOVER EFFECT */
-.nav-menu a::after {
-  content: '';
-  position: absolute;
-  width: 0%;
-  height: 2px;
-  left: 0;
-  bottom: 0;
-  background: var(--golden);
-  transition: 0.3s ease;
-}
-
-.nav-menu a:hover::after {
-  width: 100%;
-}
-
-/* ACTIVE PAGE */
-.nav-menu a.active {
-  color: var(--golden);
-}
-
-.nav-menu a.active::after {
-  width: 100%;
-}
-
 .soon{
   display: flex;
   justify-content: center;
@@ -99,6 +41,7 @@ body {
 }
 /* ===== MAIN CARD ===== */
 .coming-soon {
+  margin-top: 30px;
   background: rgba(255, 248, 239, 0.08);
   border: 2px solid var(--gold);
   border-radius: 18px;
@@ -178,22 +121,16 @@ body {
 
 <body>
 
-
-  
-<header class="site-header">
-  <div class="nav-container">
-
-    <!-- LOGO (Click → Home) -->
-    <a href="index.html" class="logo">MODASOU</a>
-
-    <!-- NAV MENU -->
-    <nav class="nav-menu">
-      <a href="/index.html" class="active">Home</a>
-      
-    </nav>
-
+  <header class="navbar">
+  <div class="logo-container">
+    <img src="/ModasouLogo.png" class="logo-img" alt="Logo">
+    <h1 class="logo-text">MODASOU</h1>
   </div>
+  <nav class="menu-item"><a href="/index.html">Home</a></nav>
 </header>
+
+
+ 
 <div class="soon">
 <div class="coming-soon">
   <h1>Coming Soon</h1>

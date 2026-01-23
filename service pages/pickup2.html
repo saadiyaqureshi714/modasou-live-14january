@@ -4,16 +4,13 @@
 <meta charset="UTF-8">
 <title>Send Your Cloth - Service 2</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/main-style.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
 :root{ --chocolate:#3b1f0f; --dark-brown:#2a140a; --gold:#d4af37; --light-gold:#f6e7b2; }
 *{ margin:0; padding:0; box-sizing:border-box; font-family:Poppins, Arial, sans-serif; }
-.navbar{ background:#fff; padding:15px 50px; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--light-gold); }
-.logo{ font-size:26px; font-weight:700; letter-spacing:2px; color:var(--gold); }
-.navbar ul{ list-style:none; display:flex; gap:30px; }
-.navbar ul li a{ text-decoration:none; color:#000; font-weight:500; }
-.navbar ul li a:hover{ color:var(--gold); }
+
 .page-bg{ min-height:100vh; background:linear-gradient(to bottom,var(--dark-brown),var(--chocolate)); padding:60px 15px; }
 .form-card{ max-width:800px; margin:auto; background:var(--light-gold); padding:40px; border-radius:20px; }
 .form-card h2{ color:var(--gold); margin-bottom:8px; }
@@ -28,17 +25,18 @@ button{ background:#331300; color:#fff; border:none; padding:14px 60px; border-r
 button:hover{ background:#b8962e; }
 button:disabled{ background: #999; cursor: not-allowed; }
 label{ display:block; margin-bottom:6px; font-weight:500; color: #3b1f0f; }
-@media(max-width:768px){ .navbar{ flex-direction:column; gap:10px; } .navbar ul{ flex-wrap:wrap; justify-content:center; } }
+
 </style>
 </head>
 <body>
-
-<nav class="navbar">
-  <div class="logo">MODASOU</div>
-  <ul>
-    <li><a href="/index.html">Home</a></li>
-   </ul>
-</nav>
+  
+<header class="navbar">
+  <div class="logo-container">
+    <img src="/ModasouLogo.png" class="logo-img" alt="Logo">
+    <h1 class="logo-text">MODASOU</h1>
+  </div>
+  <nav class="menu-item"><a href="/index.html">Home</a></nav>
+</header>
 
 <section class="page-bg">
   <div class="form-card">

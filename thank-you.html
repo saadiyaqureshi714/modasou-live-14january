@@ -7,6 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
 <script src="assets/js/app.js"></script>
+<link rel="stylesheet" href="main-style.css">
 </head>
 <style>
   body {
@@ -14,10 +15,13 @@
     font-family: "Poppins", sans-serif;
     background: #422a14;
     color: #3b2a1a;
+  }
+
+  .content-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    height: calc(100vh - 80px); /* 80px is an estimation of the navbar height */
   }
 
   .box {
@@ -67,16 +71,26 @@
 
 <body>
 
-<div class="box">
-  <div class="check">✔</div>
-  <h1>Order Complete</h1>
-  <p>
-    Thank you for submitting your details.<br>
-    Our team will review your measurements.
-  </p>
-  <p><strong>A MODASOU specialist will connect with you shortly to assist with pricing details.</strong></p>
+<header class="navbar">
+  <div class="logo-container">
+    <img src="/ModasouLogo.png" class="logo-img" alt="Logo">
+    <h1 class="logo-text">MODASOU</h1>
+  </div>
+  <nav class="menu-item"><a href="/index.html">Home</a></nav>
+</header>
 
-  <a href="index.html" class="home-btn">Back to Home</a>
+<div class="content-container">
+  <div class="box">
+    <div class="check">✔</div>
+    <h1>Order Complete</h1>
+    <p>
+      Thank you for submitting your details.<br>
+      Our team will review your measurements.
+    </p>
+    <p><strong>A MODASOU specialist will connect with you shortly to assist with pricing details.</strong></p>
+
+    <a href="index.html" class="home-btn">Back to Home</a>
+  </div>
 </div>
 <script>
   localStorage.removeItem("sessionId");

@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Pickup Scheduled Successfully</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="main-style.css">
 
 <style>
 :root{
@@ -23,9 +24,13 @@
 body{
   min-height:100vh;
   background:linear-gradient(to bottom,var(--dark-brown),var(--chocolate));
+}
+
+.content-container {
   display:flex;
   align-items:center;
   justify-content:center;
+  min-height: calc(100vh - 80px); /* 80px is an estimation of the navbar height */
 }
 
 .card{
@@ -76,13 +81,24 @@ body{
 
 <body onload="openWhatsApp()">
 
-<div class="card">
-  <h1>Pickup Scheduled ✅</h1>
-  <p>
-    Thank you for submitting your details.<br>
-    We have sent you a WhatsApp confirmation.
-  </p>
-  <a href="index.html">Back to Home</a>
+<header class="navbar">
+  <div class="logo-container">
+    <img src="/ModasouLogo.png" class="logo-img" alt="Logo">
+    <h1 class="logo-text">MODASOU</h1>
+  </div>
+  <nav class="menu-item"><a href="/index.html">Home</a></nav>
+</header>
+
+
+<div class="content-container">
+  <div class="card">
+    <h1>Pickup Scheduled ✅</h1>
+    <p>
+      Thank you for submitting your details.<br>
+      We have sent you a WhatsApp confirmation.
+    </p>
+    <a href="index.html">Back to Home</a>
+  </div>
 </div>
 
 <script>

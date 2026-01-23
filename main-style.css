@@ -1,0 +1,48 @@
+/* MAIN STYLESHEET FOR MODASOU */
+
+/* FONT - POPPINS */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap');
+
+/* GLOBAL STYLES */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    background-color: #ffe6a7;
+    color: #331300;
+}
+
+
+/* NAVBAR */
+.navbar {
+  width: 100%; display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 30px; background: #331300; position: sticky; top: 0; z-index: 1000;
+              border-bottom: 2px solid #f5e6b0;}
+
+
+.logo-container { display: flex; align-items: center; gap: 15px; }
+.logo-img { width: 100%; height: 100px; border: 2px solid #bb9457; border-radius: 50%; }
+.logo-text { font-family: 'Cinzel', serif; font-size: 40px; font-weight: 600; background:linear-gradient(90deg, #f5e6b8, #d4af37, #b8962e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.menu-item a { text-decoration: none; color: #f5e6b8; font-size: 18px; }
+
+/* =========================================
+   MOBILE RESPONSIVENESS
+   ========================================= */
+
+@media screen and (max-width: 991px) {
+  body { overflow-x: hidden; }
+
+  /* Navbar: Compact */
+  .navbar {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px 20px;
+  }
+  .logo-text { font-size: 22px; }
+  .logo-img { width: 40px; height: 40px; }
+}

@@ -8,6 +8,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <!-- Modern EmailJS SDK (v4) -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<link rel="stylesheet" href="/main-style.css">
 </head>
 <!-- ================= STYLE ================= -->
 <style>
@@ -18,46 +19,7 @@
 
 body {
   margin: 0;
-  background: #8b4513;
-}
-
-/* ===== NAVBAR ===== */
-.navbar {
-  height: 100px;
-  background: linear-gradient(135deg, #331300, #8b4513);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 24px;
-}
-
-.logo-circle {
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  background-image: url("ModasouLogo.png");
-  background-size: cover;
-
-  color: #331300;
-  font-weight: 900;
-  font-size: 11px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.home-btn {
-  color: #fff;
-  text-decoration: none;
-  border: 1.5px solid #d4af37;
-  padding: 8px 18px;
-  border-radius: 20px;
-  font-weight: 600;
-}
-
-.home-btn:hover {
-  background: #d4af37;
-  color: #331300;
+  background: #331300;
 }
 
 /* ===== FORM ===== */
@@ -162,13 +124,7 @@ body {
 }
 
 @media (max-width: 768px) {
-  .navbar {
-    padding: 0 15px;
-  }
-  .logo-circle {
-    width: 70px;
-    height: 70px;
-  }
+  
   .form-card {
     margin: 20px;
     padding: 20px;
@@ -180,11 +136,14 @@ body {
 <body>
 
 <!-- ===== NAVBAR ===== -->
-<nav class="navbar">
-  <div class="logo-circle"></div>
-  
-  <a href="index.html" class="home-btn">Home</a>
-</nav>
+<header class="navbar">
+  <div class="logo-container">
+    <img src="/ModasouLogo.png" class="logo-img" alt="Logo">
+    <h1 class="logo-text">MODASOU</h1>
+  </div>
+  <nav class="menu-item"><a href="/index.html">Home</a></nav>
+</header>
+
 
 <!-- ===== FORM ===== -->
 <div class="form-card">

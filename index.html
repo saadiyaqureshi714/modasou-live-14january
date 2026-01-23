@@ -27,11 +27,20 @@
 
 <!-- NAVBAR -->
 <header class="navbar">
-  <div class="logo"><img src="ModasouLogo.png"></div>
-    <h1 class="logo"> MODASOU </h1>
+  <div class="logo">
+  <img src="ModasouLogo.png" alt="Modasou Logo">
+    <span class="trademark-icon">™</span>
 
 
-  <nav class="menu">
+</div>
+<h1 class="logo">MODASOU<sup>™</sup></h1>
+
+  <!-- Hamburger Icon (for mobile) -->
+  <div class="hamburger-menu">
+      <i class="fa-solid fa-bars"></i>
+  </div>
+
+  <nav class="menu" id="main-menu">
 
   
 
@@ -257,7 +266,7 @@
 
 <!-- PRODUCT GRID -->
 <section class="products">
-  <h2>Fabric</h2>
+  <h2>Testimonials</h2>
   <div class="product-grid">
     <div class="product-card">
 
@@ -273,7 +282,14 @@
 <br>
 <!-- FOOTER -->
 <footer>
+  
+  <div class="footer-links">
+    <a href="/refund-policy.html" class="footer-link">REFUND POLICY</a>
+    <!-- You can add more links here -->
+  </div>
+  
   <p id="p">© 2025 MODASOU - LUXURY, CUSTOMIZED</p>
+
 </footer>
 <script>
 let currentSlide = 0;
@@ -311,12 +327,19 @@ function prevSlide(){
 }
 </script>
 
+<!-- Hamburger Menu Script -->
+<script>
+  const hamburger = document.querySelector('.hamburger-menu');
+  const menu = document.getElementById('main-menu');
+
+  if (hamburger && menu) {
+    hamburger.addEventListener('click', function() {
+      menu.classList.toggle('active');
+    });
+  }
+</script>
+
 <!-- ...existing code... -->
 
 </body>
 </html>
-
-
-
-
-
