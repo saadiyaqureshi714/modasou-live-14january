@@ -160,10 +160,10 @@
   <div class="upload-box">
     <h2>2. Choose Design</h2>
     <div class="form-section">
-      <button class="upload-btn" onclick="document.getElementById('designUpload').click()">Upload Inspiration Image</button>
+     <!-- <button class="upload-btn" onclick="document.getElementById('designUpload').click()">Upload Inspiration Image</button>-->
       <input type="file" id="designUpload" accept="image/*" hidden onchange="handlePreview(this, 'designPreview')">
       <div class="image-preview"><img id="designPreview"></div>
-    </div>
+    
 
     
 <div class="form-section">
@@ -281,7 +281,7 @@
 
 <!-- HTML LAYOUT -->
 <div class="sample-section-wrapper">
-    <h3 style="margin-top:0;">Or Choose a Sample</h3>
+    <h3 style="margin-top:0;">From Our Designers</h3>
     
     <!-- 1. GRID LIST -->
     <div id="sample-images-container">
@@ -418,7 +418,7 @@
     <button class="final-submit" id="submitDesignBtn" onclick="submitDesignData()">SUBMIT DESIGN</button>
   </div>
 </div>
-</div>
+<h2>OR</h2>
 <!-- GOOGLE SEARCH SECTION -->
 <div class="google-card">
   <h2>3. Search Design Online</h2>
@@ -430,7 +430,7 @@
   <img id="urlPreview">
   <br>
   <button class="final-submit" style="width:auto; padding: 15px 50px;" id="submitGoogleBtn" onclick="submitGoogleDesign()">USE THIS IMAGE</button>
-</div>
+</div></div></div>
 <div class="nav-buttons">
   <a href="javascript:void(0)" id="measurementBtn" class="nav-btn">Add your measurements</a>
   <a href="/service pages/pickup2.html" class="nav-btn">Send your measurement cloth</a>
