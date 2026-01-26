@@ -292,21 +292,24 @@
   <p id="p">© 2025 MODASOU - LUXURY, CUSTOMIZED</p>
 
 </footer>
+
 <script>
 let currentSlide = 0;
 const totalSlides = 5;
 const track = document.querySelector('.slider-track');
 let isSliding = false;
+let autoPlayInterval;
 
 function goToSlide(index){
-  if(isSliding) return;   // 🔒 block double click
+  if(isSliding) return;
   isSliding = true;
-
+  
+  currentSlide = index;
   track.style.transform = `translateX(-${index * 100}%)`;
 
   setTimeout(() => {
-    isSliding = false;   // unlock after animation
-  }, 1000); // must match CSS transition
+    isSliding = false;
+  }, 1000);
 }
 
 function nextSlide(){
@@ -326,6 +329,14 @@ function prevSlide(){
   }
   goToSlide(currentSlide);
 }
+
+// Auto-play: This starts the slider!
+function startAutoPlay() {
+  autoPlayInterval = setInterval(nextSlide, 4000); // Change slide every 4 seconds
+}
+
+// Start auto-play when page loads
+startAutoPlay();
 </script>
 
 <!-- Hamburger Menu Script -->
