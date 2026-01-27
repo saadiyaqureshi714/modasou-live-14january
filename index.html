@@ -152,26 +152,31 @@
     </section>
 
     <section class="banner b2">
-      <h1>Meet Our Fashion Designers — Choose Your Style Partner</h1>
+      <h1>Made for You. Not Picked from a Rack.</h1>
       <p>
-        Discover a curated community of talented designers ready to bring your vision to life.
+Custom-designed, made-to-measure outfits created by independent Artisans — based on your body, style, and purpose.
       </p>
      <!---<a href="designers" class="cta">Explore Designers →</a>-->
     </section>
 
     <section class="banner b3">
-      <h1>Fabric Ready but Need a Designer?</h1>
+      <h1>Customization Is the Product.
+</h1>
       <p>
-        Our expert designers will create a custom design for your fabric,
-        and our tailors will bring it to life.
+Every outfit is individually crafted to your measurements — never mass-produced.
+
+<br>
+Designed intentionally. Made responsibly.
       </p>
       <!--<a href="designer" class="cta">Design My Outfit →</a>-->
     </section>
 
     <section class="banner b4">
-      <h1>Fabric & Design Ready? Need a Custom Wear Maker?</h1>
+      <h1>
+Because Workwear Should Be Designed for You</h1>
       <p>
-        Skilled tailors ensure perfect fitting and premium finishing.
+        
+Made-to-measure outfits created for your body and your workday — not standard sizes.
       </p>
       <!--<a href="designer" class="cta">Make My Outfit →</a>-->
     </section>
@@ -183,6 +188,15 @@
         MODASOU delivers a complete end-to-end experience.
       </p>
       <!--<a href="/service pages/comingsoon.html" class="cta">Start My Custom Look →</a>-->
+    </section>
+    
+    <section class="banner b1">
+      <h1>Your Style, Your Fit — 100% Customized Clothing</h1>
+      <p>
+        Designed exclusively for you by skilled ARTISANS.
+        Perfect measurements, premium fabrics, and styles that reflect your personality.
+      </p>
+      <!--<a href="/service pages/1stoption.html" class="cta">Start Your Custom Order →</a>-->
     </section>
 
   </div>
@@ -266,8 +280,17 @@
 
 
 <!-- PRODUCT GRID -->
-<section class="products">
-  <h2>Testimonials</h2>
+
+  <section style="width:100%; padding:40px 0;">
+  <iframe 
+    src="https://submit-functionality--saadiyaqureshi7.replit.app"
+    width="100%"
+    height="900"
+    style="border:none;">
+  </iframe>
+
+
+  <!--<h2>Testimonials</h2>
   <div class="product-grid">
     <div class="product-card">
 
@@ -275,7 +298,7 @@
       <h3></h3>
     
     </div>
-    </div>
+    </div>-->
   
 </section>
 
@@ -292,50 +315,62 @@
   <p id="p">© 2025 MODASOU - LUXURY, CUSTOMIZED</p>
 
 </footer>
-
 <script>
 let currentSlide = 0;
-const totalSlides = 5;
+const totalSlides = 5; // Still 5 unique slides
 const track = document.querySelector('.slider-track');
 let isSliding = false;
 let autoPlayInterval;
 
-function goToSlide(index){
-  if(isSliding) return;
+function goToSlide(index, instant = false){
+  if(isSliding && !instant) return;
   isSliding = true;
   
+  if(instant) {
+    track.style.transition = 'none';
+    track.style.transform = `translateX(-${index * 100}%)`;
+    track.offsetHeight; // Force reflow
+    track.style.transition = 'transform 1s ease-in-out';
+  } else {
+    track.style.transform = `translateX(-${index * 100}%)`;
+  }
+
   currentSlide = index;
-  track.style.transform = `translateX(-${index * 100}%)`;
 
   setTimeout(() => {
     isSliding = false;
-  }, 1000);
+  }, instant ? 0 : 1000);
 }
 
 function nextSlide(){
-  if(currentSlide < totalSlides - 1){
-    currentSlide++;
-  } else {
-    currentSlide = 0;
+  const nextIndex = currentSlide + 1;
+  
+  goToSlide(nextIndex);
+  
+  // If we just showed the duplicate first slide (index 5)
+  if(nextIndex === totalSlides) {
+    setTimeout(() => {
+      goToSlide(0, true); // Jump instantly back to real first slide
+    }, 1000);
   }
-  goToSlide(currentSlide);
 }
 
 function prevSlide(){
   if(currentSlide > 0){
-    currentSlide--;
+    goToSlide(currentSlide - 1);
   } else {
-    currentSlide = totalSlides - 1;
+    // Jump to duplicate, then slide to last
+    goToSlide(totalSlides, true);
+    setTimeout(() => {
+      goToSlide(totalSlides - 1);
+    }, 50);
   }
-  goToSlide(currentSlide);
 }
 
-// Auto-play: This starts the slider!
 function startAutoPlay() {
-  autoPlayInterval = setInterval(nextSlide, 4000); // Change slide every 4 seconds
+  autoPlayInterval = setInterval(nextSlide, 4000);
 }
 
-// Start auto-play when page loads
 startAutoPlay();
 </script>
 
@@ -352,6 +387,11 @@ startAutoPlay();
 </script>
 
 <!-- ...existing code... -->
+ 
+
+
+</body>
+
 
 </body>
 </html>
