@@ -220,8 +220,6 @@ body {
 
 
 
-
-
 <script>
   // 1. Initialize EmailJS and Supabase
   emailjs.init("V5fGF5JF2JAOD_AcW"); 
@@ -333,59 +331,118 @@ body {
       const botQty = mergedData.bottom_mtr ? `${mergedData.bottom_mtr}m / ${mergedData.bottom_cm || 0}cm` : "Not Provided";
 
       // Generate Order ID
-      const uniqueOrderId = "MODASOU_" + Math.floor(1000 + Math.random() * 9000);
+      const uniqueOrderId = "MODASOU_" + Math.floor(1000 + Math.random() + 9000);
+
+      // --- NEW: SAVE TO ORDERS TABLE ---
+      const customerName = document.getElementById('name').value;
+      const whatsapp = document.getElementById('whatsapp').value;
+      const email = document.getElementById('email').value;
+      const pickupDate = document.getElementById('pickup_date').value;
+      const pickupTime = document.getElementById('pickup_time').value;
+      const address = document.getElementById('address').value;
+      const pincode = document.getElementById('pincode').value;
+
+      console.log("Saving order to database with ID:", uniqueOrderId);
+
+      const { error: insertError } = await m_db
+        .from('orders')
+        .insert([{
+          order_id: uniqueOrderId,
+          session_id: sessionId,
+          service: serviceType,
+          
+          // Customer Details
+          customer_name: customerName,
+          full_name: customerName,
+          name: customerName,
+          whatsapp: whatsapp,
+          email: email,
+          
+          // Pickup Details
+          pickup_date: pickupDate,
+          pickup_time: pickupTime,
+          address: address,
+          pincode: pincode,
+          
+          // Fabric Details
+          fabric_video_url: mergedData.fabric_video_url,
+          fabric_image_url: mergedData.design_image_url,
+          image_url: mergedData.google_image_url,
+          video_url: mergedData.fabric_video_url,
+          
+          top_meter: mergedData.top_mtr,
+          bottom_meter: mergedData.bottom_mtr,
+          fabric_top_qty: topQty,
+          fabric_bottom_qty: botQty,
+          lining_preference: mergedData.lining_preference,
+          fabric_lining: mergedData.lining_preference,
+          fabric_notes: mergedData.designer_note,
+          note: mergedData.designer_note,
+          
+          // Measurements (store as JSONB)
+          measurements: measurementsObj,
+          
+          // Status
+          status: 'pending',
+          order_date: new Date().toISOString()
+        }]);
+
+      if (insertError) {
+        console.error("Failed to save to orders table:", insertError);
+        // Continue anyway - at least email will go through
+      } else {
+        console.log("✅ Order saved to database successfully!");
+      }
 
       // --- STEP 6: SEND EMAIL ---
       const selectedDesigner = localStorage.getItem("saved_designer_name") || "Not Selected";
-// Prepare links for EmailJS
-const videoLink = mergedData.fabric_video_url
-  ? `<a href="${mergedData.fabric_video_url}" target="_blank" rel="noopener noreferrer" style="color:#1a73e8;text-decoration:none;">Watch Video</a>`
-  : "Not Provided";
+      
+      // Prepare links for EmailJS
+      const videoLink = mergedData.fabric_video_url
+        ? `<a href="${mergedData.fabric_video_url}" target="_blank" rel="noopener noreferrer" style="color:#1a73e8;text-decoration:none;">Watch Video</a>`
+        : "Not Provided";
 
-const designLink = mergedData.design_image_url
-  ? `<a href="${mergedData.design_image_url}" target="_blank" rel="noopener noreferrer" style="color:#1a73e8;text-decoration:none;">View Image</a>`
-  : "Not Provided";
+      const designLink = mergedData.design_image_url
+        ? `<a href="${mergedData.design_image_url}" target="_blank" rel="noopener noreferrer" style="color:#1a73e8;text-decoration:none;">View Image</a>`
+        : "Not Provided";
 
-const googleLink = (googleRaw && googleRaw.length > 10)
-  ? `<a href="${googleRaw}" target="_blank" rel="noopener noreferrer" style="color:#1a73e8;text-decoration:none;">View Google Image</a>`
-  : "Not Provided";
+      const googleLink = (googleRaw && googleRaw.length > 10)
+        ? `<a href="${googleRaw}" target="_blank" rel="noopener noreferrer" style="color:#1a73e8;text-decoration:none;">View Google Image</a>`
+        : "Not Provided";
 
-// Send email
-await emailjs.send('TailorEmailService', 'template_jpeqr8e', { 
-  order_id: uniqueOrderId,
-  
-  // Customer Info
-  customer_name: document.getElementById('name').value, 
-  whatsapp: document.getElementById('whatsapp').value, 
-  email: document.getElementById('email').value,
-  pickup_date: document.getElementById('pickup_date').value,
-   pickup_time: document.getElementById('pickup_time').value,
-         
-  address: document.getElementById('address').value,
-  pincode: document.getElementById('pincode').value,
+      // Send email
+      await emailjs.send('TailorEmailService', 'template_jpeqr8e', { 
+        order_id: uniqueOrderId,
+        
+        // Customer Info
+        customer_name: customerName, 
+        whatsapp: whatsapp, 
+        email: email,
+        pickup_date: pickupDate,
+        pickup_time: pickupTime,
+               
+        address: address,
+        pincode: pincode,
 
-  // Fabric Details
-  fabric_top_qty: topQty,
-  fabric_bottom_qty: botQty,
-  fabric_lining: mergedData.lining_preference || "N/A",
-  fabric_notes: String(mergedData.designer_note || "None").slice(0, 2000),
-  
-  // Links (already HTML)
-  video_link: videoLink,
-  reference_image_link: designLink,
-  designer_name: mergedData.designer_name || "Not Selected",
-  // Only send the template's expected variable to reduce payload
-  google_image_url: googleLink,
-  
-  // Measurements & Service Name
-  service_type: serviceType,
-  measurements_list: (formattedMeasures || "No measurements found").slice(0, 3000),
-  order_date: new Date().toLocaleString()
-});
-
+        // Fabric Details
+        fabric_top_qty: topQty,
+        fabric_bottom_qty: botQty,
+        fabric_lining: mergedData.lining_preference || "N/A",
+        fabric_notes: String(mergedData.designer_note || "None").slice(0, 2000),
+        
+        // Links (already HTML)
+        video_link: videoLink,
+        reference_image_link: designLink,
+        designer_name: mergedData.designer_name || "Not Selected",
+        google_image_url: googleLink,
+        
+        // Measurements & Service Name
+        service_type: serviceType,
+        measurements_list: (formattedMeasures || "No measurements found").slice(0, 3000),
+        order_date: new Date().toLocaleString()
+      });
 
       // Success
-      
       localStorage.removeItem('modasou_session_id'); 
       window.location.href="/thank-you.html";
 
@@ -410,5 +467,4 @@ await emailjs.send('TailorEmailService', 'template_jpeqr8e', {
   }
 
   document.getElementById('submitBtn').addEventListener('click', handleFinalOrder);
-</script>
-</body></html>
+</script></body></html>

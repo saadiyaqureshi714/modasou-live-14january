@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Designer Login – MODASOU</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+    }
+
+    .left-panel {
+      flex: 1;
+      background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                  url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"><rect fill="%23333" width="800" height="600"/></svg>');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      padding: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .logo-section h1 {
+      font-size: 48px;
+      letter-spacing: 2px;
+      margin-bottom: 5px;
+      color: #D4A574;
+    }
+
+    .logo-section p {
+      font-size: 14px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #ccc;
+    }
+
+    .tagline {
+      font-size: 48px;
+      line-height: 1.3;
+      font-weight: normal;
+      margin-bottom: 30px;
+    }
+
+    .tagline span {
+      display: block;
+    }
+
+    .quote {
+      font-style: italic;
+      font-size: 18px;
+      line-height: 1.6;
+      color: #ccc;
+      margin-top: 40px;
+    }
+
+    .footer-text {
+      font-size: 13px;
+      color: #888;
+      margin-top: auto;
+    }
+
+    .right-panel {
+      flex: 1;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 60px;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 450px;
+    }
+
+    .login-box h2 {
+      font-size: 42px;
+      margin-bottom: 15px;
+      color: #333;
+      font-weight: normal;
+    }
+
+    .login-box .subtitle {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-size: 15px;
+      font-weight: 500;
+    }
+    
+    input {
+      width: 100%;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: #D4A574;
+    }
+    
+    button {
+      width: 100%;
+      background: #D4A574;
+      color: white;
+      border: none;
+      padding: 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 16px;
+      margin-top: 10px;
+      transition: background 0.3s;
+    }
+    
+    button:hover:not(:disabled) {
+      background: #C09563;
+    }
+    
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    #msg {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: bold;
+      padding: 12px;
+      border-radius: 6px;
+    }
+
+    .secure-text {
+      text-align: center;
+      font-size: 13px;
+      color: #999;
+      margin-top: 25px;
+    }
+
+    @media (max-width: 968px) {
+      body {
+        flex-direction: column;
+      }
+
+      .left-panel {
+        padding: 40px 30px;
+        min-height: 300px;
+      }
+
+      .tagline {
+        font-size: 32px;
+      }
+
+      .right-panel {
+        padding: 40px 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="left-panel">
+  <div>
+    <div class="logo-section">
+      <h1>MODASOU</h1>
+      <p>ATELIER MANAGEMENT</p>
+    </div>
+
+    <div class="tagline">
+      <span>Crafting</span>
+      <span>elegance,</span>
+      <span>managing</span>
+      <span>excellence.</span>
+    </div>
+
+    <div class="quote">
+      "Design is not just what it looks like and feels like. Design is how it works."
+    </div>
+  </div>
+
+  <div class="footer-text">
+    © 2024 MODASOU INC.
+  </div>
+</div>
+
+<div class="right-panel">
+  <div class="login-box">
+    <h2>Welcome Back</h2>
+    <p class="subtitle">Sign in to access your designer dashboard and manage orders.</p>
+
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="email" placeholder="designer@modasou.com" autocomplete="email" autofocus>
+    </div>
+
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
+    </div>
+
+    <button type="button" id="loginBtn">Sign In</button>
+
+    <div id="msg"></div>
+
+    <p class="secure-text">Secure authentication for MODASOU designers</p>
+  </div>
+</div>
+
+<script>
+  // Supabase Configuration
+  const SUPABASE_URL = "https://gztneesmxwfhdmhqikel.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA";
+
+  let supabaseClient;
+
+  // Initialize Supabase
+  if (typeof window.supabase === 'undefined') {
+    console.error('Supabase library not loaded');
+    document.getElementById('msg').innerHTML = '<span style="color: red;">⚠️ System error: Unable to load authentication library. Please refresh the page.</span>';
+  } else {
+    try {
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      console.log('Supabase initialized successfully');
+    } catch (e) {
+      console.error('Supabase initialization error:', e);
+      document.getElementById('msg').innerHTML = '<span style="color: red;">System error. Please refresh the page.</span>';
+    }
+  }
+
+  // Login function
+  async function attemptLogin() {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!email || !password) {
+      msg.innerHTML = '<span style="color: #F57C00;">⚠️ Please fill in all fields</span>';
+      return;
+    }
+
+    if (!supabaseClient) {
+      msg.innerHTML = '<span style="color: red;">⚠️ System not ready. Please refresh the page.</span>';
+      return;
+    }
+
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Signing in...';
+    msg.innerHTML = '';
+
+    try {
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ 
+        email, 
+        password 
+      });
+
+      if (error) throw error;
+
+      msg.innerHTML = '<span style="color: #4CAF50;">✅ Login successful! Redirecting...</span>';
+
+      // Redirect to admin.html
+      setTimeout(() => {
+        window.location.href = 'admin.html';
+      }, 1000);
+
+    } catch (err) {
+      msg.innerHTML = '<span style="color: #dc3545;">❌ ' + err.message + '</span>';
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'Sign In';
+    }
+  }
+
+  // Get elements
+  const loginBtn = document.getElementById('loginBtn');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const msg = document.getElementById('msg');
+
+  // Add event listeners
+  loginBtn.addEventListener('click', attemptLogin);
+
+  // Allow Enter key to submit
+  passwordInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      attemptLogin();
+    }
+  });
+</script>
+
+</body>
+</html>

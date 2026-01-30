@@ -89,8 +89,12 @@ label{ display:block; margin-bottom:6px; font-weight:500; color: #3b1f0f; }
 
 
 
+
+
+
+
 <script>
-  // 1. Initialize EmailJS and Supabase
+  // Initialize EmailJS and Supabase
   emailjs.init("V5fGF5JF2JAOD_AcW"); 
   const m_db = window.supabase.createClient(
     'https://gztneesmxwfhdmhqikel.supabase.co', 
@@ -98,168 +102,178 @@ label{ display:block; margin-bottom:6px; font-weight:500; color: #3b1f0f; }
   );
 
   async function handleFinalOrder(e) {
-    // PREVENT PAGE RELOAD
-    e.preventDefault();
+    // CRITICAL: Prevent form submission and page navigation
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     
     const btn = document.getElementById('submitBtn');
     const sessionId = localStorage.getItem('modasou_session_id');
 
-    // Basic Validation
     if (!sessionId) {
       alert("Error: No session found. Please go back to Service 2 and submit your fabric first.");
-      return;
+      return false;
     }
 
     btn.innerText = "Processing Order...";
     btn.disabled = true;
 
     try {
-      // 1. Fetch Fabric data from service_2 table
-      console.log("Fetching fabric for session:", sessionId);
+      // Fetch Fabric Data
+      console.log("Fetching fabric data...");
       const { data: fabricRow, error: fetchError } = await m_db
         .from('service_2')
         .select('*')
         .eq('session_id', sessionId)
         .maybeSingle(); 
 
-      if (fetchError) throw new Error("Database Fetch Error: " + fetchError.message);
-      if (!fabricRow) throw new Error("Fabric details not found in database. Please click 'Submit Fabric' on the previous page.");
+      if (fetchError) throw new Error("Fetch Error: " + fetchError.message);
+      if (!fabricRow) throw new Error("Fabric not found. Submit fabric first.");
 
-      // 2. Insert into the NEW table: service_2_pickups
-      const { error: insertError } = await m_db
-        .from('service_2_pickups')
-        .upsert([{
-          session_id: sessionId,
-          full_name: document.getElementById('fullname').value,
-          whatsapp_number: document.getElementById('watsapp_number').value,
-          pickup_date: document.getElementById('pickup_date').value,
-          pickup_time: document.getElementById('pickup_time').value,
-          full_address: document.getElementById('address').value,
-          pincode: document.getElementById('pincode').value
-        }]);
+      // Save to service_2_pickups
+      console.log("Saving pickup details...");
+      await m_db.from('service_2_pickups').upsert([{
+        session_id: sessionId,
+        full_name: document.getElementById('fullname').value,
+        whatsapp_number: document.getElementById('watsapp_number').value,
+        pickup_date: document.getElementById('pickup_date').value,
+        pickup_time: document.getElementById('pickup_time').value,
+        full_address: document.getElementById('address').value,
+        pincode: document.getElementById('pincode').value
+      }]);
 
-      if (insertError) throw new Error("Database Save Error: " + insertError.message);
-     // 4. Send Email
-     let designerName = localStorage.getItem("saved_designer_name") || "Not Selected";
-  
-      
-
-
-
+      // Generate Order ID
       const uniqueOrderId = "MODASOU_" + Math.floor(1000 + Math.random() * 9000);
-      // Prepare clickable variants for Google link
-      // Ensure the Google URL is absolute and safely encoded
-      const ensureUrl = (u) => {
-        if (!u) return "";
-        let t = String(u).trim();
-        // strip quotes
-        t = t.replace(/^["']|["']$/g, "");
+      console.log("Order ID:", uniqueOrderId);
+
+      const fullName = document.getElementById('fullname').value;
+      const whatsappNumber = document.getElementById('watsapp_number').value;
+      const pickupDate = document.getElementById('pickup_date').value;
+      const pickupTime = document.getElementById('pickup_time').value;
+      const fullAddress = document.getElementById('address').value;
+      const pincode = document.getElementById('pincode').value;
+
+      // SAVE TO ORDERS TABLE - MOST IMPORTANT STEP
+      console.log("💾 CRITICAL: Saving to orders table...");
+      
+      const { data: saved, error: saveError } = await m_db.from('orders').insert([{
+        order_id: uniqueOrderId,
+        session_id: sessionId,
+        service: 'Fabric Pickup Service',
+        customer_name: fullName,
+        full_name: fullName,
+        name: fullName,
+        whatsapp: whatsappNumber,
+        pickup_date: pickupDate,
+        pickup_time: pickupTime,
+        address: fullAddress,
+        pincode: pincode,
+        fabric_video_url: fabricRow.fabric_video_url,
+        fabric_image_url: fabricRow.design_image_url,
+        image_url: fabricRow.google_image_url,
+        video_url: fabricRow.fabric_video_url,
+        top_meter: fabricRow.top_mtr,
+        bottom_meter: fabricRow.bottom_mtr,
+        lining_preference: fabricRow.lining_preference,
+        note: fabricRow.designer_note,
+        status: 'pending',
+        order_date: new Date().toISOString()
+      }]).select();
+
+      if (saveError) {
+        console.error("❌ SAVE FAILED:", saveError);
+        throw new Error("Database save failed: " + saveError.message);
+      }
+
+      console.log("✅ ORDER SAVED TO DATABASE!", saved);
+
+      // Process Google Image
+      const cleanUrl = (url) => {
+        if (!url) return "";
+        let clean = String(url).trim();
         
-        // Save original in case unwrapping fails
-        const original = t;
-
-        // unwrap Google redirect links
-        try {
-          // If it doesn't start with http, it might fail URL parsing, so temporary add it for parsing check
-          let tempT = t.match(/^https?:\/\//i) ? t : `https://${t}`;
-          const test = new URL(tempT);
-          
-          if (test.hostname.includes("google.com")) {
-             const sp = new URLSearchParams(test.search);
-             const qParam = sp.get("q") || sp.get("imgurl");
-             if (qParam) {
-               t = decodeURIComponent(qParam);
-             }
-          }
-        } catch (e) {
-          // If URL parsing fails, stick to original
-          t = original;
-        }
-
-        // Ensure protocol
-        if (!/^https?:\/\//i.test(t)) {
-             t = `https://${t}`;
+        // Remove service%20 and similar encodings
+        clean = clean.replace(/service%20/gi, '');
+        clean = clean.replace(/\?service=[^&]*/gi, '');
+        
+        // Check if it's actually an image URL
+        const isImage = /\.(jpg|jpeg|png|gif|webp|bmp)/i.test(clean);
+        if (!isImage && !clean.includes('googleusercontent.com') && !clean.includes('images')) {
+          console.log("Not a valid image URL:", clean);
+          return "";
         }
         
-        // Final sanity check: if it is just "https://", return empty
-        if (t === "https://") return "";
-
+        if (!/^https?:\/\//i.test(clean)) clean = `https://${clean}`;
+        if (clean === "https://") return "";
+        
         try {
-          // Validate final URL
-          const u = new URL(t);
-          if (!u.protocol.startsWith("http")) return "";
-          if (!u.hostname) return "";
-          return t; // return as-is to avoid client rewrites causing blocks
+          new URL(clean);
+          return clean;
         } catch {
           return "";
         }
       };
       
-      const googleRaw = ensureUrl(fabricRow.google_image_url || "");
-      // Create the anchor. If googleRaw is empty/invalid, show text.
-      const googleAnchor = (googleRaw && googleRaw.length > 10)
-        ? `<a href="${googleRaw}" target="_blank" rel="noopener noreferrer" style="color:#1a73e8;text-decoration:none;">View Google Image</a>`
+      const googleUrl = cleanUrl(fabricRow.google_image_url);
+      const googleLink = googleUrl || "Not Provided";
+      const googleHtml = googleUrl 
+        ? `<a href="${googleUrl}" target="_blank" rel="noopener noreferrer" style="color:#1a73e8;text-decoration:none;font-weight:bold;">View Google Image</a>`
         : "Not Provided";
 
-      await emailjs.send('TailorEmailService', 'template_nz5r9d7', {
-        order_id: uniqueOrderId,
-        user_name: document.getElementById('fullname').value,
-        user_phone: document.getElementById('watsapp_number').value,
-        pickup_date: document.getElementById('pickup_date').value,
-        pickup_time: document.getElementById('pickup_time').value,
-        message: document.getElementById('address').value + " (" + document.getElementById('pincode').value + ")",
-        // Address fields
-        address_text: document.getElementById('address').value,
-        pincode_text: document.getElementById('pincode').value,
+      console.log("Google URL:", googleUrl);
 
-        // Links
-        video_link: fabricRow.fabric_video_url || "No video",
-        reference_image_link: fabricRow.design_image_url || "No design",
-        designer_name: fabricRow.designer_name || "Not Selected",
-        // Keep payload small: send only clickable anchor
-        google_image_anchor: googleAnchor,
+      // Send Email (non-critical)
+      console.log("Sending email...");
+      try {
+        await emailjs.send('TailorEmailService', 'template_nz5r9d7', {
+          order_id: uniqueOrderId,
+          user_name: fullName,
+          user_phone: whatsappNumber,
+          pickup_date: pickupDate,
+          pickup_time: pickupTime,
+          message: fullAddress + " (" + pincode + ")",
+          address_text: fullAddress,
+          pincode_text: pincode,
+          video_link: fabricRow.fabric_video_url || "No video",
+          reference_image_link: fabricRow.design_image_url || "No design",
+          designer_name: fabricRow.designer_name || "Not Selected",
+          google_image_url: googleLink,
+          google_image_anchor: googleHtml,
+          lining_pref: fabricRow.lining_preference || "N/A",
+          designer_note: String(fabricRow.designer_note || "None").slice(0, 2000),
+          fabric_measurements: `Top: ${fabricRow.top_mtr || 0}m, Bottom: ${fabricRow.bottom_mtr || 0}m`
+        });
+        console.log("✅ Email sent!");
+      } catch (emailErr) {
+        console.warn("Email failed, but order is saved:", emailErr);
+      }
 
-        lining_pref: fabricRow.lining_preference || "N/A",
-        designer_note: String(fabricRow.designer_note || "None").slice(0, 2000), // limit size
-        fabric_measurements: `Top: ${fabricRow.top_mtr || 0}m, Bottom: ${fabricRow.bottom_mtr || 0}m`
-      });
-
+      // Success
+      alert(`Order placed successfully!\n\nOrder ID: ${uniqueOrderId}\n✅ Saved to database\n\nWe will contact you soon!`);
       
-      alert("Order Successful! We will contact you soon.");
+      localStorage.removeItem('modasou_session_id');
       
-      // Clear session and redirect
-      localStorage.removeItem('modasou_session_id'); 
-      window.location.href = "/thank-you.html";
+      // Use setTimeout to ensure everything completes
+      setTimeout(() => {
+        window.location.href = "/thank-you.html";
+      }, 500);
 
     } catch (err) {
-      console.error("Order process failed:", err);
-      // Better error extraction
-      let msg = "Unknown Error";
-      if (typeof err === 'string') {
-        msg = err;
-      } else if (err && err.message) {
-        msg = err.message;
-      } else if (err && err.text) {
-        // EmailJS often returns { status: 400, text: "..." }
-        msg = err.text;
-      } else {
-        try {
-            msg = JSON.stringify(err);
-        } catch {
-            msg = "An error occurred but could not be read.";
-        }
-      }
-      alert("Order Error: " + msg);
+      console.error("ERROR:", err);
+      alert("Order Error: " + (err.message || err));
       btn.innerText = "Schedule Cloth Pickup";
       btn.disabled = false;
     }
+    
+    return false; // Prevent any form submission
   }
 
-  // Attach the event listener carefully
+  // Attach carefully
   const orderForm = document.getElementById('pickupForm');
   if (orderForm) {
-      orderForm.addEventListener('submit', handleFinalOrder);
-  } else {
-      console.error("Form with ID 'pickupForm' not found!");
+    orderForm.addEventListener('submit', handleFinalOrder);
+    // Also prevent default submission
+    orderForm.onsubmit = handleFinalOrder;
   }
 </script></body></html>

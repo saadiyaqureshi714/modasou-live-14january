@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Verification - MODASOU</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #D4A574;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .info-box {
+      background: #e3f2fd;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 4px solid #2196F3;
+    }
+
+    .success-box {
+      background: #d4edda;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 4px solid #28a745;
+    }
+
+    .error-box {
+      background: #f8d7da;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 4px solid #dc3545;
+    }
+
+    .warning-box {
+      background: #fff3cd;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 4px solid #ffc107;
+    }
+
+    button {
+      background: #D4A574;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 10px 5px;
+    }
+
+    button:hover {
+      background: #C09563;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+    }
+
+    table {
+      width: 100%;
+      background: white;
+      border-collapse: collapse;
+      margin-top: 20px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    th {
+      background: #333;
+      color: white;
+      padding: 12px;
+      text-align: left;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+    }
+
+    tr:hover {
+      background: #f8f9fa;
+    }
+
+    .order-count {
+      font-size: 24px;
+      font-weight: bold;
+      color: #D4A574;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    pre {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    .status-badge {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .status-pending { background: #fff3cd; color: #856404; }
+    .status-completed { background: #d4edda; color: #155724; }
+
+    .test-results {
+      margin-top: 30px;
+    }
+
+    .check-item {
+      padding: 15px;
+      background: white;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .check-status {
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .check-pass { color: #28a745; }
+    .check-fail { color: #dc3545; }
+    .check-warn { color: #ffc107; }
+  </style>
+</head>
+<body>
+
+<h1>🔍 MODASOU Order Verification</h1>
+
+<div class="info-box">
+  <strong>What This Page Does:</strong>
+  <p>This page checks if orders from modasou.com are properly stored in Supabase and accessible to the dashboard.</p>
+</div>
+
+<div>
+  <button onclick="runVerification()">🔄 Run Verification</button>
+  <button onclick="window.location.href='designer-login-final.html'">← Back to Login</button>
+  <button onclick="window.location.href='dashboard-complete.html'">Go to Dashboard →</button>
+</div>
+
+<div id="results"></div>
+
+<script>
+const SUPABASE_URL = "https://gztneesmxwfhdmhqikel.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA";
+
+let supabase;
+
+try {
+  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  console.log('Supabase initialized');
+} catch (err) {
+  document.getElementById('results').innerHTML = `
+    <div class="error-box">
+      <h3>❌ Supabase Initialization Failed</h3>
+      <p>${err.message}</p>
+    </div>
+  `;
+}
+
+async function runVerification() {
+  const results = document.getElementById('results');
+  results.innerHTML = '<div class="loading">Running verification tests...</div>';
+
+  let html = '<div class="test-results">';
+
+  // TEST 1: Check Supabase Connection
+  html += `<div class="check-item">
+    <div>
+      <strong>1. Supabase Connection</strong>
+      <p style="font-size: 13px; color: #666; margin-top: 5px;">Checking if we can connect to Supabase...</p>
+    </div>`;
+
+  try {
+    const { data, error } = await supabase.from('orders').select('count', { count: 'exact', head: true });
+    if (error && error.code !== 'PGRST116') {
+      html += `<div class="check-status check-fail">❌ FAILED</div></div>`;
+      html += `<div class="error-box">
+        <strong>Connection Error:</strong>
+        <p>${error.message}</p>
+        <p><strong>Error Code:</strong> ${error.code}</p>
+      </div>`;
+      results.innerHTML = html;
+      return;
+    }
+    html += `<div class="check-status check-pass">✅ CONNECTED</div></div>`;
+  } catch (err) {
+    html += `<div class="check-status check-fail">❌ ERROR</div></div>`;
+    html += `<div class="error-box"><p>${err.message}</p></div>`;
+    results.innerHTML = html;
+    return;
+  }
+
+  // TEST 2: Check if orders table exists and is accessible
+  html += `<div class="check-item">
+    <div>
+      <strong>2. Orders Table Access</strong>
+      <p style="font-size: 13px; color: #666; margin-top: 5px;">Checking if we can read from orders table...</p>
+    </div>`;
+
+  try {
+    const { data: orders, error, count } = await supabase
+      .from('orders')
+      .select('*', { count: 'exact' })
+      .limit(1);
+
+    if (error) {
+      html += `<div class="check-status check-fail">❌ BLOCKED</div></div>`;
+      
+      if (error.code === '42501' || error.message.includes('policy') || error.message.includes('permission')) {
+        html += `<div class="error-box">
+          <h3>🔒 Row Level Security (RLS) is Blocking Access!</h3>
+          <p><strong>This is the problem!</strong> Orders exist but RLS is preventing access.</p>
+          
+          <h4>How to Fix:</h4>
+          <ol>
+            <li>Go to <a href="https://supabase.com/dashboard" target="_blank">Supabase Dashboard</a></li>
+            <li>Select your project: <strong>gztneesmxwfhdmhqikel</strong></li>
+            <li>Go to <strong>Table Editor</strong> → <strong>orders</strong> table</li>
+            <li>Click the <strong>shield icon 🛡️</strong> at the top</li>
+            <li>Select <strong>"Disable RLS"</strong></li>
+            <li>Refresh this page and run verification again</li>
+          </ol>
+
+          <h4>Or Run This SQL:</h4>
+          <pre>ALTER TABLE public.orders DISABLE ROW LEVEL SECURITY;</pre>
+
+          <p><strong>Error Details:</strong> ${error.message}</p>
+        </div>`;
+      } else {
+        html += `<div class="error-box">
+          <p><strong>Error:</strong> ${error.message}</p>
+          <p><strong>Code:</strong> ${error.code}</p>
+        </div>`;
+      }
+      results.innerHTML = html;
+      return;
+    }
+
+    html += `<div class="check-status check-pass">✅ ACCESSIBLE</div></div>`;
+
+  } catch (err) {
+    html += `<div class="check-status check-fail">❌ ERROR</div></div>`;
+    html += `<div class="error-box"><p>${err.message}</p></div>`;
+    results.innerHTML = html;
+    return;
+  }
+
+  // TEST 3: Count Orders
+  html += `<div class="check-item">
+    <div>
+      <strong>3. Order Count</strong>
+      <p style="font-size: 13px; color: #666; margin-top: 5px;">Checking how many orders exist...</p>
+    </div>`;
+
+  try {
+    const { data: orders, error, count } = await supabase
+      .from('orders')
+      .select('*', { count: 'exact' });
+
+    if (error) throw error;
+
+    const orderCount = count || orders.length;
+
+    if (orderCount === 0) {
+      html += `<div class="check-status check-warn">⚠️ 0 ORDERS</div></div>`;
+      html += `<div class="warning-box">
+        <h3>No Orders Found in Database</h3>
+        <p><strong>Possible Reasons:</strong></p>
+        <ul>
+          <li>Orders haven't been submitted yet through modasou.com</li>
+          <li>Orders are being saved to a different table</li>
+          <li>The order submission form isn't working</li>
+        </ul>
+        
+        <h4>What to Check:</h4>
+        <ol>
+          <li>Go to modasou.com and submit a test order</li>
+          <li>Check your email - did you receive the order notification?</li>
+          <li>Go to Supabase Dashboard → Table Editor → orders</li>
+          <li>See if the order appears in the table</li>
+        </ol>
+      </div>`;
+    } else {
+      html += `<div class="check-status check-pass">✅ ${orderCount} ORDERS</div></div>`;
+      
+      html += `<div class="success-box">
+        <h3>🎉 Success! Found ${orderCount} Orders</h3>
+        <p>Orders from modasou.com are properly stored and accessible!</p>
+      </div>`;
+
+      // Display orders
+      html += `<div class="order-count">${orderCount} Total Orders</div>`;
+      
+      html += `<table>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Service</th>
+            <th>Status</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody>`;
+
+      // Show ALL orders, not just first 10
+      orders.forEach(order => {
+        // Use the actual order_id field (like MODASOU_3632)
+        const orderId = order.order_id || '#' + (order.id || '').substring(0, 8);
+        const customer = order.customer_name || order.full_name || order.name || 'N/A';
+        const service = order.service || order.style || 'N/A';
+        const status = order.status || 'pending';
+        const created = order.created_at ? new Date(order.created_at).toLocaleDateString() : 'N/A';
+
+        html += `<tr>
+          <td><strong>${orderId}</strong></td>
+          <td>${customer}</td>
+          <td>${service}</td>
+          <td><span class="status-badge status-${status.toLowerCase().includes('complete') || status.toLowerCase().includes('deliver') ? 'completed' : 'pending'}">${status}</span></td>
+          <td>${created}</td>
+        </tr>`;
+      });
+
+      html += `</tbody></table>`;
+
+      html += `<p style="text-align: center; margin-top: 10px; color: #666; font-weight: bold;">Showing all ${orderCount} orders</p>`;
+
+      // Show sample order data
+      html += `<div style="margin-top: 30px;">
+        <h3>Sample Order Data:</h3>
+        <pre>${JSON.stringify(orders[0], null, 2)}</pre>
+      </div>`;
+    }
+
+  } catch (err) {
+    html += `<div class="check-status check-fail">❌ ERROR</div></div>`;
+    html += `<div class="error-box"><p>${err.message}</p></div>`;
+  }
+
+  html += '</div>';
+  results.innerHTML = html;
+}
+
+// Auto-run on page load
+window.onload = runVerification;
+</script>
+
+</body>
+</html>

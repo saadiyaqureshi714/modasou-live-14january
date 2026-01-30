@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Track Your Order | MODASOU</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <style>
+    body { 
+      font-family: Arial, sans-serif; 
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+    .box {
+      background: #fff;
+      max-width: 500px;
+      margin: 50px auto;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+      text-align: center;
+      color: #333;
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      box-sizing: border-box;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    button {
+      background: black;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+    button:hover {
+      background: #333;
+    }
+    button:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+    .result-section {
+      margin-top: 30px;
+      display: none;
+    }
+    .result-section.visible {
+      display: block;
+    }
+    .status-item {
+      background: #f8f9fa;
+      padding: 15px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border-left: 4px solid #28a745;
+    }
+    .status-item.current {
+      background: #d4edda;
+      border-left-color: #155724;
+    }
+    .status-item h3 {
+      margin: 0 0 5px 0;
+      color: #333;
+      font-size: 16px;
+    }
+    .status-item p {
+      margin: 5px 0;
+      color: #666;
+      font-size: 14px;
+    }
+    .status-item .timestamp {
+      font-size: 12px;
+      color: #999;
+    }
+    .error-msg {
+      color: #dc3545;
+      text-align: center;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    .loading {
+      text-align: center;
+      color: #666;
+      margin-top: 15px;
+    }
+    .timeline {
+      position: relative;
+      padding-left: 20px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #ddd;
+    }
+    .timeline .status-item {
+      position: relative;
+      margin-bottom: 15px;
+    }
+    .timeline .status-item::before {
+      content: '';
+      position: absolute;
+      left: -16px;
+      top: 20px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #28a745;
+      border: 2px solid white;
+      box-shadow: 0 0 0 2px #28a745;
+    }
+    .timeline .status-item.current::before {
+      background: #155724;
+      box-shadow: 0 0 0 2px #155724;
+    }
+  </style>
+</head>
+
+<body>
+<div class="box">
+  <h2>Track Your Order</h2>
+
+  <input 
+    type="text" 
+    id="orderId" 
+    placeholder="Enter Order ID (e.g., MOD-1234)"
+    autocomplete="off"
+  >
+  <button onclick="trackOrder()" id="trackBtn">Track Order</button>
+
+  <div class="loading" id="loading" style="display: none;">
+    Checking order...
+  </div>
+
+  <div class="error-msg" id="error" style="display: none;"></div>
+
+  <div class="result-section" id="resultSection">
+    <h3>Order Status</h3>
+    <div id="currentStatus"></div>
+    
+    <h3 style="margin-top: 30px;">Order History</h3>
+    <div class="timeline" id="timeline"></div>
+  </div>
+</div>
+
+<script>
+  // Supabase configuration
+  const SUPABASE_URL = "https://gztneesmxwfhdmhqikel.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA";
+
+  // Initialize Supabase client
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let currentOrderId = null;
+  let realtimeChannel = null;
+
+  async function trackOrder() {
+    const orderId = document.getElementById("orderId").value.trim();
+    const loading = document.getElementById("loading");
+    const error = document.getElementById("error");
+    const resultSection = document.getElementById("resultSection");
+    const trackBtn = document.getElementById("trackBtn");
+
+    // Reset UI
+    loading.style.display = "none";
+    error.style.display = "none";
+    resultSection.classList.remove("visible");
+
+    if (!orderId) {
+      error.textContent = "Please enter an Order ID";
+      error.style.display = "block";
+      return;
+    }
+
+    // Show loading
+    loading.style.display = "block";
+    trackBtn.disabled = true;
+
+    try {
+      // Fetch order details
+      const { data: order, error: orderError } = await supabase
+        .from("orders")
+        .select("*")
+        .eq("order_id", orderId)
+        .single();
+
+      if (orderError || !order) {
+        throw new Error("Order not found");
+      }
+
+      // Fetch order tracking history
+      const { data: tracking, error: trackingError } = await supabase
+        .from("order_tracking")
+        .select("*")
+        .eq("order_id", orderId)
+        .order("created_at", { ascending: false });
+
+      if (trackingError) {
+        console.error("Tracking fetch error:", trackingError);
+      }
+
+      // Display results
+      displayOrderStatus(order, tracking || []);
+      
+      // Set up real-time updates
+      setupRealtime(orderId);
+      
+      currentOrderId = orderId;
+
+    } catch (err) {
+      error.textContent = err.message;
+      error.style.display = "block";
+    } finally {
+      loading.style.display = "none";
+      trackBtn.disabled = false;
+    }
+  }
+
+  function displayOrderStatus(order, tracking) {
+    const currentStatus = document.getElementById("currentStatus");
+    const timeline = document.getElementById("timeline");
+    const resultSection = document.getElementById("resultSection");
+
+    // Display current status
+    currentStatus.innerHTML = `
+      <div class="status-item current">
+        <h3>${order.status}</h3>
+        <p>Order ID: ${order.order_id}</p>
+        <p class="timestamp">Last updated: ${new Date(order.updated_at).toLocaleString()}</p>
+      </div>
+    `;
+
+    // Display tracking history
+    if (tracking && tracking.length > 0) {
+      timeline.innerHTML = tracking.map((item, index) => `
+        <div class="status-item ${index === 0 ? 'current' : ''}">
+          <h3>${item.status}</h3>
+          ${item.note ? `<p>${item.note}</p>` : ''}
+          <p class="timestamp">${new Date(item.created_at).toLocaleString()}</p>
+        </div>
+      `).join('');
+    } else {
+      timeline.innerHTML = '<p style="color: #666;">No tracking history available yet.</p>';
+    }
+
+    resultSection.classList.add("visible");
+  }
+
+  function setupRealtime(orderId) {
+    // Unsubscribe from previous channel if exists
+    if (realtimeChannel) {
+      supabase.removeChannel(realtimeChannel);
+    }
+
+    // Subscribe to order updates
+    realtimeChannel = supabase
+      .channel('order-updates-' + orderId)
+      .on(
+        'postgres_changes',
+        { 
+          event: 'UPDATE', 
+          schema: 'public', 
+          table: 'orders',
+          filter: `order_id=eq.${orderId}`
+        },
+        payload => {
+          console.log('Order updated:', payload);
+          // Reload order data
+          trackOrder();
+        }
+      )
+      .on(
+        'postgres_changes',
+        { 
+          event: 'INSERT', 
+          schema: 'public', 
+          table: 'order_tracking',
+          filter: `order_id=eq.${orderId}`
+        },
+        payload => {
+          console.log('New tracking entry:', payload);
+          // Reload order data
+          trackOrder();
+        }
+      )
+      .subscribe();
+  }
+
+  // Allow Enter key to submit
+  document.getElementById("orderId").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+      trackOrder();
+    }
+  });
+</script>
+</body>
+</html>
