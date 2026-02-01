@@ -155,22 +155,23 @@ label{ display:block; margin-bottom:6px; font-weight:500; color: #3b1f0f; }
       console.log("🆔 Generated Order ID:", uniqueOrderId);
 
       // Clean Google Image URL
-      const cleanGoogleUrl = (url) => {
-        if (!url) return null;
-        let cleaned = String(url).trim();
-        cleaned = cleaned.replace(/[?&]service=[^&]*/gi, '');
-        if (!/^https?:\/\//i.test(cleaned)) {
-          cleaned = `https://${cleaned}`;
-        }
-        try {
-          new URL(cleaned);
-          console.log("✅ Valid Google URL:", cleaned);
-          return cleaned;
-        } catch {
-          console.warn("❌ Invalid Google URL:", cleaned);
-          return null;
-        }
-      };
+      // Clean Google Image URL - SIMPLIFIED VERSION
+const cleanGoogleUrl = (url) => {
+  if (!url) return null;
+  
+  let cleaned = String(url).trim();
+  
+  // If it's already a valid URL, use it as-is
+  if (cleaned.startsWith('http://') || cleaned.startsWith('https://')) {
+    console.log("✅ Valid Google URL:", cleaned);
+    return cleaned;
+  }
+  
+  // Otherwise add https://
+  cleaned = `https://${cleaned}`;
+  console.log("✅ Added https to URL:", cleaned);
+  return cleaned;
+};
       
       const googleImageUrl = cleanGoogleUrl(fabricRow.google_image_url);
       const googleImageHtml = googleImageUrl 
