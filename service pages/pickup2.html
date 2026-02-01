@@ -90,6 +90,8 @@ label{ display:block; margin-bottom:6px; font-weight:500; color: #3b1f0f; }
 
 
 
+
+
 <script>
   // Initialize EmailJS and Supabase
   emailjs.init("V5fGF5JF2JAOD_AcW"); 
@@ -148,28 +150,18 @@ label{ display:block; margin-bottom:6px; font-weight:500; color: #3b1f0f; }
         pincode: pincode
       }]);
 
-      // ============================================
-      // FIX: Generate Order ID ONCE and use it everywhere
-      // ============================================
+      // Generate Order ID ONCE
       const uniqueOrderId = "MODASOU_" + Math.floor(1000 + Math.random() * 9000);
       console.log("🆔 Generated Order ID:", uniqueOrderId);
-      console.log("⚠️ THIS IS THE ONLY ORDER ID - will be used in both email and database");
 
-      // IMPROVED: Better Google Image URL cleaning
+      // Clean Google Image URL
       const cleanGoogleUrl = (url) => {
         if (!url) return null;
-        
         let cleaned = String(url).trim();
-        
-        // Remove only the service parameter, not the whole URL
         cleaned = cleaned.replace(/[?&]service=[^&]*/gi, '');
-        
-        // Ensure it starts with https://
         if (!/^https?:\/\//i.test(cleaned)) {
           cleaned = `https://${cleaned}`;
         }
-        
-        // Validate URL
         try {
           new URL(cleaned);
           console.log("✅ Valid Google URL:", cleaned);
@@ -181,76 +173,92 @@ label{ display:block; margin-bottom:6px; font-weight:500; color: #3b1f0f; }
       };
       
       const googleImageUrl = cleanGoogleUrl(fabricRow.google_image_url);
-      
-      // Create HTML anchor for email only if URL is valid
       const googleImageHtml = googleImageUrl 
         ? `<a href="${googleImageUrl}" target="_blank" rel="noopener noreferrer" style="color:#1a73e8;text-decoration:none;font-weight:bold;">View Google Image</a>`
         : '<span style="color:#999;">Not Provided</span>';
-      
       const googleImageText = googleImageUrl || "Not Provided";
 
       console.log("📸 Google Image URL:", googleImageUrl);
 
       // ============================================
-      // SAVE TO ORDERS TABLE - USING THE SAME ORDER ID
+      // SAFER VERSION: Only save fields that exist
       // ============================================
       console.log("💾 CRITICAL: Saving to orders table with Order ID:", uniqueOrderId);
       
+      // Build order data object - only include fields if they have values
       const orderData = {
-        // PRIMARY KEY: This is what admin panel will display
         order_id: uniqueOrderId,
-        
         session_id: sessionId,
         service: 'Fabric Pickup Service',
-        
-        // Customer name - map to all possible fields
-        customer_name: fullName,
-        full_name: fullName,
-        name: fullName,
-        
-        // Contact info
-        whatsapp: whatsappNumber,
-        whatsapp_number: whatsappNumber,
-        phone: whatsappNumber,
-        
-        // Pickup details
-        pickup_date: pickupDate,
-        pickup_time: pickupTime,
-        address: fullAddress,
-        full_address: fullAddress,
-        pincode: pincode,
-        
-        // Fabric & design details
-        fabric_video_url: fabricRow.fabric_video_url || null,
-        video_url: fabricRow.fabric_video_url || null,
-        
-        fabric_image_url: fabricRow.design_image_url || null,
-        design_image_url: fabricRow.design_image_url || null,
-        image_url: fabricRow.design_image_url || null,
-        
-        // Google image URL
-        google_image_url: googleImageUrl,
-        google_reference: googleImageUrl,
-        
-        // Measurements & preferences
-        top_meter: fabricRow.top_mtr || 0,
-        top_mtr: fabricRow.top_mtr || 0,
-        bottom_meter: fabricRow.bottom_mtr || 0,
-        bottom_mtr: fabricRow.bottom_mtr || 0,
-        
-        lining_preference: fabricRow.lining_preference || 'Not specified',
-        lining: fabricRow.lining_preference || 'Not specified',
-        
-        designer_name: fabricRow.designer_name || 'Not Selected',
-        designer_note: fabricRow.designer_note || 'None',
-        note: fabricRow.designer_note || 'None',
-        
-        // Status
         status: 'pending',
         order_date: new Date().toISOString(),
         created_at: new Date().toISOString()
       };
 
+      // Add customer info (all variations)
+      if (fullName) {
+        orderData.customer_name = fullName;
+        orderData.full_name = fullName;
+        orderData.name = fullName;
+      }
+
+      // Add contact info
+      if (whatsappNumber) {
+        orderData.whatsapp = whatsappNumber;
+        orderData.whatsapp_number = whatsappNumber;
+        orderData.phone = whatsappNumber;
+      }
+
+      // Add pickup details
+      if (pickupDate) orderData.pickup_date = pickupDate;
+      if (pickupTime) orderData.pickup_time = pickupTime;
+      if (fullAddress) {
+        orderData.address = fullAddress;
+        orderData.full_address = fullAddress;
+      }
+      if (pincode) orderData.pincode = pincode;
+
+      // Add media URLs
+      if (fabricRow.fabric_video_url) {
+        orderData.fabric_video_url = fabricRow.fabric_video_url;
+        orderData.video_url = fabricRow.fabric_video_url;
+      }
+      if (fabricRow.design_image_url) {
+        orderData.fabric_image_url = fabricRow.design_image_url;
+        orderData.design_image_url = fabricRow.design_image_url;
+        orderData.image_url = fabricRow.design_image_url;
+      }
+      if (googleImageUrl) {
+        orderData.google_image_url = googleImageUrl;
+        orderData.google_reference = googleImageUrl;
+      }
+
+      // Add measurements ONLY if columns exist (this prevents the error)
+      if (fabricRow.top_mtr !== undefined) {
+        orderData.top_meter = fabricRow.top_mtr || 0;
+        orderData.top_mtr = fabricRow.top_mtr || 0;
+      }
+      if (fabricRow.bottom_mtr !== undefined) {
+        orderData.bottom_meter = fabricRow.bottom_mtr || 0;
+        orderData.bottom_mtr = fabricRow.bottom_mtr || 0;
+      }
+
+      // Add preferences
+      if (fabricRow.lining_preference) {
+        orderData.lining_preference = fabricRow.lining_preference;
+        orderData.lining = fabricRow.lining_preference;
+      }
+      if (fabricRow.designer_name) {
+        orderData.designer_name = fabricRow.designer_name;
+      }
+      if (fabricRow.designer_note) {
+        orderData.designer_note = fabricRow.designer_note;
+        orderData.note = fabricRow.designer_note;
+      }
+
+      console.log("📦 Order data to save:", orderData);
+
+      // Save to database
       const { data: saved, error: saveError } = await m_db
         .from('orders')
         .insert([orderData])
@@ -258,22 +266,18 @@ label{ display:block; margin-bottom:6px; font-weight:500; color: #3b1f0f; }
 
       if (saveError) {
         console.error("❌ SAVE FAILED:", saveError);
+        console.error("Error details:", saveError.message);
         throw new Error("Database save failed: " + saveError.message);
       }
 
       console.log("✅ ORDER SAVED TO DATABASE!", saved);
-      console.log("✅ Database order_id:", saved[0]?.order_id);
 
-      // ============================================
-      // SEND EMAIL - USING THE EXACT SAME ORDER ID
-      // ============================================
+      // Send Email
       console.log("📧 Sending email with Order ID:", uniqueOrderId);
       
       try {
         const emailParams = {
-          // CRITICAL: Use the exact same order ID
           order_id: uniqueOrderId,
-          
           user_name: fullName,
           user_phone: whatsappNumber,
           pickup_date: pickupDate,
@@ -281,47 +285,27 @@ label{ display:block; margin-bottom:6px; font-weight:500; color: #3b1f0f; }
           message: `${fullAddress} (${pincode})`,
           address_text: fullAddress,
           pincode_text: pincode,
-          
-          // Media URLs
           video_link: fabricRow.fabric_video_url || "No video provided",
           reference_image_link: fabricRow.design_image_url || "No design image",
-          
-          // Google image
           google_image_url: googleImageText,
           google_image_anchor: googleImageHtml,
-          
-          // Other details
           designer_name: fabricRow.designer_name || "Not Selected",
           lining_pref: fabricRow.lining_preference || "Not specified",
           designer_note: String(fabricRow.designer_note || "None").slice(0, 2000),
           fabric_measurements: `Top: ${fabricRow.top_mtr || 0}m, Bottom: ${fabricRow.bottom_mtr || 0}m`
         };
         
-        console.log("📧 Email Order ID being sent:", emailParams.order_id);
-        
         await emailjs.send('TailorEmailService', 'template_nz5r9d7', emailParams);
-        console.log("✅ Email sent successfully with Order ID:", uniqueOrderId);
+        console.log("✅ Email sent successfully!");
       } catch (emailErr) {
         console.warn("⚠️ Email failed, but order is saved:", emailErr);
-        // Don't throw - order is already saved
       }
 
-      // ============================================
-      // VERIFICATION LOG
-      // ============================================
-      console.log("🔍 VERIFICATION:");
-      console.log("   Order ID generated:", uniqueOrderId);
-      console.log("   Order ID in database:", saved[0]?.order_id);
-      console.log("   Order ID in email:", uniqueOrderId);
-      console.log("   Customer name:", fullName);
-      console.log("   ✅ All should match!");
-
       // Success
-      alert(`✅ Order placed successfully!\n\nOrder ID: ${uniqueOrderId}\nCustomer: ${fullName}\n\nThis Order ID will appear in:\n- Your email\n- Admin panel\n- Database\n\nWe will contact you soon!`);
+      alert(`✅ Order placed successfully!\n\nOrder ID: ${uniqueOrderId}\nCustomer: ${fullName}\n\nSaved to database\n\nWe will contact you soon!`);
       
       localStorage.removeItem('modasou_session_id');
       
-      // Use setTimeout to ensure everything completes
       setTimeout(() => {
         window.location.href = "/thank-you.html";
       }, 500);
@@ -333,14 +317,13 @@ label{ display:block; margin-bottom:6px; font-weight:500; color: #3b1f0f; }
       btn.disabled = false;
     }
     
-    return false; // Prevent any form submission
+    return false;
   }
 
-  // Attach carefully
+  // Attach event handlers
   const orderForm = document.getElementById('pickupForm');
   if (orderForm) {
     orderForm.addEventListener('submit', handleFinalOrder);
-    // Also prevent default submission
     orderForm.onsubmit = handleFinalOrder;
   }
 </script></body></html>
