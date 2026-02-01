@@ -100,226 +100,284 @@ label{ display:block; margin-bottom:6px; font-weight:500; color: #3b1f0f; }
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA'
   );
 
-  async function handleFinalOrder(e) {
-    // CRITICAL: Prevent form submission and page navigation
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    
-    const btn = document.getElementById('submitBtn');
-    const sessionId = localStorage.getItem('modasou_session_id');
 
-    if (!sessionId) {
-      alert("Error: No session found. Please go back to Service 2 and submit your fabric first.");
-      return false;
-    }
 
-    btn.innerText = "Processing Order...";
-    btn.disabled = true;
 
-    try {
-      // Fetch Fabric Data
-      console.log("Fetching fabric data...");
-      const { data: fabricRow, error: fetchError } = await m_db
-        .from('service_2')
-        .select('*')
-        .eq('session_id', sessionId)
-        .maybeSingle(); 
+  // ============================================
+// COMPLETE FIX FOR pickup2.html
+// Replace ONLY the handleFinalOrder function
+// ============================================
 
-      if (fetchError) throw new Error("Fetch Error: " + fetchError.message);
-      if (!fabricRow) throw new Error("Fabric not found. Submit fabric first.");
-
-      // Get form values
-      const fullName = document.getElementById('fullname').value.trim();
-      const whatsappNumber = document.getElementById('watsapp_number').value.trim();
-      const pickupDate = document.getElementById('pickup_date').value;
-      const pickupTime = document.getElementById('pickup_time').value;
-      const fullAddress = document.getElementById('address').value.trim();
-      const pincode = document.getElementById('pincode').value.trim();
-
-      // Save to service_2_pickups
-      console.log("Saving pickup details...");
-      await m_db.from('service_2_pickups').upsert([{
-        session_id: sessionId,
-        full_name: fullName,
-        whatsapp_number: whatsappNumber,
-        pickup_date: pickupDate,
-        pickup_time: pickupTime,
-        full_address: fullAddress,
-        pincode: pincode
-      }]);
-
-      // Generate Order ID ONCE
-      const uniqueOrderId = "MODASOU_" + Math.floor(1000 + Math.random() * 9000);
-      console.log("🆔 Generated Order ID:", uniqueOrderId);
-
-      // Clean Google Image URL
-      // Clean Google Image URL - SIMPLIFIED VERSION
-const cleanGoogleUrl = (url) => {
-  if (!url) return null;
-  
-  let cleaned = String(url).trim();
-  
-  // If it's already a valid URL, use it as-is
-  if (cleaned.startsWith('http://') || cleaned.startsWith('https://')) {
-    console.log("✅ Valid Google URL:", cleaned);
-    return cleaned;
+async function handleFinalOrder(e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
   }
   
-  // Otherwise add https://
-  cleaned = `https://${cleaned}`;
-  console.log("✅ Added https to URL:", cleaned);
-  return cleaned;
-};
-      
-      const googleImageUrl = cleanGoogleUrl(fabricRow.google_image_url);
-      const googleImageHtml = googleImageUrl 
-        ? `<a href="${googleImageUrl}" target="_blank" rel="noopener noreferrer" style="color:#1a73e8;text-decoration:none;font-weight:bold;">View Google Image</a>`
-        : '<span style="color:#999;">Not Provided</span>';
-      const googleImageText = googleImageUrl || "Not Provided";
+  const btn = document.getElementById('submitBtn');
+  const sessionId = localStorage.getItem('modasou_session_id');
 
-      console.log("📸 Google Image URL:", googleImageUrl);
+  if (!sessionId) {
+    alert("Error: No session found. Please go back to Service 2 and submit your fabric first.");
+    return false;
+  }
 
-      // ============================================
-      // SAFER VERSION: Only save fields that exist
-      // ============================================
-      console.log("💾 CRITICAL: Saving to orders table with Order ID:", uniqueOrderId);
-      
-      // Build order data object - only include fields if they have values
-      const orderData = {
-        order_id: uniqueOrderId,
-        session_id: sessionId,
-        service: 'Fabric Pickup Service',
-        status: 'pending',
-        order_date: new Date().toISOString(),
-        created_at: new Date().toISOString()
-      };
+  btn.innerText = "Processing Order...";
+  btn.disabled = true;
 
-      // Add customer info (all variations)
-      if (fullName) {
-        orderData.customer_name = fullName;
-        orderData.full_name = fullName;
-        orderData.name = fullName;
-      }
-
-      // Add contact info
-      if (whatsappNumber) {
-        orderData.whatsapp = whatsappNumber;
-        orderData.whatsapp_number = whatsappNumber;
-        orderData.phone = whatsappNumber;
-      }
-
-      // Add pickup details
-      if (pickupDate) orderData.pickup_date = pickupDate;
-      if (pickupTime) orderData.pickup_time = pickupTime;
-      if (fullAddress) {
-        orderData.address = fullAddress;
-        orderData.full_address = fullAddress;
-      }
-      if (pincode) orderData.pincode = pincode;
-
-      // Add media URLs
-      if (fabricRow.fabric_video_url) {
-        orderData.fabric_video_url = fabricRow.fabric_video_url;
-        orderData.video_url = fabricRow.fabric_video_url;
-      }
-      if (fabricRow.design_image_url) {
-        orderData.fabric_image_url = fabricRow.design_image_url;
-        orderData.design_image_url = fabricRow.design_image_url;
-        orderData.image_url = fabricRow.design_image_url;
-      }
-      if (googleImageUrl) {
-        orderData.google_image_url = googleImageUrl;
-        orderData.google_reference = googleImageUrl;
-      }
-
-      // Add measurements ONLY if columns exist (this prevents the error)
-      if (fabricRow.top_mtr !== undefined) {
-        orderData.top_meter = fabricRow.top_mtr || 0;
-        orderData.top_mtr = fabricRow.top_mtr || 0;
-      }
-      if (fabricRow.bottom_mtr !== undefined) {
-        orderData.bottom_meter = fabricRow.bottom_mtr || 0;
-        orderData.bottom_mtr = fabricRow.bottom_mtr || 0;
-      }
-
-      // Add preferences
-      if (fabricRow.lining_preference) {
-        orderData.lining_preference = fabricRow.lining_preference;
-        orderData.lining = fabricRow.lining_preference;
-      }
-      if (fabricRow.designer_name) {
-        orderData.designer_name = fabricRow.designer_name;
-      }
-      if (fabricRow.designer_note) {
-        orderData.designer_note = fabricRow.designer_note;
-        orderData.note = fabricRow.designer_note;
-      }
-
-      console.log("📦 Order data to save:", orderData);
-
-      // Save to database
-      const { data: saved, error: saveError } = await m_db
-        .from('orders')
-        .insert([orderData])
-        .select();
-
-      if (saveError) {
-        console.error("❌ SAVE FAILED:", saveError);
-        console.error("Error details:", saveError.message);
-        throw new Error("Database save failed: " + saveError.message);
-      }
-
-      console.log("✅ ORDER SAVED TO DATABASE!", saved);
-
-      // Send Email
-      console.log("📧 Sending email with Order ID:", uniqueOrderId);
-      
-      try {
-        const emailParams = {
-          order_id: uniqueOrderId,
-          user_name: fullName,
-          user_phone: whatsappNumber,
-          pickup_date: pickupDate,
-          pickup_time: pickupTime,
-          message: `${fullAddress} (${pincode})`,
-          address_text: fullAddress,
-          pincode_text: pincode,
-          video_link: fabricRow.fabric_video_url || "No video provided",
-          reference_image_link: fabricRow.design_image_url || "No design image",
-          google_image_url: googleImageText,
-          google_image_anchor: googleImageHtml,
-          designer_name: fabricRow.designer_name || "Not Selected",
-          lining_pref: fabricRow.lining_preference || "Not specified",
-          designer_note: String(fabricRow.designer_note || "None").slice(0, 2000),
-          fabric_measurements: `Top: ${fabricRow.top_mtr || 0}m, Bottom: ${fabricRow.bottom_mtr || 0}m`
-        };
-        
-        await emailjs.send('TailorEmailService', 'template_nz5r9d7', emailParams);
-        console.log("✅ Email sent successfully!");
-      } catch (emailErr) {
-        console.warn("⚠️ Email failed, but order is saved:", emailErr);
-      }
-
-      // Success
-      alert(`✅ Order placed successfully!\n\nOrder ID: ${uniqueOrderId}\nCustomer: ${fullName}\n\nSaved to database\n\nWe will contact you soon!`);
-      
+  try {
+    // ============================================
+    // FIX 1: Check if order already exists (prevents duplicate error)
+    // ============================================
+    console.log("Checking for existing order with session:", sessionId);
+    const { data: existingOrder } = await m_db
+      .from('orders')
+      .select('order_id, customer_name, full_name, name')
+      .eq('session_id', sessionId)
+      .maybeSingle();
+    
+    if (existingOrder) {
+      const customerName = existingOrder.customer_name || existingOrder.full_name || existingOrder.name || 'Customer';
+      console.log("⚠️ Order already exists:", existingOrder.order_id);
+      alert(`✅ Order already submitted!\n\nOrder ID: ${existingOrder.order_id}\nCustomer: ${customerName}\n\nWe will contact you soon!`);
       localStorage.removeItem('modasou_session_id');
-      
       setTimeout(() => {
         window.location.href = "/thank-you.html";
       }, 500);
+      return false;
+    }
 
-    } catch (err) {
-      console.error("❌ ERROR:", err);
-      alert("Order Error: " + (err.message || err));
-      btn.innerText = "Schedule Cloth Pickup";
-      btn.disabled = false;
+    // Fetch Fabric Data from service_2
+    console.log("Fetching fabric data for session:", sessionId);
+    const { data: fabricRow, error: fetchError } = await m_db
+      .from('service_2')
+      .select('*')
+      .eq('session_id', sessionId)
+      .maybeSingle(); 
+
+    if (fetchError) throw new Error("Fetch Error: " + fetchError.message);
+    if (!fabricRow) throw new Error("Fabric not found. Please go back and submit your fabric first.");
+
+    // Get form values
+    const fullName = document.getElementById('fullname').value.trim();
+    const whatsappNumber = document.getElementById('watsapp_number').value.trim();
+    const pickupDate = document.getElementById('pickup_date').value;
+    const pickupTime = document.getElementById('pickup_time').value;
+    const fullAddress = document.getElementById('address').value.trim();
+    const pincode = document.getElementById('pincode').value.trim();
+
+    // Save to service_2_pickups
+    console.log("Saving pickup details...");
+    await m_db.from('service_2_pickups').upsert([{
+      session_id: sessionId,
+      full_name: fullName,
+      whatsapp_number: whatsappNumber,
+      pickup_date: pickupDate,
+      pickup_time: pickupTime,
+      full_address: fullAddress,
+      pincode: pincode
+    }]);
+
+    // Generate Order ID ONCE
+    const uniqueOrderId = "MODASOU_" + Math.floor(1000 + Math.random() * 9000);
+    console.log("🆔 Generated Order ID:", uniqueOrderId);
+
+    // ============================================
+    // FIX 2: Clean Google Image URL properly
+    // ============================================
+    const cleanGoogleUrl = (url) => {
+      if (!url || url.trim() === '') return null;
+      
+      let cleaned = String(url).trim();
+      
+      // Remove quotes and extra spaces
+      cleaned = cleaned.replace(/^["']|["']$/g, '');
+      cleaned = cleaned.replace(/\s+/g, '');
+      
+      // Handle Google Images search URLs (extract actual image URL)
+      if (cleaned.includes('google.com/imgres')) {
+        try {
+          const urlParams = new URLSearchParams(cleaned.split('?')[1]);
+          const imgUrl = urlParams.get('imgurl');
+          if (imgUrl) {
+            cleaned = imgUrl;
+            console.log("✅ Extracted image URL from Google search:", cleaned);
+          }
+        } catch (e) {
+          console.warn("Could not extract from Google search URL");
+        }
+      }
+      
+      // If it already has http:// or https://, use it
+      if (cleaned.startsWith('http://') || cleaned.startsWith('https://')) {
+        console.log("✅ Valid Google URL:", cleaned);
+        return cleaned;
+      }
+      
+      // Add https:// if missing
+      cleaned = `https://${cleaned}`;
+      console.log("✅ Added https:// to URL:", cleaned);
+      return cleaned;
+    };
+    
+    const googleImageUrl = cleanGoogleUrl(fabricRow.google_image_url);
+    
+    // Create email-friendly versions
+    const googleImageHtml = googleImageUrl 
+      ? `<a href="${googleImageUrl}" target="_blank" rel="noopener noreferrer" style="color:#1a73e8;text-decoration:none;font-weight:bold;">View Google Image</a>`
+      : 'Not Provided';
+    
+    const googleImageText = googleImageUrl || "Not Provided";
+
+    console.log("📸 Final Google Image URL:", googleImageUrl);
+    console.log("📧 Google Image HTML:", googleImageHtml);
+    console.log("📧 Google Image Text:", googleImageText);
+
+    // ============================================
+    // Build order data object
+    // ============================================
+    console.log("💾 Saving to orders table with Order ID:", uniqueOrderId);
+    
+    const orderData = {
+      order_id: uniqueOrderId,
+      session_id: sessionId,
+      service: 'Fabric Pickup Service',
+      status: 'pending',
+      order_date: new Date().toISOString(),
+      created_at: new Date().toISOString()
+    };
+
+    // Customer info
+    if (fullName) {
+      orderData.customer_name = fullName;
+      orderData.full_name = fullName;
+      orderData.name = fullName;
+    }
+
+    // Contact info
+    if (whatsappNumber) {
+      orderData.whatsapp = whatsappNumber;
+      orderData.whatsapp_number = whatsappNumber;
+      orderData.phone = whatsappNumber;
+    }
+
+    // Pickup details
+    if (pickupDate) orderData.pickup_date = pickupDate;
+    if (pickupTime) orderData.pickup_time = pickupTime;
+    if (fullAddress) {
+      orderData.address = fullAddress;
+      orderData.full_address = fullAddress;
+    }
+    if (pincode) orderData.pincode = pincode;
+
+    // Media URLs
+    if (fabricRow.fabric_video_url) {
+      orderData.fabric_video_url = fabricRow.fabric_video_url;
+      orderData.video_url = fabricRow.fabric_video_url;
+    }
+    if (fabricRow.design_image_url) {
+      orderData.fabric_image_url = fabricRow.design_image_url;
+      orderData.design_image_url = fabricRow.design_image_url;
+      orderData.image_url = fabricRow.design_image_url;
     }
     
-    return false;
+    // Save CLEANED Google URL
+    if (googleImageUrl) {
+      orderData.google_image_url = googleImageUrl;
+      orderData.google_reference = googleImageUrl;
+    }
+
+    // Measurements
+    if (fabricRow.top_mtr !== undefined) {
+      orderData.top_meter = fabricRow.top_mtr || 0;
+      orderData.top_mtr = fabricRow.top_mtr || 0;
+    }
+    if (fabricRow.bottom_mtr !== undefined) {
+      orderData.bottom_meter = fabricRow.bottom_mtr || 0;
+      orderData.bottom_mtr = fabricRow.bottom_mtr || 0;
+    }
+
+    // Preferences
+    if (fabricRow.lining_preference) {
+      orderData.lining_preference = fabricRow.lining_preference;
+      orderData.lining = fabricRow.lining_preference;
+    }
+    if (fabricRow.designer_name) {
+      orderData.designer_name = fabricRow.designer_name;
+    }
+    if (fabricRow.designer_note) {
+      orderData.designer_note = fabricRow.designer_note;
+      orderData.note = fabricRow.designer_note;
+    }
+
+    console.log("📦 Complete order data:", orderData);
+
+    // ============================================
+    // Save to database
+    // ============================================
+    const { data: saved, error: saveError } = await m_db
+      .from('orders')
+      .insert([orderData])
+      .select();
+
+    if (saveError) {
+      console.error("❌ SAVE FAILED:", saveError);
+      throw new Error("Database save failed: " + saveError.message);
+    }
+
+    console.log("✅ ORDER SAVED TO DATABASE!", saved);
+
+    // ============================================
+    // Send Email
+    // ============================================
+    console.log("📧 Sending email with Order ID:", uniqueOrderId);
+    
+    try {
+      const emailParams = {
+        order_id: uniqueOrderId,
+        user_name: fullName,
+        user_phone: whatsappNumber,
+        pickup_date: pickupDate,
+        pickup_time: pickupTime,
+        message: `${fullAddress} (${pincode})`,
+        address_text: fullAddress,
+        pincode_text: pincode,
+        video_link: fabricRow.fabric_video_url || "No video provided",
+        reference_image_link: fabricRow.design_image_url || "No design image",
+        google_image_url: googleImageText,
+        google_image_anchor: googleImageHtml,
+        designer_name: fabricRow.designer_name || "Not Selected",
+        lining_pref: fabricRow.lining_preference || "Not specified",
+        designer_note: String(fabricRow.designer_note || "None").slice(0, 2000),
+        fabric_measurements: `Top: ${fabricRow.top_mtr || 0}m, Bottom: ${fabricRow.bottom_mtr || 0}m`
+      };
+      
+      console.log("📧 Email parameters:", emailParams);
+      
+      await emailjs.send('TailorEmailService', 'template_nz5r9d7', emailParams);
+      console.log("✅ Email sent successfully!");
+    } catch (emailErr) {
+      console.warn("⚠️ Email failed, but order is saved:", emailErr);
+    }
+
+    // Success
+    alert(`✅ Order placed successfully!\n\nOrder ID: ${uniqueOrderId}\nCustomer: ${fullName}\n\nSaved to database\n\nWe will contact you soon!`);
+    
+    localStorage.removeItem('modasou_session_id');
+    
+    setTimeout(() => {
+      window.location.href = "/thank-you.html";
+    }, 500);
+
+  } catch (err) {
+    console.error("❌ ERROR:", err);
+    alert("Order Error: " + (err.message || err));
+    btn.innerText = "Schedule Cloth Pickup";
+    btn.disabled = false;
   }
+  
+  return false;
+}
 
   // Attach event handlers
   const orderForm = document.getElementById('pickupForm');
