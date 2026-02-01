@@ -423,7 +423,11 @@
 <div class="google-card">
   <h2>3. Search Design Online</h2>
   <button class="google-btn" onclick="window.open('https://www.google.com/search?tbm=isch&q=latest+dress+designs', '_blank')"><i class="fa-solid fa-magnifying-glass"></i> Search on Google Images</button>
-  <p style="margin-top:10px; font-size:13px;">Right-click image -> Copy image address -> Paste below</p>
+  <ul style="margin-top:10px; color: #432818; text-align: left; font-size:10px;"><li>Go to Google Images</li><li>Click on an image</li>
+
+           <li>Right-click on the LARGE image (on the right side)</li><li>Select "Copy image address" ← Important!</li>
+           <li>Paste - should be like: https://example.com/image.jpg</li>
+</ul>
   <input type="text" id="googleUrl" placeholder="Paste image link here...">
   <br>
   <button class="google-btn" style="background:#99582a" onclick="previewGoogleImage()">Preview Image</button>
@@ -572,26 +576,59 @@ async function submitDesignData() {
   }
 }
 
-
 async function submitGoogleDesign() {
   localStorage.setItem("active_service", "service2");
   let url = document.getElementById('googleUrl').value.trim();
 
   if (!url) return alert("Please paste an image link first");
 
-  // ✅ CLEAN GOOGLE IMAGE URL
-  if (url.includes("google.com/imgres")) {
-    const params = new URLSearchParams(url.split("?")[1]);
-    url = params.get("imgrefurl") || url;
-  }
-
   const btn = document.getElementById('submitGoogleBtn');
   btn.innerText = "Saving Link...";
+  btn.disabled = true;
 
   try {
+    let finalUrl = url;
+
+    // ============================================
+    // NEW: Handle base64 data URLs
+    // ============================================
+    if (url.startsWith('data:image/')) {
+      console.log("🔄 Base64 detected, uploading to storage...");
+      btn.innerText = "Uploading Image...";
+
+      // Convert base64 to blob
+      const response = await fetch(url);
+      const blob = await response.blob();
+      
+      // Upload to Supabase storage
+      const fileName = `google_${sessionId}_${Date.now()}.jpg`;
+      const { data: uploadData, error: uploadError } = await m_db.storage
+        .from('designs')
+        .upload(fileName, blob, {
+          contentType: 'image/jpeg',
+          upsert: false
+        });
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: urlData } = m_db.storage
+        .from('designs')
+        .getPublicUrl(fileName);
+      
+      finalUrl = urlData.publicUrl;
+      console.log("✅ Uploaded to:", finalUrl);
+    } 
+    // ✅ CLEAN GOOGLE IMAGE URL
+    else if (url.includes("google.com/imgres")) {
+      const params = new URLSearchParams(url.split("?")[1]);
+      finalUrl = params.get("imgurl") || params.get("imgrefurl") || url;
+    }
+
+    // Save to database
     const { error, data } = await m_db.from('service_2')
       .update({
-        google_image_url: url,
+        google_image_url: finalUrl,
         created_at: new Date()
       })
       .eq('session_id', sessionId)
@@ -602,14 +639,15 @@ async function submitGoogleDesign() {
     console.log("✅ GOOGLE SAVED:", data);
     alert("Online design saved! ✅");
     btn.innerText = "SAVED ✓";
+    btn.disabled = false;
 
   } catch (e) {
     console.error("GOOGLE ERROR:", e);
     alert(e.message);
     btn.innerText = "USE THIS IMAGE";
+    btn.disabled = false;
   }
 }
-
 
 
 
