@@ -98,12 +98,15 @@ label{ display:block; margin-bottom:6px; font-weight:500; color: #3b1f0f; }
     'https://gztneesmxwfhdmhqikel.supabase.co', 
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA'
   );
+  let isSubmitting = false;
 
   async function handleFinalOrder(e) {
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
+    if (isSubmitting) return false;
+isSubmitting = true;
     
     const btn = document.getElementById('submitBtn');
     const sessionId = localStorage.getItem('modasou_session_id');
@@ -364,6 +367,7 @@ google_image_url: googleImageUrl
       alert("Order Error: " + (err.message || err));
       btn.innerText = "Schedule Cloth Pickup";
       btn.disabled = false;
+      isSubmitting = false;
     }
     
     return false;
@@ -372,7 +376,11 @@ google_image_url: googleImageUrl
   // Attach event handlers
   const orderForm = document.getElementById('pickupForm');
 if (orderForm) {
-  orderForm.onsubmit = handleFinalOrder;
+  orderForm.onsubmit = (e) => {
+    e.preventDefault();
+    handleFinalOrder(e);
+    return false;
+  };
 }
   
 </script></body></html>
