@@ -227,9 +227,11 @@ body {
     'https://gztneesmxwfhdmhqikel.supabase.co', 
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA'
   );
-
+let isSubmitting = false;
   async function handleFinalOrder(e) {
     e.preventDefault(); 
+    if (isSubmitting) return false;
+isSubmitting = true;
     
     const btn = document.getElementById('submitBtn');
     if (!btn) { console.error("Button not found"); return; }
@@ -329,9 +331,22 @@ body {
 
       const topQty = mergedData.top_mtr ? `${mergedData.top_mtr}m / ${mergedData.top_cm || 0}cm` : "Not Provided";
       const botQty = mergedData.bottom_mtr ? `${mergedData.bottom_mtr}m / ${mergedData.bottom_cm || 0}cm` : "Not Provided";
+      // Check if order already exists
+const { data: existingOrder } = await m_db
+  .from('orders')
+  .select('order_id')
+  .eq('session_id', sessionId)
+  .maybeSingle();
+
+if (existingOrder) {
+  isSubmitting = false;
+  alert(`Order already submitted! Order ID: ${existingOrder.order_id}`);
+  window.location.href = "/thank-you.html";
+  return false;
+}
 
       // Generate Order ID
-      const uniqueOrderId = "MODASOU_" + Math.floor(1000 + Math.random() + 9000);
+      const uniqueOrderId = "MODASOU_" +  Math.floor(1000 + Math.random() * 9000);
 
       // --- NEW: SAVE TO ORDERS TABLE ---
       const customerName = document.getElementById('name').value;
@@ -463,8 +478,16 @@ body {
       alert("Order Error: " + msg);
       btn.innerText = "Submit Order";
       btn.disabled = false;
+      isSubmitting = false;
     }
   }
 
-  document.getElementById('submitBtn').addEventListener('click', handleFinalOrder);
+ const submitBtn = document.getElementById('submitBtn');
+if (submitBtn) {
+  submitBtn.onclick = (e) => {
+    e.preventDefault();
+    handleFinalOrder(e);
+    return false;
+  };
+}
 </script></body></html>
