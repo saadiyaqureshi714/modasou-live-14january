@@ -105,7 +105,10 @@ label{ display:block; margin-bottom:6px; font-weight:500; color: #3b1f0f; }
       e.preventDefault();
       e.stopPropagation();
     }
-    if (isSubmitting) return false;
+    if (isSubmitting) {
+  console.log("⚠️ Already submitting");
+  return false;
+}
 isSubmitting = true;
     
     const btn = document.getElementById('submitBtn');
@@ -127,17 +130,20 @@ isSubmitting = true;
         .select('order_id, customer_name, full_name, name')
         .eq('session_id', sessionId)
         .maybeSingle();
+
+
+        if (existingOrder) {
+  const customerName = existingOrder.customer_name || existingOrder.full_name || existingOrder.name || 'Customer';
+  console.log("⚠️ Order already exists:", existingOrder.order_id);
+  isSubmitting = false;  // ← ADD THIS LINE
+  alert(`✅ Order already submitted!\n\nOrder ID: ${existingOrder.order_id}\nCustomer: ${customerName}\n\nWe will contact you soon!`);
+  localStorage.removeItem('modasou_session_id');
+  setTimeout(() => {
+    window.location.href = "/thank-you.html";
+  }, 500);
+  return false;
+}
       
-      if (existingOrder) {
-        const customerName = existingOrder.customer_name || existingOrder.full_name || existingOrder.name || 'Customer';
-        console.log("⚠️ Order already exists:", existingOrder.order_id);
-        alert(`✅ Order already submitted!\n\nOrder ID: ${existingOrder.order_id}\nCustomer: ${customerName}\n\nWe will contact you soon!`);
-        localStorage.removeItem('modasou_session_id');
-        setTimeout(() => {
-          window.location.href = "/thank-you.html";
-        }, 500);
-        return false;
-      }
 
       // Fetch Fabric Data from service_2
       console.log("Fetching fabric data for session:", sessionId);
@@ -355,13 +361,13 @@ google_image_url: googleImageUrl
 
       // Success
       alert(`✅ Order placed successfully!\n\nOrder ID: ${uniqueOrderId}\nCustomer: ${fullName}\n\nSaved to database\n\nWe will contact you soon!`);
-      
-      localStorage.removeItem('modasou_session_id');
-      
-      setTimeout(() => {
-        window.location.href = "/thank-you.html";
-      }, 500);
 
+// Don't reset flag - let page redirect
+localStorage.removeItem('modasou_session_id');
+
+setTimeout(() => {
+  window.location.href = "/thank-you.html";
+}, 500);
     } catch (err) {
       console.error("❌ ERROR:", err);
       alert("Order Error: " + (err.message || err));
