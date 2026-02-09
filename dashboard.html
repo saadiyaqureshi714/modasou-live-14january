@@ -621,15 +621,14 @@
             </section>
 
             <!-- Orders Section -->
-            <section id="orders" class="section">
-                <h1 class="section-title">Your Orders</h1>
-                
-                <div class="orders-filter">
-
-                    <button onclick="window.location.href='order-tracking.html?orderId=' + order.order_id" class="filter-btn" >
-
-                        Track Order
-                         </button>
+             <!-- Orders Section -->
+<section id="orders" class="section">
+    <h1 class="section-title">Your Orders</h1>
+    
+    <div class="orders-filter">
+        <button onclick="window.location.href='order-tracking.html?orderId=' + order.order_id" class="filter-btn" >
+            Track Order
+        </button>
                     <button class="filter-btn active" onclick="filterOrders('all')">All Orders</button>
                     <button class="filter-btn" onclick="filterOrders('pending')">Pending</button>
                     <button class="filter-btn" onclick="filterOrders('processing')">Processing</button>
@@ -664,7 +663,6 @@
     </div>
 
     <script>
-
 
 // Reload fresh data from database on page load
 document.addEventListener('DOMContentLoaded', async function() {
@@ -721,27 +719,64 @@ function showSection(sectionName) {
 }
 
 async function loadOrders() {
-    const orders = [
-        { orderId: 'ORD-2024-001', date: '2024-01-15', status: 'delivered', 
-          items: [{ name: 'Designer Handbag', price: 299.99 }], total: 389.98 }
-    ];
-    displayOrders(orders);
+    const SUPABASE_URL = 'https://gztneesmxwfhdmhqikel.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA';
+    
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/orders?select=*&order=created_at.desc`, {
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`
+            }
+        });
+        
+        const orders = await response.json();
+        console.log('✅ Orders loaded:', orders);
+        displayOrders(orders || []);
+    } catch (error) {
+        console.error('❌ Error:', error);
+        displayOrders([]);
+    }
 }
 
 function displayOrders(orders) {
     const container = document.getElementById('ordersContainer');
+    
     if (orders.length === 0) {
-        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📦</div><div class="empty-state-text">No orders yet</div></div>';
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">📦</div>
+                <div class="empty-state-text">No orders yet</div>
+            </div>
+        `;
         return;
     }
+    
     container.innerHTML = orders.map(order => `
-        <div class="order-card" data-status="${order.status}">
+        <div class="order-card" data-status="${(order.status || 'pending').toLowerCase()}">
             <div class="order-header">
-                <div><div class="order-id">Order #${order.orderId}</div></div>
-                <span class="order-status status-${order.status}">${order.status.toUpperCase()}</span>
+                <div>
+                    <div class="order-id">Order #${order.order_id || order.id}</div>
+                    <div class="order-date">${new Date(order.created_at).toLocaleDateString()}</div>
+                </div>
+                <span class="order-status status-delivered">${order.status || 'PENDING'}</span>
+            </div>
+            
+            <div class="order-footer">
+                <div class="order-total">Service: ${order.service || 'Custom Order'}</div>
+                <div class="order-actions">
+                    <button class="track-btn" onclick="trackOrder('${order.order_id || order.id}')">
+                        📍 Track Order
+                    </button>
+                </div>
             </div>
         </div>
     `).join('');
+}
+
+// FIXED: Only ONE trackOrder function
+function trackOrder(orderId) {
+    window.location.href = `/order-tracking.html?orderId=${orderId}`;
 }
 
 function filterOrders(status) {
@@ -750,10 +785,6 @@ function filterOrders(status) {
     document.querySelectorAll('.order-card').forEach(order => {
         order.style.display = (status === 'all' || order.dataset.status === status) ? 'block' : 'none';
     });
-}
-
-function trackOrder(orderId) {
-    window.location.href = `order-tracking.html?orderId=${orderId}`;
 }
 
 async function loadWishlist() {
@@ -779,6 +810,7 @@ function editProfile() {
 function editAddress() {
     window.location.href = 'edit-addresses.html';
 }
+
 // Update address from localStorage addresses
 const savedAddresses = localStorage.getItem('modasou_addresses');
 if (savedAddresses) {
@@ -794,13 +826,13 @@ if (savedAddresses) {
             ${defaultAddress.country}
         `;
         document.getElementById('shippingAddress').innerHTML = addressHTML;
-    }}
+    }
+}
+
 function logout() {
     if (confirm('Are you sure you want to logout?')) {
         localStorage.clear();
         window.location.href = 'index.html';
     }
 }
-    </script>
-</body>
-</html>
+</script></body></html>
