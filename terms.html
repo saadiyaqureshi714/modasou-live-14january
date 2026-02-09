@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODASOU – Terms and Conditions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --charcoal: #2b2b2b;
+            --cream: #f8f6f3;
+            --gold: #c9a961;
+            --gold-dark: #a88b4a;
+            --warm-white: #ffffff;
+            --soft-gray: #6b6b6b;
+            --border-light: #e8e5e0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #f5f3ef 0%, #e8e5df 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(201, 169, 97, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(201, 169, 97, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(43, 43, 43, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            opacity: 0;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .modal {
+            position: relative;
+            background: var(--warm-white);
+            max-width: 920px;
+            width: 100%;
+            max-height: 90vh;
+            border-radius: 0;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.15);
+            z-index: 1001;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px) scale(0.96);
+            animation: slideUp 0.5s ease 0.1s forwards;
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--charcoal) 0%, #1a1a1a 100%);
+            padding: 48px 60px 42px;
+            border-bottom: 3px solid var(--gold);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: 0.5;
+        }
+
+        .brand-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 42px;
+            font-weight: 300;
+            letter-spacing: 6px;
+            color: var(--warm-white);
+            text-align: center;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 400;
+            letter-spacing: 3px;
+            color: var(--gold);
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 24px;
+            right: 28px;
+            width: 36px;
+            height: 36px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--cream);
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 300;
+        }
+
+        .close-btn:hover {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: var(--charcoal);
+            transform: rotate(90deg);
+        }
+
+        .modal-content {
+            padding: 48px 60px 32px;
+            overflow-y: auto;
+            max-height: calc(90vh - 280px);
+            scrollbar-width: thin;
+            scrollbar-color: var(--gold) var(--border-light);
+        }
+
+        .modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-content::-webkit-scrollbar-track {
+            background: var(--border-light);
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 3px;
+        }
+
+        .intro-text {
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--charcoal);
+            margin-bottom: 36px;
+            padding: 24px;
+            background: var(--cream);
+            border-left: 3px solid var(--gold);
+            font-weight: 400;
+            letter-spacing: 0.2px;
+        }
+
+        .section {
+            margin-bottom: 36px;
+            opacity: 0;
+            animation: fadeInSection 0.6s ease forwards;
+        }
+
+        .section:nth-child(1) { animation-delay: 0.2s; }
+        .section:nth-child(2) { animation-delay: 0.3s; }
+        .section:nth-child(3) { animation-delay: 0.4s; }
+        .section:nth-child(4) { animation-delay: 0.5s; }
+        .section:nth-child(5) { animation-delay: 0.6s; }
+        .section:nth-child(6) { animation-delay: 0.7s; }
+        .section:nth-child(7) { animation-delay: 0.8s; }
+        .section:nth-child(8) { animation-delay: 0.9s; }
+
+        @keyframes fadeInSection {
+            to { opacity: 1; }
+        }
+
+        .section-number {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--charcoal);
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .section-content {
+            font-size: 14px;
+            line-height: 1.9;
+            color: var(--soft-gray);
+            font-weight: 400;
+            letter-spacing: 0.3px;
+        }
+
+        .modal-footer {
+            padding: 32px 60px 40px;
+            background: var(--cream);
+            border-top: 1px solid var(--border-light);
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 28px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .checkbox-wrapper {
+            position: relative;
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .checkbox-wrapper input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--gold);
+            background: var(--warm-white);
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-wrapper:hover .checkmark {
+            border-color: var(--gold-dark);
+            box-shadow: 0 0 0 4px rgba(201, 169, 97, 0.1);
+        }
+
+        .checkbox-wrapper input:checked ~ .checkmark {
+            background: var(--gold);
+            border-color: var(--gold);
+        }
+
+        .checkmark::after {
+            content: '';
+            position: absolute;
+            display: none;
+            left: 7px;
+            top: 3px;
+            width: 6px;
+            height: 11px;
+            border: solid var(--charcoal);
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .checkbox-wrapper input:checked ~ .checkmark::after {
+            display: block;
+        }
+
+        .checkbox-label {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--charcoal);
+            font-weight: 400;
+            letter-spacing: 0.2px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 16px 48px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            color: var(--charcoal);
+            box-shadow: 0 4px 20px rgba(201, 169, 97, 0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 30px rgba(201, 169, 97, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            background: #d4d4d4;
+            color: #8a8a8a;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--soft-gray);
+            border: 1px solid var(--border-light);
+        }
+
+        .btn-secondary:hover {
+            background: var(--charcoal);
+            color: var(--warm-white);
+            border-color: var(--charcoal);
+        }
+
+        .decorative-line {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            margin: 32px 0;
+            opacity: 0.3;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .modal {
+                max-width: 95%;
+                margin: 20px;
+            }
+
+            .modal-header {
+                padding: 32px 28px 28px;
+            }
+
+            .brand-title {
+                font-size: 32px;
+                letter-spacing: 4px;
+            }
+
+            .subtitle {
+                font-size: 10px;
+                letter-spacing: 2px;
+            }
+
+            .modal-content {
+                padding: 32px 28px 24px;
+                max-height: calc(90vh - 260px);
+            }
+
+            .intro-text {
+                font-size: 14px;
+                padding: 20px;
+            }
+
+            .section-title {
+                font-size: 20px;
+            }
+
+            .section-content {
+                font-size: 13px;
+            }
+
+            .modal-footer {
+                padding: 24px 28px 32px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .close-btn {
+                top: 18px;
+                right: 20px;
+                width: 32px;
+                height: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    
+    <div class="modal">
+        <div class="modal-header">
+            <button class="close-btn" onclick="closeModal()" aria-label="Close">×</button>
+            <h1 class="brand-title">MODASOU</h1>
+            <p class="subtitle">Terms and Conditions</p>
+        </div>
+
+        <div class="modal-content">
+            <div class="intro-text">
+                MODASOU is a design-led luxury fashion platform offering made-to-order and customized garments. Operated by an individual proprietor. Company incorporation in progress. Payments are processed under the proprietor account until formal incorporation is completed.
+            </div>
+
+            <div class="section">
+                <div class="section-number">Article I</div>
+                <h2 class="section-title">Business Structure</h2>
+                <p class="section-content">
+                    MODASOU is currently operated by an individual proprietor. The brand is in the process of formal company incorporation under applicable Indian laws. Until incorporation is completed, all transactions, invoices, and payments are processed under the proprietor's name.
+                </p>
+            </div>
+
+            <div class="decorative-line"></div>
+
+            <div class="section">
+                <div class="section-number">Article II</div>
+                <h2 class="section-title">Nature of Services</h2>
+                <p class="section-content">
+                    MODASOU provides design-led, made-to-order and customized fashion services, including garment design coordination, tailoring facilitation, and personalization support. All products are customized specifically for the customer based on selected design, measurements, and preferences.
+                </p>
+            </div>
+
+            <div class="decorative-line"></div>
+
+            <div class="section">
+                <div class="section-number">Article III</div>
+                <h2 class="section-title">Payments</h2>
+                <p class="section-content">
+                    All payments made on the MODASOU website are processed through authorized third-party payment gateways and credited to the proprietor account operating the MODASOU brand. By completing a transaction, the customer acknowledges and agrees to this arrangement during the pre-incorporation phase.
+                </p>
+            </div>
+
+            <div class="decorative-line"></div>
+
+            <div class="section">
+                <div class="section-number">Article IV</div>
+                <h2 class="section-title">Returns & Alterations Policy</h2>
+                <p class="section-content">
+                    As all garments are made-to-order and customized, returns and refunds are not permitted. However, MODASOU offers one complimentary alteration in cases where minor fit adjustments are required, subject to feasibility and review.
+                </p>
+            </div>
+
+            <div class="decorative-line"></div>
+
+            <div class="section">
+                <div class="section-number">Article V</div>
+                <h2 class="section-title">Invoices & Documentation</h2>
+                <p class="section-content">
+                    Invoices and payment receipts will be issued in the name of the individual proprietor operating under the MODASOU brand until formal incorporation is completed.
+                </p>
+            </div>
+
+            <div class="decorative-line"></div>
+
+            <div class="section">
+                <div class="section-number">Article VI</div>
+                <h2 class="section-title">Future Incorporation</h2>
+                <p class="section-content">
+                    Upon completion of company incorporation, MODASOU reserves the right to transfer all operations, payments, and contractual relationships to the incorporated entity without impacting existing customer orders or service commitments.
+                </p>
+            </div>
+
+            <div class="decorative-line"></div>
+
+            <div class="section">
+                <div class="section-number">Article VII</div>
+                <h2 class="section-title">Governing Law</h2>
+                <p class="section-content">
+                    These terms shall be governed by and interpreted in accordance with the laws of India.
+                </p>
+            </div>
+
+            <div class="decorative-line"></div>
+
+            <div class="section">
+                <div class="section-number">Article VIII</div>
+                <h2 class="section-title">Privacy Policy – Data Handling</h2>
+                <p class="section-content">
+                    Customer data collected on the MODASOU platform is managed by the individual proprietor and will be handled with strict confidentiality. Customer data will not be shared with any third-party companies for marketing or resale purposes. Upon incorporation, data may be transferred to the registered entity while maintaining the same level of protection and privacy.
+                </p>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <div class="checkbox-container" onclick="toggleCheckbox()">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="agreeCheckbox">
+                    <span class="checkmark"></span>
+                </div>
+                <label class="checkbox-label" for="agreeCheckbox">
+                    I have read and agree to the Terms and Conditions, Privacy Policy, and understand that all purchases are final with one complimentary alteration available.
+                </label>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="acceptBtn" disabled onclick="acceptTerms()">
+                    Accept & Continue
+                </button>
+                <button class="btn btn-secondary" onclick="declineTerms()">
+                    Decline
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const checkbox = document.getElementById('agreeCheckbox');
+        const acceptBtn = document.getElementById('acceptBtn');
+
+        function toggleCheckbox() {
+            checkbox.checked = !checkbox.checked;
+            updateAcceptButton();
+        }
+
+        checkbox.addEventListener('change', updateAcceptButton);
+
+        function updateAcceptButton() {
+            acceptBtn.disabled = !checkbox.checked;
+        }
+
+        function acceptTerms() {
+            if (checkbox.checked) {
+                // Store acceptance in localStorage
+                localStorage.setItem('modasou_terms_accepted', 'true');
+                localStorage.setItem('modasou_terms_date', new Date().toISOString());
+                
+                // Close modal with fade out animation
+                document.querySelector('.modal').style.animation = 'slideDown 0.4s ease forwards';
+                document.querySelector('.overlay').style.animation = 'fadeOut 0.5s ease forwards';
+                
+                setTimeout(() => {
+                    alert('Thank you for accepting our Terms and Conditions. Welcome to MODASOU!');
+                    // In a real implementation, this would redirect to the main site
+                    // window.location.href = '/';
+                }, 400);
+            }
+        }
+
+        function declineTerms() {
+            if (confirm('You must accept the Terms and Conditions to use MODASOU. Are you sure you want to decline?')) {
+                alert('We respect your decision. You will be redirected to the homepage.');
+                // In a real implementation, this would redirect away or close the window
+                // window.location.href = 'https://google.com';
+            }
+        }
+
+        function closeModal() {
+            if (!checkbox.checked) {
+                if (confirm('You have not accepted the Terms and Conditions. Are you sure you want to close?')) {
+                    declineTerms();
+                }
+            } else {
+                acceptTerms();
+            }
+        }
+
+        // Check if terms were already accepted (for demo purposes)
+        // In production, this would check session/user database
+        window.addEventListener('load', () => {
+            if (localStorage.getItem('modasou_terms_accepted') === 'true') {
+                console.log('Terms already accepted on:', localStorage.getItem('modasou_terms_date'));
+            }
+        });
+
+        // Additional animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideDown {
+                to {
+                    opacity: 0;
+                    transform: translateY(30px) scale(0.96);
+                }
+            }
+            
+            @keyframes fadeOut {
+                to { opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Prevent closing modal by clicking outside (optional - can be removed)
+        document.querySelector('.overlay').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                closeModal();
+            }
+        });
+
+        // Keyboard accessibility
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

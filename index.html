@@ -27,14 +27,14 @@
 
 
 <!-- NAVBAR -->
-<header class="navbar">
+<header class="navbar"><div class="only-logo">
   <div class="logo">
   <img src="ModasouLogo.png" alt="Modasou Logo">
     <span class="trademark-icon">™</span>
 
 
 </div>
-<h1 class="logo">MODASOU<sup>™</sup></h1>
+<h1 class="logo">MODASOU<sup>™</sup></h1></div>
 
   <!-- Hamburger Icon (for mobile) -->
   <div class="hamburger-menu">
@@ -75,7 +75,7 @@
        <div class="sub-item has-submenu">
       <a href="#">Design And Stitch</a>
        <div class="sub-dropdown">
-        <a href="/service pages/2page.html?service=blouse"> blouse</a>
+        <a href="/service pages/2page.html?service=blouse"> Blouse</a>
          <a href="/service pages/2page.html?service=dress"> Dress, Maxi</a>
           <a href="/service pages/2page.html?service=top"> Tops</a>
            <a href="/service pages/2page.html?service=kurta"> Kurta</a>
@@ -100,37 +100,258 @@
       <a href="/designersprofile/sakshi4.html">Sakshi Abhijit Sawant</a>
       <a href="/designersprofile/deepali.html">Deepali Bhole</a>
       <a href="/designersprofile/aarti.html">Aarti Shroff</a>
+      <a href="/designersprofile/PRAKRITI-MISHRA.HTML">Prakriti Mishra</a>
     </div>
-  </div>
+</div>
 
-  <div class="menu-item">
-    <a href="/service pages/comingsoon.html">Blog</a>
-    
-  </div>
-<div class="menu-item">
-    <a href="/contact.html">Contact Us</a>
+    <div class="menu-item">
+      <a href="/cart.html">Cart</a></div>
     <!--<div class="dropdown">
       
       <a href="#"></a>
       <a href="#"></a>
     </div>-->
-  </div>
-
-
-  <div >
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <i class="fa-regular fa-heart"></i>
-    <i class="fa-solid fa-cart-shopping"></i>
-    
-  </div>
-
 
 
 
   
-  </nav>
-</header>
-<body>
+
+    <!-- PERSISTENT LOGIN NAVBAR COMPONENT -->
+<!-- Add this to your main navbar HTML -->
+ 
+
+
+  
+  
+<!-- COMPLETE ACCOUNT DROPDOWN CODE -->
+<!-- Place this INSIDE <nav class="menu" id="main-menu"> -->
+
+<div class="account-dropdown">
+    <!-- Guest View (Not Logged In) -->
+    <div id="guestView" style="display: none;">
+        <button class="account-button" id="accountBtn">
+            <span>Hello, Sign in</span>
+            <span style="font-weight: 400;">Account & Lists</span>
+        </button>
+        
+        <div class="dropdown-menu" id="dropdownMenu">
+            <div class="dropdown-content">
+                <div class="dropdown-header">
+                    <h3>Welcome to Modasou</h3>
+                    <p>Sign in for the best experience</p>
+                </div>
+                
+                <button class="login-btn" onclick="handleLogin()">Sign In</button>
+                
+                <div class="divider">
+                    <span>New to Modasou?</span>
+                </div>
+                
+                <div class="signup-section">
+                    <p class="signup-text">Create your Modasou account</p>
+                    <button class="signup-btn" onclick="handleSignup()">Create Account</button>
+                </div>
+            </div>
+            
+            <div class="dropdown-footer">
+                <div class="footer-links">
+                    <a href="#" class="footer-link">Your Account</a>
+                    <a href="#" class="footer-link">Your Orders</a>
+                    <a href="#" class="footer-link">Your Wishlist</a>
+                    <a href="#" class="footer-link">Your Recommendations</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logged In View -->
+    <div id="loggedInView" style="display: none;">
+        <button class="account-button-logged" id="accountBtnLogged">
+            <span style="font-size: 12px;">Hello, <span id="userFirstName">User</span></span>
+            <span style="font-weight: 600;">Account & Lists</span>
+        </button>
+        
+        <div class="dropdown-menu-logged" id="dropdownMenuLogged">
+            <div class="dropdown-content">
+                <div class="user-profile-header">
+                    <div class="user-avatar" id="userAvatar">
+                        <span id="userInitials">JD</span>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-name" id="userFullName">John Doe</div>
+                        <div class="user-email" id="userEmailDisplay">john@example.com</div>
+                    </div>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <div class="menu-section">
+                    <div class="menu-title">Your Account</div>
+                    <a href="/dashboard.html" class="menu-item">
+                        <span class="menu-icon">👤</span>
+                        <span>Your Profile</span>
+                    </a>
+                    <a href="/dashboard.html?section=orders" class="menu-item">
+                        <span class="menu-icon">📦</span>
+                        <span>Your Orders</span>
+                    </a>
+                    <a href="switch-accounts.html" class="menu-item">
+                        <span class="menu-icon">🔄</span>
+                        <span>Switch Accounts</span>
+                    </a>
+                    <a href="/dashboard.html?section=wishlist" class="menu-item">
+                        <span class="menu-icon">❤️</span>
+                        <span>Your Wishlist</span>
+                    </a>
+                    <a href="/dashboard.html?section=recommendations" class="menu-item">
+                        <span class="menu-icon">⭐</span>
+                        <span>Recommendations</span>
+                    </a>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <div class="menu-section">
+                    <a href="settings.html" class="menu-item">
+                        <span class="menu-icon">⚙️</span>
+                        <span>Settings</span>
+                    </a>
+                    <a href="help.html" class="menu-item">
+                        <span class="menu-icon">❓</span>
+                        <span>Help Center</span>
+                    </a>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <button class="logout-btn" onclick="handleLogout()">
+                    <span class="menu-icon">🚪</span>
+                    <span>Sign Out</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div></nav></header>
+
+<!-- JavaScript for Account Dropdown -->
+<script>
+// Check login state on page load
+document.addEventListener('DOMContentLoaded', function() {
+    checkLoginState();
+});
+
+// Check if user is logged in
+function checkLoginState() {
+    const token = localStorage.getItem('token');
+    const userName = localStorage.getItem('userName');
+    const userEmail = localStorage.getItem('userEmail');
+    
+    if (token && userName) {
+        showLoggedInView(userName, userEmail);
+    } else {
+        showGuestView();
+    }
+}
+
+// Show guest view (not logged in)
+function showGuestView() {
+    document.getElementById('guestView').style.display = 'block';
+    document.getElementById('loggedInView').style.display = 'none';
+    
+    const accountBtn = document.getElementById('accountBtn');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    
+    accountBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        dropdownMenu.classList.toggle('show');
+        accountBtn.classList.toggle('active');
+    });
+    
+    document.addEventListener('click', function(e) {
+        if (!accountBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+            dropdownMenu.classList.remove('show');
+            accountBtn.classList.remove('active');
+        }
+    });
+    
+    dropdownMenu.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+}
+
+// Show logged in view
+function showLoggedInView(userName, userEmail) {
+    document.getElementById('guestView').style.display = 'none';
+    document.getElementById('loggedInView').style.display = 'block';
+    
+    const firstName = userName.split(' ')[0];
+    document.getElementById('userFirstName').textContent = firstName;
+    document.getElementById('userFullName').textContent = userName;
+    document.getElementById('userEmailDisplay').textContent = userEmail || '';
+    
+    const initials = userName.split(' ')
+        .map(name => name.charAt(0))
+        .join('')
+        .toUpperCase()
+        .substring(0, 2);
+    document.getElementById('userInitials').textContent = initials;
+    
+    const accountBtnLogged = document.getElementById('accountBtnLogged');
+    const dropdownMenuLogged = document.getElementById('dropdownMenuLogged');
+    
+    accountBtnLogged.addEventListener('click', function(e) {
+        e.stopPropagation();
+        dropdownMenuLogged.classList.toggle('show');
+        accountBtnLogged.classList.toggle('active');
+    });
+    
+    document.addEventListener('click', function(e) {
+        if (!accountBtnLogged.contains(e.target) && !dropdownMenuLogged.contains(e.target)) {
+            dropdownMenuLogged.classList.remove('show');
+            accountBtnLogged.classList.remove('active');
+        }
+    });
+    
+    dropdownMenuLogged.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+}
+
+// Handle login
+function handleLogin() {
+    window.location.href = '/login.html';
+}
+
+// Handle signup
+function handleSignup() {
+    window.location.href = '/signup.html';
+}
+
+// Handle logout
+function handleLogout() {
+    if (confirm('Are you sure you want to sign out?')) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('userEmail');
+        window.location.href = '/index.html';
+    }
+}
+
+// Auto-redirect if already logged in
+function checkIfAlreadyLoggedIn() {
+    const token = localStorage.getItem('token');
+    const currentPage = window.location.pathname;
+    
+    if (token && (currentPage.includes('login.html') || currentPage.includes('signup.html'))) {
+        window.location.href = '/dashboard.html';
+    }
+}
+
+if (window.location.pathname.includes('login.html') || window.location.pathname.includes('signup.html')) {
+    checkIfAlreadyLoggedIn();
+}
+</script>
 
 
 
@@ -273,6 +494,9 @@ Made-to-measure outfits created for your body and your workday — not standard 
       <span>Deepali Bhole</span>
     </a>
 
+    <a href="/designersprofile/PRAKRITI-MISHRA.HTML" class="category-card">
+      <img src="/dp picture of designer/PRAKRITI.jpeg" alt="Prakriti Mishra">
+      <span>Prakriti Mishra</span>
   </div>
 </section>
 
@@ -300,6 +524,12 @@ Made-to-measure outfits created for your body and your workday — not standard 
     </div>
     </div>-->
   
+</section>
+<section> class="contact-section">
+  <h2>Contact Us</h2>
+  <p>Have questions or want to learn more about our services? Reach out to us!</p>
+  <a href="/contact.html" class="cta">Get in Touch →</a>
+
 </section>
 
 <!-- CONTACT -->

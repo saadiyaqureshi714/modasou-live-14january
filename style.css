@@ -11,10 +11,11 @@ body{
 .navbar {
   width: 100%;
   display: flex; 
-  justify-content: space-evenly;
+  justify-content:start;
   align-items:center ;
   padding-left: 30px;
-  padding-top: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;;
   background: #331300;
   border-bottom: 1px solid #eee;
   position: sticky;
@@ -22,7 +23,14 @@ body{
   z-index: 1000;
   
 }
-
+.only-logo{
+  margin-right: 30px;
+  max-width: 40%;
+  display: flex;
+  align-items: center;
+  
+  gap: 12px;
+}
 
 /* Logo container */
 .logo {
@@ -215,7 +223,318 @@ display: none;
   background: rgba(255, 255, 255, 0.4);
 }
 
+
+/* Account Dropdown - Add to your existing styles */
+.account-dropdown {
+    position: relative;
+}
+
+.account-button {
+    background-color: transparent;
+    color: #f5e6b8;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    font-size: 14px;
+    transition: all 0.3s;
+    position: relative;
+    white-space: nowrap;
+}
+
+.account-button:hover {
+    background-color: rgba(212, 175, 55, 0.1);
+    border-color: #d4af37;
+}
+
+/* Dropdown styling */
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #d4af37;
+    border-radius: 6px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    min-width: 320px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s;
+    z-index: 9999;
+}
+
+.dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-content {
+    padding: 20px;
+}
+
+.dropdown-header h3 {
+    color: #331300;
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.dropdown-header p {
+    color: #8b5a2b;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.login-btn, .signup-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.login-btn {
+    background: linear-gradient(135deg, #d4af37 0%, #c9a227 100%);
+    color: #331300;
+    margin-bottom: 15px;
+}
+
+.login-btn:hover {
+    background: linear-gradient(135deg, #c9a227 0%, #b8941e 100%);
+    transform: translateY(-2px);
+}
+
+.signup-btn {
+    background: #fff;
+    border: 2px solid #d4af37;
+    color: #331300;
+}
+
+.signup-btn:hover {
+    background: #f5e6b8;
+}
+
+.divider {
+    text-align: center;
+    margin: 15px 0;
+    color: #8b5a2b;
+    font-size: 13px;
+}
+
+.signup-text {
+    color: #331300;
+    font-size: 14px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.dropdown-footer {
+    background: #f5f5f5;
+    padding: 15px 20px;
+    border-radius: 0 0 6px 6px;
+}
+
+.footer-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.footer-link {
+    color: #331300;
+    text-decoration: none;
+    font-size: 13px;
+    padding: 5px;
+}
+
+.footer-link:hover {
+    text-decoration: underline;
+    color: #d4af37;
+}
 /* ---------- HERO ---------- */
+
+
+/* Logged In Account Button */
+.account-button-logged {
+    background-color: transparent;
+    color: #f5e6b8;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    font-size: 14px;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.account-button-logged:hover {
+    background-color: rgba(212, 175, 55, 0.1);
+    border-color: #d4af37;
+}
+
+.account-button-logged::after {
+    content: '▼';
+    font-size: 10px;
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #d4af37;
+    transition: transform 0.3s;
+}
+
+.account-button-logged.active::after {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+/* Logged In Dropdown Menu */
+.dropdown-menu-logged {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    background-color: #fff;
+    border: 1px solid #d4af37;
+    border-radius: 6px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    min-width: 320px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s;
+    z-index: 1000;
+}
+
+.dropdown-menu-logged.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-content {
+    padding: 20px;
+}
+
+
+/* User Profile Header */
+.user-profile-header {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #d7ccc8;
+}
+
+.user-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #d4af37 0%, #c9a227 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #3e2723;
+    font-size: 24px;
+    font-weight: 700;
+    border: 2px solid #b8962e;
+}
+
+.user-info {
+    flex: 1;
+}
+
+.user-name {
+    color: #331300;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.user-email {
+    color: #8b5a2b;
+    font-size: 13px;
+}
+
+/* Menu Section */
+.menu-section {
+    margin: 15px 0;
+}
+
+.menu-title {
+    color: #8b5a2b;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    padding: 0 10px;
+    letter-spacing: 0.5px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 10px;
+    color: #331300;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.3s;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+
+.menu-icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+}
+
+/* Divider */
+.divider {
+    height: 1px;
+    background-color: #d7ccc8;
+    margin: 15px 0;
+}
+
+/* Sign Out Button */
+.logout-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px;
+    background: linear-gradient(135deg, #d4af37 0%, #c9a227 100%);
+    border: none;
+    color: #331300;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.logout-btn:hover {
+    background: linear-gradient(135deg, #c9a227 0%, #b8941e 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+}
 
 .hero {
   height: 90vh;

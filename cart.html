@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart - Modasou</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to bottom, #fff6d5, #f5e6b8);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .cart-header {
+            background: linear-gradient(135deg, #331300 0%, #5a341f 100%);
+            color: #f5e6b8;
+            padding: 30px;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 4px 15px rgba(51, 19, 0, 0.3);
+        }
+
+        .cart-header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 32px;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #f5e6b8, #d4af37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cart-header p {
+            color: #d4af37;
+            font-size: 14px;
+        }
+
+        /* Main Content */
+        .cart-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        /* Cart Items Section */
+        .cart-items {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-family: 'Cinzel', serif;
+            font-size: 24px;
+            color: #331300;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #d4af37;
+        }
+
+        /* Cart Item Card */
+        .cart-item {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            border: 2px solid #e0d5c7;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .cart-item:hover {
+            border-color: #d4af37;
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+        }
+
+        .item-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            background: #faf8f3;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #331300;
+            margin-bottom: 8px;
+        }
+
+        .item-description {
+            color: #8b5a2b;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .item-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #d4af37;
+            margin-bottom: 15px;
+        }
+
+        /* Quantity Controls */
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .qty-btn {
+            width: 35px;
+            height: 35px;
+            border: 2px solid #d4af37;
+            background: white;
+            color: #331300;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .qty-btn:hover {
+            background: linear-gradient(135deg, #d4af37, #c9a227);
+            color: white;
+        }
+
+        .qty-input {
+            width: 60px;
+            height: 35px;
+            text-align: center;
+            border: 2px solid #d7ccc8;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #331300;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: transparent;
+            border: none;
+            color: #c62828;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .remove-btn:hover {
+            transform: scale(1.2);
+        }
+
+        /* Saved Items Section */
+        .saved-items {
+            background: #faf8f3;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .saved-item {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #e0d5c7;
+        }
+
+        .saved-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .restore-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #d4af37, #c9a227);
+            color: #331300;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+        }
+
+        .restore-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Order Summary Sidebar */
+        .order-summary {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            color: #5d4037;
+            font-size: 15px;
+        }
+
+        .summary-row.total {
+            border-top: 2px solid #d4af37;
+            margin-top: 15px;
+            padding-top: 15px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #331300;
+        }
+
+        .summary-row.total .amount {
+            color: #d4af37;
+        }
+
+        /* Checkout Form */
+        .checkout-form {
+            margin-top: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #331300;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #d7ccc8;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: #faf8f3;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: #d4af37;
+            outline: none;
+            background: white;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #d4af37 0%, #c9a227 100%);
+            border: none;
+            color: #331300;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .checkout-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Empty Cart */
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-cart img {
+            width: 200px;
+            opacity: 0.5;
+            margin-bottom: 20px;
+        }
+
+        .empty-cart h2 {
+            font-family: 'Cinzel', serif;
+            color: #331300;
+            margin-bottom: 15px;
+        }
+
+        .empty-cart p {
+            color: #8b5a2b;
+            margin-bottom: 25px;
+        }
+
+        .shop-btn {
+            display: inline-block;
+            padding: 14px 35px;
+            background: linear-gradient(135deg, #d4af37, #c9a227);
+            color: #331300;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .shop-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Progress Indicator */
+        .progress-indicator {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .step::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            width: 100%;
+            height: 3px;
+            background: #e0d5c7;
+            z-index: -1;
+        }
+
+        .step:first-child::before {
+            display: none;
+        }
+
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e0d5c7;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .step.active .step-circle {
+            background: linear-gradient(135deg, #d4af37, #c9a227);
+        }
+
+        .step.completed .step-circle {
+            background: #4caf50;
+        }
+
+        .step-label {
+            font-size: 12px;
+            color: #8b5a2b;
+            font-weight: 500;
+        }
+
+        /* Auto-save Indicator */
+        .auto-save-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #4caf50;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+
+        .auto-save-indicator.show {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .cart-content {
+                grid-template-columns: 1fr;
+            }
+
+            .order-summary {
+                position: static;
+            }
+
+            .cart-item {
+                flex-direction: column;
+            }
+
+            .item-image {
+                width: 100%;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="cart-header">
+            <h1>🛒 Your Shopping Cart</h1>
+            <p>Your items are automatically saved. You can come back anytime to complete your order!</p>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-steps">
+                <div class="step active completed">
+                    <div class="step-circle">✓</div>
+                    <div class="step-label">Cart</div>
+                </div>
+                <div class="step active">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">Details</div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">Payment</div>
+                </div>
+                <div class="step">
+                    <div class="step-circle">4</div>
+                    <div class="step-label">Confirm</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="cart-content">
+            <!-- Cart Items -->
+            <div class="cart-items">
+                <h2 class="section-title">Items in Your Cart (<span id="itemCount">0</span>)</h2>
+                
+                <div id="cartItemsContainer">
+                    <!-- Cart items will be loaded here -->
+                </div>
+
+                <!-- Saved for Later -->
+                <div class="saved-items" id="savedItemsSection" style="display: none;">
+                    <h3 class="section-title" style="font-size: 18px;">Saved for Later</h3>
+                    <div id="savedItemsContainer">
+                        <!-- Saved items will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Empty Cart Message -->
+                <div class="empty-cart" id="emptyCartMessage" style="display: none;">
+                    <h2>Your cart is empty</h2>
+                    <p>Looks like you haven't added anything yet. Let's start shopping!</p>
+                    <a href="index.html" class="shop-btn">Start Shopping</a>
+                </div>
+            </div>
+
+            <!-- Order Summary & Checkout -->
+            <div class="order-summary">
+                <h2 class="section-title" style="font-size: 20px;">Order Summary</h2>
+                
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span id="subtotal">₹0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping:</span>
+                    <span id="shipping">₹0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Tax (18%):</span>
+                    <span id="tax">₹0</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total:</span>
+                    <span class="amount" id="total">₹0</span>
+                </div>
+
+                <!-- Checkout Form -->
+                <form class="checkout-form" id="checkoutForm">
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="fullName" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone Number *</label>
+                        <input type="tel" id="phone" placeholder="Enter your phone" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="email" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Delivery Address *</label>
+                        <textarea id="address" rows="3" placeholder="Street, City, State, PIN" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Payment Method *</label>
+                        <select id="paymentMethod" required>
+                            <option value="">Select payment method</option>
+                            <option value="cod">Cash on Delivery</option>
+                            <option value="card">Credit/Debit Card</option>
+                            <option value="upi">UPI</option>
+                            <option value="netbanking">Net Banking</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Special Instructions (Optional)</label>
+                        <textarea id="instructions" rows="2" placeholder="Any special delivery instructions"></textarea>
+                    </div>
+
+                    <button type="submit" class="checkout-btn" id="checkoutBtn">
+                        Place Order
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auto-save Indicator -->
+    <div class="auto-save-indicator" id="autoSaveIndicator">
+        ✓ Changes saved automatically
+    </div>
+
+    <script>
+        // ============================================
+        // CART MANAGEMENT WITH AUTO-SAVE
+        // ============================================
+
+        let cart = [];
+        let savedItems = [];
+        let formData = {};
+
+        // Load cart on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCart();
+            loadFormData();
+            setupAutoSave();
+            checkLoginStatus();
+        });
+
+        // Check if user is logged in
+        function checkLoginStatus() {
+            const token = localStorage.getItem('token');
+            const userName = localStorage.getItem('userName');
+            const userEmail = localStorage.getItem('userEmail');
+
+            if (token && userName) {
+                // Pre-fill form with user data
+                document.getElementById('fullName').value = userName;
+                document.getElementById('email').value = userEmail || '';
+            }
+        }
+
+        // Load cart from localStorage
+        function loadCart() {
+            const savedCart = localStorage.getItem('modasou_cart');
+            const savedForLater = localStorage.getItem('modasou_saved_items');
+
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+            } else {
+                // Demo cart items for testing
+                cart = [
+                    {
+                        id: 1,
+                        name: 'Premium Silk Saree',
+                        description: 'Handwoven pure silk with golden border',
+                        price: 12500,
+                        quantity: 1,
+                        image: 'https://via.placeholder.com/120x120/331300/d4af37?text=Saree'
+                    },
+                    {
+                        id: 2,
+                        name: 'Designer Kurta Set',
+                        description: 'Cotton blend with intricate embroidery',
+                        price: 3500,
+                        quantity: 2,
+                        image: 'https://via.placeholder.com/120x120/5a341f/f5e6b8?text=Kurta'
+                    }
+                ];
+            }
+
+            if (savedForLater) {
+                savedItems = JSON.parse(savedForLater);
+            }
+
+            renderCart();
+        }
+
+        // Render cart items
+        function renderCart() {
+            const container = document.getElementById('cartItemsContainer');
+            const emptyMessage = document.getElementById('emptyCartMessage');
+            const savedSection = document.getElementById('savedItemsSection');
+            const savedContainer = document.getElementById('savedItemsContainer');
+
+            if (cart.length === 0) {
+                container.style.display = 'none';
+                emptyMessage.style.display = 'block';
+                document.querySelector('.order-summary').style.display = 'none';
+            } else {
+                container.style.display = 'block';
+                emptyMessage.style.display = 'none';
+                document.querySelector('.order-summary').style.display = 'block';
+
+                container.innerHTML = cart.map(item => `
+                    <div class="cart-item">
+                        <img src="${item.image}" alt="${item.name}" class="item-image">
+                        <div class="item-details">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-description">${item.description}</div>
+                            <div class="item-price">₹${item.price.toLocaleString()}</div>
+                            <div class="quantity-controls">
+                                <button class="qty-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                                <input type="number" class="qty-input" value="${item.quantity}" readonly>
+                                <button class="qty-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                                <button class="restore-btn" onclick="saveForLater(${item.id})" style="margin-left: 15px;">Save for Later</button>
+                            </div>
+                        </div>
+                        <button class="remove-btn" onclick="removeItem(${item.id})" title="Remove item">✕</button>
+                    </div>
+                `).join('');
+            }
+
+            // Render saved items
+            if (savedItems.length > 0) {
+                savedSection.style.display = 'block';
+                savedContainer.innerHTML = savedItems.map(item => `
+                    <div class="saved-item">
+                        <img src="${item.image}" alt="${item.name}">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; color: #331300; margin-bottom: 5px;">${item.name}</div>
+                            <div style="color: #d4af37; font-weight: 700;">₹${item.price.toLocaleString()}</div>
+                        </div>
+                        <button class="restore-btn" onclick="restoreToCart(${item.id})">Move to Cart</button>
+                    </div>
+                `).join('');
+            } else {
+                savedSection.style.display = 'none';
+            }
+
+            updateSummary();
+        }
+
+        // Update quantity
+        function updateQuantity(itemId, change) {
+            const item = cart.find(i => i.id === itemId);
+            if (item) {
+                item.quantity = Math.max(1, item.quantity + change);
+                saveCart();
+                renderCart();
+                showAutoSave();
+            }
+        }
+
+        // Remove item
+        function removeItem(itemId) {
+            if (confirm('Remove this item from cart?')) {
+                cart = cart.filter(i => i.id !== itemId);
+                saveCart();
+                renderCart();
+                showAutoSave();
+            }
+        }
+
+        // Save for later
+        function saveForLater(itemId) {
+            const item = cart.find(i => i.id === itemId);
+            if (item) {
+                savedItems.push(item);
+                cart = cart.filter(i => i.id !== itemId);
+                saveCart();
+                renderCart();
+                showAutoSave();
+            }
+        }
+
+        // Restore to cart
+        function restoreToCart(itemId) {
+            const item = savedItems.find(i => i.id === itemId);
+            if (item) {
+                cart.push(item);
+                savedItems = savedItems.filter(i => i.id !== itemId);
+                saveCart();
+                renderCart();
+                showAutoSave();
+            }
+        }
+
+        // Save cart to localStorage
+        function saveCart() {
+            localStorage.setItem('modasou_cart', JSON.stringify(cart));
+            localStorage.setItem('modasou_saved_items', JSON.stringify(savedItems));
+            document.getElementById('itemCount').textContent = cart.length;
+        }
+
+        // Update order summary
+        function updateSummary() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const shipping = subtotal > 0 ? (subtotal > 5000 ? 0 : 200) : 0;
+            const tax = subtotal * 0.18;
+            const total = subtotal + shipping + tax;
+
+            document.getElementById('subtotal').textContent = '₹' + subtotal.toLocaleString();
+            document.getElementById('shipping').textContent = shipping === 0 ? 'FREE' : '₹' + shipping;
+            document.getElementById('tax').textContent = '₹' + Math.round(tax).toLocaleString();
+            document.getElementById('total').textContent = '₹' + Math.round(total).toLocaleString();
+
+            document.getElementById('itemCount').textContent = cart.length;
+        }
+
+        // Load saved form data
+        function loadFormData() {
+            const saved = localStorage.getItem('modasou_checkout_form');
+            if (saved) {
+                formData = JSON.parse(saved);
+                document.getElementById('fullName').value = formData.fullName || '';
+                document.getElementById('phone').value = formData.phone || '';
+                document.getElementById('email').value = formData.email || '';
+                document.getElementById('address').value = formData.address || '';
+                document.getElementById('paymentMethod').value = formData.paymentMethod || '';
+                document.getElementById('instructions').value = formData.instructions || '';
+            }
+        }
+
+        // Setup auto-save for form
+        function setupAutoSave() {
+            const form = document.getElementById('checkoutForm');
+            const inputs = form.querySelectorAll('input, textarea, select');
+
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    saveFormData();
+                });
+
+                input.addEventListener('change', function() {
+                    saveFormData();
+                });
+            });
+        }
+
+        // Save form data
+        function saveFormData() {
+            formData = {
+                fullName: document.getElementById('fullName').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                address: document.getElementById('address').value,
+                paymentMethod: document.getElementById('paymentMethod').value,
+                instructions: document.getElementById('instructions').value,
+                savedAt: new Date().toISOString()
+            };
+
+            localStorage.setItem('modasou_checkout_form', JSON.stringify(formData));
+            showAutoSave();
+        }
+
+        // Show auto-save indicator
+        function showAutoSave() {
+            const indicator = document.getElementById('autoSaveIndicator');
+            indicator.classList.add('show');
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 2000);
+        }
+
+        // Handle checkout
+        document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+
+            // Get form data
+            const orderData = {
+                customer: {
+                    name: document.getElementById('fullName').value,
+                    phone: document.getElementById('phone').value,
+                    email: document.getElementById('email').value,
+                    address: document.getElementById('address').value
+                },
+                items: cart,
+                payment: {
+                    method: document.getElementById('paymentMethod').value
+                },
+                instructions: document.getElementById('instructions').value,
+                subtotal: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+                tax: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 0.18,
+                shipping: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) > 5000 ? 0 : 200,
+                orderId: 'MDO' + Date.now(),
+                orderDate: new Date().toISOString()
+            };
+
+            // Calculate total
+            orderData.total = orderData.subtotal + orderData.tax + orderData.shipping;
+
+            // Save order to localStorage (in production, send to backend)
+            const orders = JSON.parse(localStorage.getItem('modasou_orders') || '[]');
+            orders.push(orderData);
+            localStorage.setItem('modasou_orders', JSON.stringify(orders));
+
+            // Clear cart and form
+            cart = [];
+            savedItems = [];
+            saveCart();
+            localStorage.removeItem('modasou_checkout_form');
+
+            // Show success message
+            alert('Order placed successfully! Order ID: ' + orderData.orderId);
+
+            // Redirect to order confirmation
+            window.location.href = 'order-confirmation.html?orderId=' + orderData.orderId;
+        });
+
+        // Initial render
+        saveCart();
+    </script>
+</body>
+</html>

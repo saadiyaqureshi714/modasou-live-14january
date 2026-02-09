@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Addresses - Modasou</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to bottom, #fff6d5, #f5e6b8);
+            min-height: 100vh;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            background: white;
+            padding: 15px 30px;
+            border-bottom: 1px solid #d7ccc8;
+        }
+
+        .breadcrumb a {
+            color: #8b5a2b;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .breadcrumb a:hover {
+            color: #d4af37;
+            text-decoration: underline;
+        }
+
+        .breadcrumb span {
+            color: #d4af37;
+            margin: 0 8px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            font-family: 'Cinzel', serif;
+            font-size: 32px;
+            color: #331300;
+            margin-bottom: 30px;
+        }
+
+        /* Address Grid */
+        .address-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        /* Add Address Card */
+        .add-address-card {
+            border: 2px dashed #d4af37;
+            border-radius: 12px;
+            padding: 60px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .add-address-card:hover {
+            background: #faf8f3;
+            border-color: #c9a227;
+        }
+
+        .add-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #e0d5c7;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: #8b5a2b;
+            margin-bottom: 15px;
+        }
+
+        .add-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #331300;
+        }
+
+        /* Address Card */
+        .address-card {
+            background: white;
+            border: 1px solid #d7ccc8;
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .address-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: #d4af37;
+        }
+
+        .default-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #d4af37, #c9a227);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .address-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #331300;
+            margin-bottom: 10px;
+        }
+
+        .address-details {
+            color: #5d4037;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .address-phone {
+            color: #8b5a2b;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        .address-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e0d5c7;
+        }
+
+        .action-link {
+            color: #d4af37;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .action-link:hover {
+            color: #b8941e;
+            text-decoration: underline;
+        }
+
+        .action-link.remove {
+            color: #c62828;
+        }
+
+        .action-link.remove:hover {
+            color: #b71c1c;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid #e0d5c7;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-family: 'Cinzel', serif;
+            font-size: 24px;
+            color: #331300;
+        }
+
+        .close-btn {
+            font-size: 28px;
+            color: #8b5a2b;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #331300;
+            margin-bottom: 8px;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #a88734;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: all 0.2s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            border-color: #d4af37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+            outline: none;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #e0d5c7;
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        .btn-primary {
+            padding: 10px 24px;
+            background: linear-gradient(135deg, #d4af37, #c9a227);
+            border: none;
+            color: #331300;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #c9a227, #b8941e);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            padding: 10px 24px;
+            background: white;
+            border: 1px solid #8b5a2b;
+            color: #331300;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background: #faf8f3;
+        }
+
+        @media (max-width: 768px) {
+            .address-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="dashboard.html">Your Account</a>
+        <span>›</span>
+        <span style="color: #d4af37;">Your Addresses</span>
+    </div>
+
+    <!-- Container -->
+    <div class="container">
+        <h1 class="page-title">Your Addresses</h1>
+
+        <!-- Address Grid -->
+        <div class="address-grid" id="addressGrid">
+            <!-- Add Address Card -->
+            <div class="add-address-card" onclick="openAddressModal()">
+                <div class="add-icon">+</div>
+                <div class="add-text">Add address</div>
+            </div>
+
+            <!-- Existing addresses will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Add/Edit Address Modal -->
+    <div class="modal" id="addressModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Add New Address</h2>
+                <button class="close-btn" onclick="closeAddressModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="addressForm">
+                    <div class="form-group">
+                        <label class="form-label">Full Name (First and Last name) *</label>
+                        <input type="text" id="addressName" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Phone Number *</label>
+                        <input type="tel" id="addressPhone" class="form-input" placeholder="+91 1234567890" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Address Line 1 *</label>
+                        <input type="text" id="addressLine1" class="form-input" placeholder="House number, Building name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Address Line 2</label>
+                        <input type="text" id="addressLine2" class="form-input" placeholder="Road name, Area, Colony">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Landmark</label>
+                        <input type="text" id="addressLandmark" class="form-input" placeholder="Near hotel, mall, etc.">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">City/District *</label>
+                        <input type="text" id="addressCity" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">State *</label>
+                        <input type="text" id="addressState" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">PIN Code *</label>
+                        <input type="text" id="addressPincode" class="form-input" pattern="[0-9]{6}" required>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="setDefault">
+                        <label for="setDefault" style="cursor: pointer;">Make this my default address</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeAddressModal()">Cancel</button>
+                <button type="button" class="btn-primary" onclick="saveAddress()">Save Address</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let addresses = [];
+        let editingIndex = -1;
+
+        // Load addresses on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAddresses();
+        });
+
+        // Load addresses from localStorage
+        function loadAddresses() {
+            const saved = localStorage.getItem('modasou_addresses');
+            if (saved) {
+                addresses = JSON.parse(saved);
+            } else {
+                // Demo address
+                addresses = [{
+                    name: localStorage.getItem('userName') || 'Saadiya',
+                    phone: '9769618498',
+                    line1: 'Famous chicken shop, opp chandrika hotel',
+                    line2: '90feet rd, kandiva',
+                    landmark: 'Ganesh Nagar',
+                    city: 'Kandivali west',
+                    state: 'MAHARASHTRA',
+                    pincode: '400067',
+                    country: 'India',
+                    isDefault: true
+                }];
+            }
+            renderAddresses();
+        }
+
+        // Render addresses
+        function renderAddresses() {
+            const grid = document.getElementById('addressGrid');
+            const addCard = grid.querySelector('.add-address-card');
+            
+            // Clear existing address cards
+            grid.innerHTML = '';
+            grid.appendChild(addCard);
+
+            // Add address cards
+            addresses.forEach((addr, index) => {
+                const card = document.createElement('div');
+                card.className = 'address-card';
+                card.innerHTML = `
+                    ${addr.isDefault ? '<span class="default-badge">Default</span>' : ''}
+                    <div class="address-name">${addr.name}</div>
+                    <div class="address-details">
+                        ${addr.line1}<br>
+                        ${addr.line2 ? addr.line2 + '<br>' : ''}
+                        ${addr.landmark ? addr.landmark + '<br>' : ''}
+                        ${addr.city}, ${addr.state} ${addr.pincode}<br>
+                        ${addr.country}
+                    </div>
+                    <div class="address-phone">Phone number: ${addr.phone}</div>
+                    <div class="address-actions">
+                        <a class="action-link" onclick="editAddress(${index})">Edit</a>
+                        ${!addr.isDefault ? `<a class="action-link" onclick="setDefault(${index})">Set as Default</a>` : ''}
+                        <a class="action-link remove" onclick="removeAddress(${index})">Remove</a>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            saveAddresses();
+        }
+
+        // Save addresses to localStorage
+        function saveAddresses() {
+            localStorage.setItem('modasou_addresses', JSON.stringify(addresses));
+        }
+
+        // Open modal
+        function openAddressModal() {
+            editingIndex = -1;
+            document.getElementById('modalTitle').textContent = 'Add New Address';
+            document.getElementById('addressForm').reset();
+            document.getElementById('addressModal').classList.add('show');
+        }
+
+        // Close modal
+        function closeAddressModal() {
+            document.getElementById('addressModal').classList.remove('show');
+            editingIndex = -1;
+        }
+
+        // Edit address
+        function editAddress(index) {
+            editingIndex = index;
+            const addr = addresses[index];
+            
+            document.getElementById('modalTitle').textContent = 'Edit Address';
+            document.getElementById('addressName').value = addr.name;
+            document.getElementById('addressPhone').value = addr.phone;
+            document.getElementById('addressLine1').value = addr.line1;
+            document.getElementById('addressLine2').value = addr.line2 || '';
+            document.getElementById('addressLandmark').value = addr.landmark || '';
+            document.getElementById('addressCity').value = addr.city;
+            document.getElementById('addressState').value = addr.state;
+            document.getElementById('addressPincode').value = addr.pincode;
+            document.getElementById('setDefault').checked = addr.isDefault;
+            
+            document.getElementById('addressModal').classList.add('show');
+        }
+
+        // Save address
+        function saveAddress() {
+            const form = document.getElementById('addressForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const addressData = {
+                name: document.getElementById('addressName').value,
+                phone: document.getElementById('addressPhone').value,
+                line1: document.getElementById('addressLine1').value,
+                line2: document.getElementById('addressLine2').value,
+                landmark: document.getElementById('addressLandmark').value,
+                city: document.getElementById('addressCity').value,
+                state: document.getElementById('addressState').value,
+                pincode: document.getElementById('addressPincode').value,
+                country: 'India',
+                isDefault: document.getElementById('setDefault').checked
+            };
+
+            if (addressData.isDefault) {
+                addresses.forEach(addr => addr.isDefault = false);
+            }
+
+            if (editingIndex >= 0) {
+                addresses[editingIndex] = addressData;
+            } else {
+                addresses.push(addressData);
+            }
+
+            renderAddresses();
+            closeAddressModal();
+
+            // Update in Supabase
+            updateAddressesInDatabase();
+        }
+
+        // Set as default
+        function setDefault(index) {
+            addresses.forEach((addr, i) => {
+                addr.isDefault = (i === index);
+            });
+            renderAddresses();
+            updateAddressesInDatabase();
+        }
+
+        // Remove address
+        function removeAddress(index) {
+            if (confirm('Are you sure you want to remove this address?')) {
+                addresses.splice(index, 1);
+                renderAddresses();
+                updateAddressesInDatabase();
+            }
+        }
+
+        // Update addresses in Supabase
+        function updateAddressesInDatabase() {
+            const userId = localStorage.getItem('userId');
+            const SUPABASE_URL = 'https://gztneesmxwfhdmhqikel.supabase.co';
+            const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA';
+
+            const defaultAddress = addresses.find(a => a.isDefault);
+            const addressString = defaultAddress ? 
+                `${defaultAddress.line1}, ${defaultAddress.line2}, ${defaultAddress.city}, ${defaultAddress.state} ${defaultAddress.pincode}` : '';
+
+            fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${userId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${SUPABASE_KEY}`
+                },
+                body: JSON.stringify({
+                    shipping_address: addressString,
+                    updated_at: new Date().toISOString()
+                })
+            });
+        }
+    </script>
+</body>
+</html>

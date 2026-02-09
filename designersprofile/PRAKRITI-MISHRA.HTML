@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prakriti Mishra | Fashion Designer</title>
+<link rel="stylesheet" href="../main-style.css">
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #faf7f2;
+  color: #fff;
+}
+
+.designer-card {
+  max-width: 1100px;
+  margin: 40px auto;
+  background: linear-gradient(135deg, #4a2a16, #2a160b);
+  border-radius: 18px;
+  padding: 40px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-image: url("/ModasouLogo.png");
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  font-weight: 700;
+  color: #4a2a16;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 32px;
+  color: #f5e2b8;
+}
+
+.header p {
+  margin: 6px 0;
+  color: #d6b46a;
+}
+
+.tag {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: rgba(255,215,120,0.15);
+  color: #ffd97a;
+  font-size: 14px;
+}
+
+.divider {
+  height: 1px;
+  background: rgba(255,255,255,0.15);
+  margin: 30px 0;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+}
+
+.section-title {
+  color: #e8c06a;
+  margin-bottom: 12px;
+  font-size: 20px;
+}
+
+.about p {
+  line-height: 1.7;
+  color: #f1e6d1;
+  font-size: 15px;
+}
+
+.skills span {
+  display: block;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.06);
+  border-left: 4px solid #d4a84e;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.collections a {
+  display: block;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  background: rgba(255,215,120,0.12);
+  color: #ffd97a;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.collections a:hover {
+  background: rgba(255,215,120,0.25);
+}
+
+@media(max-width: 900px){
+  .content {
+    grid-template-columns: 1fr;
+  }
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+}
+
+@media(max-width: 480px){
+  .designer-card {
+    margin: 20px;
+    padding: 20px;
+  }
+  .header h1 {
+    font-size: 28px;
+  }
+  .avatar {
+    width: 100px;
+    height: 100px;
+    font-size: 40px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+  <div class="logo-container">
+    <img src="/ModasouLogo.png" class="logo-img" alt="Logo">
+    <h1 class="logo-text">MODASOU</h1>
+  </div>
+  <nav class="menu-item"><a href="/index.html">Home</a></nav>
+</header>
+
+<div class="designer-card">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="avatar"></div>
+    <div>
+      <h1>Prakriti Mishra</h1>
+      <p>Fashion Designer · Delhi</p>
+      <span class="tag">Ethnic • Fusion • Bridal Couture</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- ABOUT -->
+    <div class="about">
+      <h3 class="section-title">About the Designer</h3>
+      <p>
+        I am a fashion graduate with over 10 years of professional experience,
+        specializing in ethnic and fusion wear. My expertise extends deeply into
+        bridal couture, where refined craftsmanship, intricate detailing, and
+        personalized design are at the heart of every creation.
+      </p>
+      <p>
+        I have completed specialized training in bridal wear from the London
+        School of Trends and have been mentored by Manish Malhotra, an experience
+        that has profoundly shaped my design sensibility and approach to luxury
+        fashion.
+      </p>
+      <p>
+        Over the years, I have designed for thousands of satisfied clients.
+        Witnessing their confidence and happiness is the greatest reward of my
+        journey. Creating meaningful, beautifully crafted garments that leave a
+        lasting impact continues to be my true source of fulfillment.
+      </p>
+    </div>
+
+    <!-- SPECIALISATION -->
+    <div class="skills">
+      <h3 class="section-title">Specialisation</h3>
+      <span>Ethnic & Fusion Wear</span>
+      <span>Bridal Couture</span>
+      <span>Luxury Customized Outfits</span>
+      <span>Intricate Handcrafted Detailing</span>
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- COLLECTIONS -->
+  <div class="collections">
+    <h3 class="section-title">Collections</h3>
+    <a href="/imagesof all designers/design-of-prakriti.html" target="_blank">
+      View Collection 1
+    </a>
+  </div>
+
+</div>
+
+</body>
+</html>

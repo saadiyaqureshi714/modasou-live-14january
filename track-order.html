@@ -2,305 +2,868 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Track Your Order | MODASOU</title>
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
+  
   <style>
-    body { 
-      font-family: Arial, sans-serif; 
-      background: #f4f4f4;
+    /* GLOBAL STYLES */
+    * {
       margin: 0;
-      padding: 20px;
-    }
-    .box {
-      background: #fff;
-      max-width: 500px;
-      margin: 50px auto;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h2 {
-      margin-top: 0;
-      text-align: center;
-      color: #333;
-    }
-    input, button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
+      padding: 0;
       box-sizing: border-box;
-      border: 1px solid #ddd;
-      border-radius: 4px;
+      font-family: "Poppins", sans-serif;
     }
-    button {
-      background: black;
+    
+    body { 
+      background-color: #ffe6a7;
+      color: #331300;
+      min-height: 100vh;
+      padding-top: 0;
+    }
+    
+    /* NAVBAR */
+    .navbar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 30px;
+      background: #331300;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 2px solid #f5e6b0;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo-img {
+      width: 100px;
+      height: 100px;
+      border: 2px solid #bb9457;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .logo-text {
+      font-family: 'Cinzel', serif;
+      font-size: 40px;
+      font-weight: 600;
+      background: linear-gradient(90deg, #f5e6b8, #d4af37, #b8962e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .menu-item a {
+      text-decoration: none;
+      color: #f5e6b8;
+      font-size: 18px;
+      transition: color 0.3s;
+    }
+
+    .menu-item a:hover {
+      color: #d4af37;
+    }
+    
+    /* MAIN CONTAINER */
+    .main-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 124px);
+      padding: 40px 20px;
+    }
+    
+    .container {
+      background: linear-gradient(to bottom, #ffffff 0%, #faf8f5 100%);
+      max-width: 650px;
+      width: 100%;
+      padding: 50px;
+      border-radius: 20px;
+      box-shadow: 0 25px 70px rgba(51, 19, 0, 0.3), 
+                  0 0 0 1px rgba(212, 165, 116, 0.3),
+                  inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+    
+    .page-title {
+      text-align: center;
+      color: #331300;
+      margin-bottom: 10px;
+      font-size: 32px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+    
+    .subtitle {
+      text-align: center;
+      color: #6d4c41;
+      margin-bottom: 35px;
+      font-size: 14px;
+      font-style: italic;
+      letter-spacing: 0.5px;
+    }
+    
+    .input-group {
+      margin-bottom: 25px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 10px;
+      color: #331300;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    
+    input {
+      width: 100%;
+      padding: 16px;
+      border: 2px solid #d7ccc8;
+      border-radius: 10px;
+      font-size: 16px;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s;
+      background: #fafafa;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: #d4af37;
+      box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15);
+      background: white;
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #d4af37 0%, #b8962e 50%, #9c7e1f 100%);
       color: white;
       border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
-      font-weight: bold;
-      margin-top: 15px;
+      transition: all 0.3s;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+      font-family: 'Poppins', sans-serif;
     }
-    button:hover {
-      background: #333;
+    
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(212, 175, 55, 0.5);
+      background: linear-gradient(135deg, #b8962e 0%, #9c7e1f 50%, #d4af37 100%);
     }
-    button:disabled {
-      background: #999;
+    
+    .btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+    
+    .btn:disabled {
+      opacity: 0.7;
       cursor: not-allowed;
+      background: #bcaaa4;
     }
-    .result-section {
-      margin-top: 30px;
+    
+    .loading {
       display: none;
+      text-align: center;
+      color: #d4af37;
+      margin-top: 20px;
+      font-weight: 600;
+      font-style: italic;
     }
-    .result-section.visible {
+    
+    .loading.visible {
       display: block;
     }
-    .status-item {
-      background: #f8f9fa;
-      padding: 15px;
-      margin-top: 10px;
-      border-radius: 6px;
-      border-left: 4px solid #28a745;
-    }
-    .status-item.current {
-      background: #d4edda;
-      border-left-color: #155724;
-    }
-    .status-item h3 {
-      margin: 0 0 5px 0;
-      color: #333;
-      font-size: 16px;
-    }
-    .status-item p {
-      margin: 5px 0;
-      color: #666;
-      font-size: 14px;
-    }
-    .status-item .timestamp {
-      font-size: 12px;
-      color: #999;
-    }
+    
     .error-msg {
-      color: #dc3545;
+      background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+      color: #bf360c;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      display: none;
       text-align: center;
-      margin-top: 15px;
-      font-weight: bold;
+      font-weight: 600;
+      border: 1px solid #ffb74d;
     }
-    .loading {
-      text-align: center;
-      color: #666;
-      margin-top: 15px;
+    
+    .error-msg.visible {
+      display: block;
     }
+    
+    .result-section {
+      margin-top: 35px;
+      display: none;
+    }
+    
+    .result-section.visible {
+      display: block;
+      animation: slideIn 0.6s ease;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .order-header {
+      background: linear-gradient(135deg, #331300 0%, #4e342e 50%, #5d4037 100%);
+      color: white;
+      padding: 25px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 25px rgba(51, 19, 0, 0.3);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    
+    .order-header h2 {
+      margin-bottom: 12px;
+      font-size: 26px;
+      color: #d4af37;
+      letter-spacing: 2px;
+    }
+    
+    .order-header p {
+      opacity: 0.9;
+      font-size: 14px;
+      margin: 6px 0;
+      color: #efebe9;
+    }
+    
+    .order-header p strong {
+      color: #d4af37;
+      font-weight: 600;
+    }
+    
+    .section-title {
+      font-size: 19px;
+      color: #331300;
+      margin: 30px 0 18px 0;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border-bottom: 2px solid #d4af37;
+      padding-bottom: 8px;
+    }
+    
+    .current-status {
+      background: linear-gradient(135deg, #fff9f0 0%, #fff3e0 100%);
+      border-left: 5px solid #d4af37;
+      padding: 22px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
+    }
+    
+    .current-status h3 {
+      color: #b8962e;
+      margin-bottom: 10px;
+      font-size: 22px;
+      letter-spacing: 1px;
+    }
+    
+    .current-status p {
+      color: #5d4037;
+      margin: 6px 0;
+      font-size: 15px;
+    }
+    
     .timeline {
       position: relative;
-      padding-left: 20px;
+      padding-left: 35px;
     }
+    
     .timeline::before {
       content: '';
       position: absolute;
-      left: 8px;
+      left: 12px;
       top: 0;
       bottom: 0;
-      width: 2px;
-      background: #ddd;
+      width: 3px;
+      background: linear-gradient(to bottom, #d4af37 0%, #bcaaa4 100%);
+      border-radius: 2px;
     }
-    .timeline .status-item {
+    
+    .timeline-item {
       position: relative;
-      margin-bottom: 15px;
+      background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+      padding: 18px;
+      margin-bottom: 18px;
+      border-radius: 12px;
+      border-left: 3px solid #bcaaa4;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      transition: all 0.3s;
     }
-    .timeline .status-item::before {
+    
+    .timeline-item:hover {
+      box-shadow: 0 5px 20px rgba(212, 175, 55, 0.2);
+      transform: translateX(3px);
+    }
+    
+    .timeline-item::before {
       content: '';
       position: absolute;
-      left: -16px;
-      top: 20px;
-      width: 12px;
-      height: 12px;
+      left: -24px;
+      top: 22px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
-      background: #28a745;
-      border: 2px solid white;
-      box-shadow: 0 0 0 2px #28a745;
+      background: linear-gradient(135deg, #bcaaa4 0%, #a1887f 100%);
+      border: 3px solid white;
+      box-shadow: 0 0 0 3px #bcaaa4;
     }
-    .timeline .status-item.current::before {
-      background: #155724;
-      box-shadow: 0 0 0 2px #155724;
+    
+    .timeline-item.latest {
+      background: linear-gradient(135deg, #fff9f0 0%, #fff3e0 100%);
+      border-left-color: #d4af37;
+    }
+    
+    .timeline-item.latest::before {
+      background: linear-gradient(135deg, #d4af37 0%, #b8962e 100%);
+      box-shadow: 0 0 0 3px #d4af37, 0 0 15px rgba(212, 175, 55, 0.5);
+    }
+    
+    .timeline-item h4 {
+      color: #331300;
+      margin-bottom: 10px;
+      font-size: 17px;
+      font-weight: 600;
+    }
+    
+    .timeline-item p {
+      color: #6d4c41;
+      font-size: 14px;
+      margin: 6px 0;
+      line-height: 1.6;
+    }
+    
+    .timeline-item .timestamp {
+      color: #8d6e63;
+      font-size: 12px;
+      margin-top: 10px;
+      font-style: italic;
+    }
+    
+    .no-tracking {
+      text-align: center;
+      color: #8d6e63;
+      padding: 35px;
+      font-style: italic;
+      background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+      border-radius: 12px;
+    }
+    
+    .debug-info {
+      background: linear-gradient(135deg, #fff9f0 0%, #fff3e0 100%);
+      border: 2px solid #d4af37;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 15px;
+      font-size: 12px;
+      color: #5d4037;
+    }
+    
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent 0%, #d4af37 50%, transparent 100%);
+      margin: 25px 0;
+    }
+
+    /* =========================================
+       MOBILE RESPONSIVENESS
+       ========================================= */
+
+    @media screen and (max-width: 991px) {
+      body {
+        overflow-x: hidden;
+      }
+
+      /* Navbar: Compact */
+      .navbar {
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 10px 20px;
+      }
+
+      .logo-text {
+        font-size: 22px;
+      }
+
+      .logo-img {
+        width: 40px;
+        height: 40px;
+      }
+
+      .logo-container {
+        gap: 10px;
+      }
+
+      .menu-item a {
+        font-size: 16px;
+      }
+
+      /* Main Content */
+      .main-content {
+        min-height: calc(100vh - 80px);
+        padding: 20px 15px;
+      }
+
+      .container {
+        padding: 30px 20px;
+        border-radius: 15px;
+      }
+
+      .page-title {
+        font-size: 24px;
+      }
+
+      .subtitle {
+        font-size: 13px;
+        margin-bottom: 25px;
+      }
+
+      input {
+        padding: 14px;
+        font-size: 15px;
+      }
+
+      .btn {
+        padding: 16px;
+        font-size: 15px;
+        letter-spacing: 1px;
+      }
+
+      .order-header {
+        padding: 20px;
+      }
+
+      .order-header h2 {
+        font-size: 22px;
+      }
+
+      .order-header p {
+        font-size: 13px;
+      }
+
+      .section-title {
+        font-size: 17px;
+        margin: 25px 0 15px 0;
+      }
+
+      .current-status {
+        padding: 18px;
+      }
+
+      .current-status h3 {
+        font-size: 20px;
+      }
+
+      .current-status p {
+        font-size: 14px;
+      }
+
+      .timeline {
+        padding-left: 25px;
+      }
+
+      .timeline::before {
+        left: 8px;
+      }
+
+      .timeline-item {
+        padding: 15px;
+      }
+
+      .timeline-item::before {
+        left: -20px;
+        width: 14px;
+        height: 14px;
+      }
+
+      .timeline-item h4 {
+        font-size: 16px;
+      }
+
+      .timeline-item p {
+        font-size: 13px;
+      }
+
+      .timeline-item .timestamp {
+        font-size: 11px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .navbar {
+        padding: 8px 15px;
+      }
+
+      .logo-text {
+        font-size: 18px;
+      }
+
+      .logo-img {
+        width: 35px;
+        height: 35px;
+      }
+
+      .menu-item a {
+        font-size: 14px;
+      }
+
+      .container {
+        padding: 25px 15px;
+      }
+
+      .page-title {
+        font-size: 20px;
+      }
+
+      .order-header h2 {
+        font-size: 18px;
+        letter-spacing: 1px;
+      }
+
+      .section-title {
+        font-size: 16px;
+      }
+
+      .current-status h3 {
+        font-size: 18px;
+      }
     }
   </style>
 </head>
 
 <body>
-<div class="box">
-  <h2>Track Your Order</h2>
+  <!-- ===== NAVBAR ===== -->
+  <header class="navbar">
+    <div class="logo-container">
+      <img src="/ModasouLogo.png" class="logo-img" alt="MODASOU Logo">
+      <h1 class="logo-text">MODASOU</h1>
+    </div>
+    <nav class="menu-item"><a href="/index.html">Home</a></nav>
+  </header>
 
-  <input 
-    type="text" 
-    id="orderId" 
-    placeholder="Enter Order ID (e.g., MOD-1234)"
-    autocomplete="off"
-  >
-  <button onclick="trackOrder()" id="trackBtn">Track Order</button>
+  <!-- ===== MAIN CONTENT ===== -->
+  <div class="main-content">
+    <div class="container">
+      <h1 class="page-title">Track Your Order</h1>
+      <p class="subtitle">Enter your order ID to view the current status</p>
 
-  <div class="loading" id="loading" style="display: none;">
-    Checking order...
+      <div class="input-group">
+        <label for="orderId">Order ID</label>
+        <input 
+          type="text" 
+          id="orderId" 
+          placeholder="e.g., MODASOU_8075"
+          autocomplete="off"
+        >
+      </div>
+
+      <button class="btn" id="trackBtn">
+        Track Order
+      </button>
+
+      <div class="loading" id="loading">
+        ⏳ Searching for your order...
+      </div>
+
+      <div class="error-msg" id="error"></div>
+      
+      <div class="debug-info" id="debug" style="display: none;"></div>
+
+      <div class="result-section" id="resultSection">
+        <div class="divider"></div>
+        <div class="order-header" id="orderHeader"></div>
+        
+        <div class="section-title">Current Status</div>
+        <div id="currentStatus"></div>
+        
+        <div class="section-title">Order History</div>
+        <div id="timeline"></div>
+      </div>
+    </div>
   </div>
-
-  <div class="error-msg" id="error" style="display: none;"></div>
-
-  <div class="result-section" id="resultSection">
-    <h3>Order Status</h3>
-    <div id="currentStatus"></div>
-    
-    <h3 style="margin-top: 30px;">Order History</h3>
-    <div class="timeline" id="timeline"></div>
-  </div>
-</div>
 
 <script>
-  // Supabase configuration
-  const SUPABASE_URL = "https://gztneesmxwfhdmhqikel.supabase.co";
-  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA";
+  // Wait for page to load
+  window.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 MODASOU Track Order Page Loaded');
 
-  // Initialize Supabase client
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // Supabase Configuration
+    const SUPABASE_URL = "https://gztneesmxwfhdmhqikel.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA";
 
-  let currentOrderId = null;
-  let realtimeChannel = null;
-
-  async function trackOrder() {
-    const orderId = document.getElementById("orderId").value.trim();
-    const loading = document.getElementById("loading");
-    const error = document.getElementById("error");
-    const resultSection = document.getElementById("resultSection");
-    const trackBtn = document.getElementById("trackBtn");
-
-    // Reset UI
-    loading.style.display = "none";
-    error.style.display = "none";
-    resultSection.classList.remove("visible");
-
-    if (!orderId) {
-      error.textContent = "Please enter an Order ID";
-      error.style.display = "block";
+    // Check if Supabase is loaded
+    if (!window.supabase) {
+      console.error('❌ Supabase library not loaded!');
+      alert('Error: Unable to load tracking system. Please refresh the page.');
       return;
     }
+    
+    console.log('✅ Supabase library loaded');
 
-    // Show loading
-    loading.style.display = "block";
-    trackBtn.disabled = true;
+    // Initialize Supabase client
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    console.log('✅ Supabase client initialized');
 
-    try {
-      // Fetch order details
-      const { data: order, error: orderError } = await supabase
-        .from("orders")
-        .select("*")
-        .eq("order_id", orderId)
-        .single();
+    let currentOrderId = null;
+    let realtimeChannel = null;
 
-      if (orderError || !order) {
-        throw new Error("Order not found");
-      }
-
-      // Fetch order tracking history
-      const { data: tracking, error: trackingError } = await supabase
-        .from("order_tracking")
-        .select("*")
-        .eq("order_id", orderId)
-        .order("created_at", { ascending: false });
-
-      if (trackingError) {
-        console.error("Tracking fetch error:", trackingError);
-      }
-
-      // Display results
-      displayOrderStatus(order, tracking || []);
-      
-      // Set up real-time updates
-      setupRealtime(orderId);
-      
-      currentOrderId = orderId;
-
-    } catch (err) {
-      error.textContent = err.message;
-      error.style.display = "block";
-    } finally {
-      loading.style.display = "none";
-      trackBtn.disabled = false;
+    // Format Date
+    function formatDate(dateString) {
+      if (!dateString) return 'N/A';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { 
+        year: 'numeric',
+        month: 'long', 
+        day: 'numeric'
+      });
     }
-  }
 
-  function displayOrderStatus(order, tracking) {
-    const currentStatus = document.getElementById("currentStatus");
-    const timeline = document.getElementById("timeline");
-    const resultSection = document.getElementById("resultSection");
+    // Format DateTime
+    function formatDateTime(dateString) {
+      if (!dateString) return 'N/A';
+      const date = new Date(dateString);
+      return date.toLocaleString('en-US', { 
+        year: 'numeric',
+        month: 'short', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
 
-    // Display current status
-    currentStatus.innerHTML = `
-      <div class="status-item current">
-        <h3>${order.status}</h3>
-        <p>Order ID: ${order.order_id}</p>
-        <p class="timestamp">Last updated: ${new Date(order.updated_at).toLocaleString()}</p>
-      </div>
-    `;
+    // Display Order Status
+    function displayOrderStatus(order, tracking) {
+      console.log('📊 Displaying order status');
+      
+      const orderHeader = document.getElementById("orderHeader");
+      const currentStatus = document.getElementById("currentStatus");
+      const timeline = document.getElementById("timeline");
+      const resultSection = document.getElementById("resultSection");
 
-    // Display tracking history
-    if (tracking && tracking.length > 0) {
-      timeline.innerHTML = tracking.map((item, index) => `
-        <div class="status-item ${index === 0 ? 'current' : ''}">
-          <h3>${item.status}</h3>
-          ${item.note ? `<p>${item.note}</p>` : ''}
-          <p class="timestamp">${new Date(item.created_at).toLocaleString()}</p>
+      // Order header
+      orderHeader.innerHTML = `
+        <h2>📦 ${order.order_id}</h2>
+        <p><strong>Customer:</strong> ${order.customer_name || order.full_name || 'N/A'}</p>
+        <p><strong>Service:</strong> ${order.service || order.style || 'N/A'}</p>
+        <p><strong>Order Date:</strong> ${formatDate(order.created_at)}</p>
+      `;
+
+      // Current status
+      currentStatus.innerHTML = `
+        <div class="current-status">
+          <h3>✨ ${order.status || 'Pending'}</h3>
+          <p>Last updated: ${formatDateTime(order.updated_at || order.created_at)}</p>
         </div>
-      `).join('');
-    } else {
-      timeline.innerHTML = '<p style="color: #666;">No tracking history available yet.</p>';
+      `;
+
+      // Tracking timeline
+      if (tracking && tracking.length > 0) {
+        timeline.innerHTML = tracking.map((item, index) => `
+          <div class="timeline-item ${index === 0 ? 'latest' : ''}">
+            <h4>${item.status}</h4>
+            ${item.note ? `<p>${item.note}</p>` : ''}
+            <p class="timestamp">🕐 ${formatDateTime(item.created_at)}</p>
+          </div>
+        `).join('');
+      } else {
+        timeline.innerHTML = '<div class="no-tracking">No tracking history available yet.</div>';
+      }
+
+      resultSection.classList.add("visible");
     }
 
-    resultSection.classList.add("visible");
-  }
+    // Setup Real-time Updates
+    function setupRealtime(orderId) {
+      console.log('🔄 Setting up real-time updates for:', orderId);
+      
+      // Unsubscribe from previous channel
+      if (realtimeChannel) {
+        supabaseClient.removeChannel(realtimeChannel);
+      }
 
-  function setupRealtime(orderId) {
-    // Unsubscribe from previous channel if exists
-    if (realtimeChannel) {
-      supabase.removeChannel(realtimeChannel);
+      // Subscribe to order updates
+      realtimeChannel = supabaseClient
+        .channel('order-updates-' + orderId)
+        .on(
+          'postgres_changes',
+          { 
+            event: 'UPDATE', 
+            schema: 'public', 
+            table: 'orders',
+            filter: `order_id=eq.${orderId}`
+          },
+          payload => {
+            console.log('🔔 Order updated in real-time:', payload);
+            alert('✅ Order status has been updated!');
+            trackOrder();
+          }
+        )
+        .on(
+          'postgres_changes',
+          { 
+            event: 'INSERT', 
+            schema: 'public', 
+            table: 'order_tracking',
+            filter: `order_id=eq.${orderId}`
+          },
+          payload => {
+            console.log('🔔 New tracking entry:', payload);
+            alert('✅ New order update received!');
+            trackOrder();
+          }
+        )
+        .subscribe((status) => {
+          console.log('Real-time subscription status:', status);
+        });
     }
 
-    // Subscribe to order updates
-    realtimeChannel = supabase
-      .channel('order-updates-' + orderId)
-      .on(
-        'postgres_changes',
-        { 
-          event: 'UPDATE', 
-          schema: 'public', 
-          table: 'orders',
-          filter: `order_id=eq.${orderId}`
-        },
-        payload => {
-          console.log('Order updated:', payload);
-          // Reload order data
-          trackOrder();
-        }
-      )
-      .on(
-        'postgres_changes',
-        { 
-          event: 'INSERT', 
-          schema: 'public', 
-          table: 'order_tracking',
-          filter: `order_id=eq.${orderId}`
-        },
-        payload => {
-          console.log('New tracking entry:', payload);
-          // Reload order data
-          trackOrder();
-        }
-      )
-      .subscribe();
-  }
+    // Track Order Function
+    async function trackOrder() {
+      console.log('🔍 Track Order button clicked');
+      
+      const orderIdInput = document.getElementById("orderId");
+      const orderId = orderIdInput.value.trim().toUpperCase();
+      const loading = document.getElementById("loading");
+      const error = document.getElementById("error");
+      const resultSection = document.getElementById("resultSection");
+      const trackBtn = document.getElementById("trackBtn");
+      const debug = document.getElementById("debug");
 
-  // Allow Enter key to submit
-  document.getElementById("orderId").addEventListener("keypress", function(e) {
-    if (e.key === "Enter") {
+      console.log('Input Order ID:', orderId);
+
+      // Reset UI
+      loading.classList.remove("visible");
+      error.classList.remove("visible");
+      resultSection.classList.remove("visible");
+      debug.style.display = "none";
+
+      // Validate input
+      if (!orderId) {
+        console.warn('⚠️ Empty order ID');
+        error.textContent = "⚠️ Please enter an Order ID";
+        error.classList.add("visible");
+        return;
+      }
+
+      // Show loading
+      loading.classList.add("visible");
+      trackBtn.disabled = true;
+      trackBtn.textContent = "Searching...";
+
+      try {
+        console.log('📡 Fetching order from Supabase...');
+        
+        // Fetch order details
+        const { data: order, error: orderError } = await supabaseClient
+          .from("orders")
+          .select("*")
+          .eq("order_id", orderId)
+          .single();
+
+        console.log('Order fetch result:', { order, orderError });
+
+        if (orderError) {
+          console.error('❌ Order fetch error:', orderError);
+          throw new Error(orderError.message);
+        }
+
+        if (!order) {
+          console.warn('⚠️ Order not found');
+          throw new Error("Order not found. Please check your Order ID.");
+        }
+
+        console.log('✅ Order found:', order);
+
+        // Fetch order tracking history
+        console.log('📡 Fetching tracking history...');
+        const { data: tracking, error: trackingError } = await supabaseClient
+          .from("order_tracking")
+          .select("*")
+          .eq("order_id", orderId)
+          .order("created_at", { ascending: false });
+
+        if (trackingError) {
+          console.error('⚠️ Tracking fetch error:', trackingError);
+        }
+
+        console.log('Tracking history:', tracking);
+
+        // Display results
+        displayOrderStatus(order, tracking || []);
+        
+        // Set up real-time updates
+        setupRealtime(orderId);
+        
+        currentOrderId = orderId;
+
+        console.log('✅ Order tracking displayed successfully');
+
+      } catch (err) {
+        console.error('❌ Error:', err);
+        error.textContent = "❌ " + err.message;
+        error.classList.add("visible");
+        
+        // Show debug info
+        debug.innerHTML = `
+          <strong>Debug Info:</strong><br>
+          Order ID searched: ${orderId}<br>
+          Error: ${err.message}<br>
+          <small>Possible issues:<br>
+          1. Order doesn't exist in database<br>
+          2. Row Level Security is blocking access<br>
+          3. Database connection issue</small>
+        `;
+        debug.style.display = "block";
+        
+      } finally {
+        loading.classList.remove("visible");
+        trackBtn.disabled = false;
+        trackBtn.textContent = "Track Order";
+      }
+    }
+
+    // Button click event
+    document.getElementById("trackBtn").addEventListener("click", function() {
+      console.log('🖱️ Button clicked');
       trackOrder();
-    }
+    });
+
+    // Enter key support
+    document.getElementById("orderId").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        console.log('⌨️ Enter key pressed');
+        trackOrder();
+      }
+    });
+
+    console.log('✅ All event listeners attached and ready');
   });
 </script>
 </body>

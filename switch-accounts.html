@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Switch Accounts - Modasou</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to bottom, #fff6d5, #f5e6b8);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .switch-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #331300, #5a341f);
+            padding: 30px;
+            text-align: center;
+        }
+
+        .logo {
+            font-family: 'Cinzel', serif;
+            font-size: 36px;
+            background: linear-gradient(90deg, #f5e6b8, #d4af37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header-subtitle {
+            color: #d4af37;
+            font-size: 14px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #331300;
+            margin-bottom: 10px;
+        }
+
+        .sign-out-link {
+            color: #d4af37;
+            text-decoration: none;
+            font-size: 14px;
+            float: right;
+            margin-top: 5px;
+        }
+
+        .sign-out-link:hover {
+            text-decoration: underline;
+        }
+
+        .accounts-list {
+            margin-top: 25px;
+        }
+
+        .account-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border: 2px solid #e0d5c7;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .account-item:hover {
+            border-color: #d4af37;
+            background: #faf8f3;
+        }
+
+        .account-item.active {
+            border-color: #d4af37;
+            background: #fff6d5;
+        }
+
+        .check-icon {
+            width: 24px;
+            height: 24px;
+            color: #4caf50;
+            font-size: 20px;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #d4af37, #c9a227);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: #331300;
+            flex-shrink: 0;
+        }
+
+        .account-info {
+            flex: 1;
+        }
+
+        .account-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #331300;
+            margin-bottom: 3px;
+        }
+
+        .account-email {
+            font-size: 13px;
+            color: #8b5a2b;
+        }
+
+        .remove-btn {
+            padding: 5px 12px;
+            background: #fff;
+            border: 1px solid #e0d5c7;
+            border-radius: 6px;
+            color: #8b5a2b;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .remove-btn:hover {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+
+        .add-account {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border: 2px dashed #d4af37;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+            background: white;
+        }
+
+        .add-account:hover {
+            background: #faf8f3;
+        }
+
+        .add-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #e0d5c7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: #8b5a2b;
+            flex-shrink: 0;
+        }
+
+        .add-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #d4af37;
+        }
+
+        .info-text {
+            font-size: 13px;
+            color: #8b5a2b;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e0d5c7;
+        }
+
+        .info-link {
+            color: #d4af37;
+            text-decoration: none;
+        }
+
+        .info-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 450px;
+            padding: 30px;
+            animation: slideUp 0.3s;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            margin-bottom: 25px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #331300;
+            margin-bottom: 8px;
+        }
+
+        .modal-subtitle {
+            font-size: 14px;
+            color: #8b5a2b;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #331300;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0d5c7;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #d4af37;
+            background: #faf8f3;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #d4af37, #c9a227);
+            color: #331300;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e0d5c7;
+            color: #8b5a2b;
+        }
+
+        .btn-secondary:hover {
+            background: #d0c5b7;
+        }
+
+        .error-message {
+            color: #f44336;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .content {
+                padding: 20px;
+            }
+            .modal-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="switch-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">MODASOU™</div>
+            <div class="header-subtitle">Switch between your accounts</div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <div class="section-title">
+                Switch accounts
+                <a href="#" class="sign-out-link" onclick="signOutAll(event)">Sign out all</a>
+            </div>
+
+            <!-- Accounts List -->
+            <div class="accounts-list" id="accountsList">
+                <!-- Accounts will be loaded here -->
+            </div>
+
+            <!-- Add Account -->
+            <div class="add-account" onclick="openAddAccountModal()">
+                <div class="add-icon">+</div>
+                <div class="add-text">Add another account</div>
+            </div>
+
+            <!-- Info Text -->
+            <div class="info-text">
+                <a href="#" class="info-link">Learn more</a> about managing multiple accounts and when to add them.
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Account Modal -->
+    <div id="addAccountModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Add Account</div>
+                <div class="modal-subtitle">Sign in to add another account</div>
+            </div>
+
+            <form id="addAccountForm" onsubmit="addAccount(event)">
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input 
+                        type="email" 
+                        class="form-input" 
+                        id="emailInput" 
+                        placeholder="Enter your email"
+                        required
+                    >
+                    <div class="error-message" id="emailError">Please enter a valid email</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input 
+                        type="password" 
+                        class="form-input" 
+                        id="passwordInput" 
+                        placeholder="Enter your password"
+                        required
+                    >
+                    <div class="error-message" id="passwordError">Password is required</div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeAddAccountModal()">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Sign In & Add
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let accounts = [];
+        let currentUserId = localStorage.getItem('userId');
+
+        // Load accounts on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAccounts();
+        });
+
+        // Load all saved accounts
+        function loadAccounts() {
+            const savedAccounts = localStorage.getItem('modasou_accounts');
+            if (savedAccounts) {
+                accounts = JSON.parse(savedAccounts);
+            } else {
+                // Add current account if exists
+                const currentName = localStorage.getItem('userName');
+                const currentEmail = localStorage.getItem('userEmail');
+                if (currentName && currentEmail) {
+                    accounts = [{
+                        id: currentUserId || generateUserId(),
+                        name: currentName,
+                        email: currentEmail,
+                        token: localStorage.getItem('token') || generateToken()
+                    }];
+                    localStorage.setItem('modasou_accounts', JSON.stringify(accounts));
+                }
+            }
+            renderAccounts();
+        }
+
+        // Render accounts list
+        function renderAccounts() {
+            const list = document.getElementById('accountsList');
+            list.innerHTML = '';
+
+            if (accounts.length === 0) {
+                list.innerHTML = '<div style="text-align: center; color: #8b5a2b; padding: 20px;">No accounts found. Add an account to get started.</div>';
+                return;
+            }
+
+            accounts.forEach(account => {
+                const isActive = account.id === currentUserId;
+                const initials = account.name.split(' ')
+                    .map(n => n.charAt(0))
+                    .join('')
+                    .toUpperCase()
+                    .substring(0, 2);
+
+                const item = document.createElement('div');
+                item.className = 'account-item' + (isActive ? ' active' : '');
+                item.onclick = (e) => {
+                    if (!e.target.classList.contains('remove-btn')) {
+                        switchAccount(account.id);
+                    }
+                };
+                
+                item.innerHTML = `
+                    ${isActive ? '<div class="check-icon">✓</div>' : ''}
+                    <div class="avatar">${initials}</div>
+                    <div class="account-info">
+                        <div class="account-name">${account.name}</div>
+                        <div class="account-email">${account.email}</div>
+                    </div>
+                    ${!isActive ? `<button class="remove-btn" onclick="removeAccount(event, '${account.id}')">Remove</button>` : ''}
+                `;
+                
+                list.appendChild(item);
+            });
+        }
+
+        // Switch to different account
+        function switchAccount(accountId) {
+            if (accountId === currentUserId) return;
+
+            const account = accounts.find(a => a.id === accountId);
+            if (account) {
+                // Switch session
+                localStorage.setItem('token', account.token);
+                localStorage.setItem('userId', account.id);
+                localStorage.setItem('userName', account.name);
+                localStorage.setItem('userEmail', account.email);
+                
+                currentUserId = account.id;
+
+                // Show success message
+                showNotification(`Switched to ${account.name}'s account`, 'success');
+                
+                // Redirect to dashboard after a brief delay
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+            }
+        }
+
+        // Remove account from list
+        function removeAccount(event, accountId) {
+            event.stopPropagation();
+            
+            if (accountId === currentUserId) {
+                showNotification('Cannot remove the active account. Switch to another account first.', 'error');
+                return;
+            }
+
+            if (confirm('Remove this account from your device?')) {
+                accounts = accounts.filter(a => a.id !== accountId);
+                localStorage.setItem('modasou_accounts', JSON.stringify(accounts));
+                renderAccounts();
+                showNotification('Account removed successfully', 'success');
+            }
+        }
+
+        // Open add account modal
+        function openAddAccountModal() {
+            document.getElementById('addAccountModal').classList.add('show');
+            document.getElementById('emailInput').focus();
+        }
+
+        // Close add account modal
+        function closeAddAccountModal() {
+            document.getElementById('addAccountModal').classList.remove('show');
+            document.getElementById('addAccountForm').reset();
+            document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+        }
+
+        // Add new account (with authentication simulation)
+        function addAccount(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('emailInput').value.trim();
+            const password = document.getElementById('passwordInput').value;
+
+            // Basic validation
+            if (!email || !password) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
+
+            // Check if account already exists
+            const existingAccount = accounts.find(a => a.email.toLowerCase() === email.toLowerCase());
+            if (existingAccount) {
+                showNotification('This account is already added', 'error');
+                return;
+            }
+
+            // Simulate API call for authentication
+            authenticateAndAddAccount(email, password);
+        }
+
+        // Simulate authentication API call
+        function authenticateAndAddAccount(email, password) {
+            // Show loading state
+            const submitBtn = document.querySelector('.btn-primary');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Signing in...';
+            submitBtn.disabled = true;
+
+            // Simulate API delay
+            setTimeout(() => {
+                // In real implementation, you would make an API call here
+                // For demo purposes, we'll create a mock account
+                
+                // Generate mock user data based on email
+                const userName = email.split('@')[0].split('.').map(n => 
+                    n.charAt(0).toUpperCase() + n.slice(1)
+                ).join(' ');
+
+                const newAccount = {
+                    id: generateUserId(),
+                    name: userName,
+                    email: email,
+                    token: generateToken()
+                };
+
+                // Add to accounts array
+                accounts.push(newAccount);
+                localStorage.setItem('modasou_accounts', JSON.stringify(accounts));
+
+                // Reset form and close modal
+                closeAddAccountModal();
+                
+                // Re-render accounts
+                renderAccounts();
+
+                // Show success message
+                showNotification(`Account added successfully! Welcome, ${userName}`, 'success');
+
+                // Reset button
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+
+            }, 1500);
+        }
+
+        // Sign out from all accounts
+        function signOutAll(event) {
+            event.preventDefault();
+            if (confirm('Sign out from all accounts? You will need to sign in again.')) {
+                localStorage.removeItem('modasou_accounts');
+                localStorage.removeItem('token');
+                localStorage.removeItem('userId');
+                localStorage.removeItem('userName');
+                localStorage.removeItem('userEmail');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Helper: Generate unique user ID
+        function generateUserId() {
+            return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Helper: Generate auth token
+        function generateToken() {
+            return 'token_' + Math.random().toString(36).substr(2) + Date.now();
+        }
+
+        // Helper: Show notification
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#4caf50' : type === 'error' ? '#f44336' : '#2196F3'};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                z-index: 10000;
+                animation: slideIn 0.3s;
+            `;
+            notification.textContent = message;
+
+            document.body.appendChild(notification);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('addAccountModal');
+            if (event.target === modal) {
+                closeAddAccountModal();
+            }
+        }
+
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(400px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(400px);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

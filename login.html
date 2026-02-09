@@ -1,0 +1,458 @@
+<!-- LOGIN PAGE (login.html) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - Modasou</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #faf8f3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-container {
+            background-color: white;
+            border: 1px solid #d7ccc8;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(139, 90, 43, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #5d4037;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .logo p {
+            color: #8b5a2b;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .form-title {
+            color: #5d4037;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #5d4037;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #d7ccc8;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #d4af37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #bcaaa4;
+        }
+
+        .error-message {
+            color: #c62828;
+            font-size: 12px;
+            margin-top: 6px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .forgot-password a {
+            color: #8b5a2b;
+            font-size: 13px;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .forgot-password a:hover {
+            color: #d4af37;
+            text-decoration: underline;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #d4af37 0%, #c9a227 100%);
+            border: none;
+            color: #3e2723;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #c9a227 0%, #b8941e 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: #d7ccc8;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: #d7ccc8;
+        }
+
+        .divider span {
+            background-color: white;
+            padding: 0 15px;
+            color: #8b5a2b;
+            font-size: 13px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .signup-link {
+            text-align: center;
+            color: #8b5a2b;
+            font-size: 14px;
+        }
+
+        .signup-link a {
+            color: #d4af37;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .signup-link a:hover {
+            color: #8b5a2b;
+            text-decoration: underline;
+        }
+
+        .social-login {
+            margin-top: 20px;
+        }
+
+        .social-btn {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #d7ccc8;
+            border-radius: 8px;
+            background-color: white;
+            color: #5d4037;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .social-btn:hover {
+            background-color: #faf8f3;
+            border-color: #8b5a2b;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-home a {
+            color: #8b5a2b;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .back-home a:hover {
+            color: #d4af37;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1>Modasou</h1>
+            <p>Welcome back!</p>
+        </div>
+
+        <h2 class="form-title">Sign In</h2>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="Enter your email"
+                    required
+                >
+                <span class="error-message" id="emailError">Please enter a valid email</span>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="Enter your password"
+                    required
+                >
+                <span class="error-message" id="passwordError">Password is required</span>
+            </div>
+
+            <div class="forgot-password">
+                <a href="forgot-password.html">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="submit-btn">Sign In</button>
+        </form>
+
+        <div class="divider">
+            <span>OR</span>
+        </div>
+
+        <div class="social-login">
+            <button class="social-btn" onclick="loginWithGoogle()">
+                <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
+                Continue with Google
+            </button>
+            <button class="social-btn" onclick="loginWithFacebook()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                Continue with Facebook
+            </button>
+        </div>
+
+        <div class="divider">
+            <span>New to Modasou?</span>
+        </div>
+
+        <div class="signup-link">
+            Don't have an account? <a href="signup.html">Create Account</a>
+        </div>
+
+        <div class="back-home">
+            <a href="index.html">← Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        // Check if already logged in when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                // Already logged in, redirect to dashboard
+                window.location.href = 'dashboard.html';
+            }
+        });
+
+        const loginForm = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const emailError = document.getElementById('emailError');
+        const passwordError = document.getElementById('passwordError');
+
+        // Email validation
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // Form submission
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Reset error messages
+            emailError.classList.remove('show');
+            passwordError.classList.remove('show');
+            
+            let isValid = true;
+            
+            // Validate email
+            if (!emailInput.value || !validateEmail(emailInput.value)) {
+                emailError.classList.add('show');
+                isValid = false;
+            }
+            
+            // Validate password
+            if (!passwordInput.value || passwordInput.value.length < 6) {
+                passwordError.textContent = 'Password must be at least 6 characters';
+                passwordError.classList.add('show');
+                isValid = false;
+            }
+            
+            if (isValid) {
+                // Here you would send data to your backend
+                const loginData = {
+                    email: emailInput.value,
+                    password: passwordInput.value
+                };
+                
+                console.log('Login data:', loginData);
+                
+                // Example: Send to backend
+                // fetch('/api/login', {
+                //     method: 'POST',
+                //     headers: {
+                //         'Content-Type': 'application/json',
+                //     },
+                //     body: JSON.stringify(loginData)
+                // })
+                // .then(response => response.json())
+                // .then(data => {
+                //     if (data.success) {
+                //         // Save user session
+                //         localStorage.setItem('token', data.token);
+                //         localStorage.setItem('userId', data.user.id);
+                //         localStorage.setItem('userName', data.user.name);
+                //         localStorage.setItem('userEmail', data.user.email);
+                //         localStorage.setItem('loginTime', new Date().getTime());
+                //         
+                //         alert('Login successful! Welcome back.');
+                //         window.location.href = 'dashboard.html';
+                //     } else {
+                //         alert('Login failed: ' + data.message);
+                //     }
+                // });
+                
+                // Login from customers table
+                const SUPABASE_URL = 'https://gztneesmxwfhdmhqikel.supabase.co';
+                const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA';
+
+                // Hash password same way as signup
+                const passwordHash = btoa(passwordInput.value + 'modasou_customer_2024');
+
+                fetch(`${SUPABASE_URL}/rest/v1/customers?email=eq.${encodeURIComponent(emailInput.value)}&password_hash=eq.${encodeURIComponent(passwordHash)}&select=*`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Login response:', data);
+                    
+                    if (data && data[0]) {
+                        const customer = data[0];
+                        
+                        // Update last login
+                        fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${customer.id}`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'apikey': SUPABASE_KEY,
+                                'Authorization': `Bearer ${SUPABASE_KEY}`
+                            },
+                            body: JSON.stringify({ last_login: new Date().toISOString() })
+                        });
+                        
+                        // Save session with REAL customer data
+                        localStorage.setItem('token', 'customer-' + customer.id);
+                        localStorage.setItem('userId', customer.id);
+                        localStorage.setItem('userName', customer.full_name);
+                        localStorage.setItem('userEmail', customer.email);
+                        localStorage.setItem('loginTime', new Date().getTime());
+                        
+                        alert('Login successful! Welcome back, ' + customer.full_name + '!');
+                        window.location.href = 'dashboard.html';
+                    } else {
+                        alert('Invalid email or password. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Login failed. Please check your connection and try again.');
+                });
+            }
+        });
+
+        // Social login functions
+        function loginWithGoogle() {
+            // Implement Google OAuth
+            console.log('Login with Google');
+            alert('Google login would be implemented here');
+            // window.location.href = '/auth/google';
+        }
+
+        function loginWithFacebook() {
+            // Implement Facebook OAuth
+            console.log('Login with Facebook');
+            alert('Facebook login would be implemented here');
+            // window.location.href = '/auth/facebook';
+        }
+
+        // Clear error on input
+        emailInput.addEventListener('input', function() {
+            emailError.classList.remove('show');
+        });
+
+        passwordInput.addEventListener('input', function() {
+            passwordError.classList.remove('show');
+        });
+    </script>
+</body>
+</html>

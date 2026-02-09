@@ -1,0 +1,632 @@
+<!-- SIGNUP PAGE (signup.html) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - Modasou</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #faf8f3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .signup-container {
+            background-color: white;
+            border: 1px solid #d7ccc8;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(139, 90, 43, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #5d4037;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .logo p {
+            color: #8b5a2b;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .form-title {
+            color: #5d4037;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #5d4037;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #d7ccc8;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #d4af37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #bcaaa4;
+        }
+
+        .error-message {
+            color: #c62828;
+            font-size: 12px;
+            margin-top: 6px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .password-strength {
+            margin-top: 8px;
+            display: none;
+        }
+
+        .password-strength.show {
+            display: block;
+        }
+
+        .strength-bar {
+            height: 4px;
+            background-color: #d7ccc8;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+
+        .strength-bar-fill {
+            height: 100%;
+            transition: all 0.3s;
+            width: 0%;
+        }
+
+        .strength-bar-fill.weak {
+            width: 33%;
+            background-color: #c62828;
+        }
+
+        .strength-bar-fill.medium {
+            width: 66%;
+            background-color: #f9a825;
+        }
+
+        .strength-bar-fill.strong {
+            width: 100%;
+            background-color: #2e7d32;
+        }
+
+        .strength-text {
+            font-size: 12px;
+            color: #8b5a2b;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-top: 3px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            font-size: 13px;
+            color: #5d4037;
+            cursor: pointer;
+            line-height: 1.4;
+        }
+
+        .checkbox-group a {
+            color: #d4af37;
+            text-decoration: none;
+        }
+
+        .checkbox-group a:hover {
+            text-decoration: underline;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #d4af37 0%, #c9a227 100%);
+            border: none;
+            color: #3e2723;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #c9a227 0%, #b8941e 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background: #d7ccc8;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: #d7ccc8;
+        }
+
+        .divider span {
+            background-color: white;
+            padding: 0 15px;
+            color: #8b5a2b;
+            font-size: 13px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-link {
+            text-align: center;
+            color: #8b5a2b;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #d4af37;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .login-link a:hover {
+            color: #8b5a2b;
+            text-decoration: underline;
+        }
+
+        .social-signup {
+            margin-top: 20px;
+        }
+
+        .social-btn {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #d7ccc8;
+            border-radius: 8px;
+            background-color: white;
+            color: #5d4037;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .social-btn:hover {
+            background-color: #faf8f3;
+            border-color: #8b5a2b;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-home a {
+            color: #8b5a2b;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .back-home a:hover {
+            color: #d4af37;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="logo">
+            <h1>Modasou</h1>
+            <p>Join us today!</p>
+        </div>
+
+        <h2 class="form-title">Create Account</h2>
+
+        <form id="signupForm">
+            <div class="form-group">
+                <label for="fullname">Full Name</label>
+                <input 
+                    type="text" 
+                    id="fullname" 
+                    name="fullname" 
+                    placeholder="Enter your full name"
+                    required
+                >
+                <span class="error-message" id="fullnameError">Please enter your full name</span>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="Enter your email"
+                    required
+                >
+                <span class="error-message" id="emailError">Please enter a valid email</span>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="Create a strong password"
+                    required
+                >
+                <div class="password-strength" id="passwordStrength">
+                    <div class="strength-bar">
+                        <div class="strength-bar-fill" id="strengthBarFill"></div>
+                    </div>
+                    <span class="strength-text" id="strengthText"></span>
+                </div>
+                <span class="error-message" id="passwordError">Password must be at least 8 characters</span>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input 
+                    type="password" 
+                    id="confirmPassword" 
+                    name="confirmPassword" 
+                    placeholder="Re-enter your password"
+                    required
+                >
+                <span class="error-message" id="confirmPasswordError">Passwords do not match</span>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">
+                    I agree to the <a href="terms.html">Terms & Conditions</a> and <a href="privacy.html">Privacy Policy</a>
+                </label>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="newsletter" name="newsletter">
+                <label for="newsletter">
+                    Subscribe to newsletter for exclusive offers and updates
+                </label>
+            </div>
+
+            <button type="submit" class="submit-btn">Create Account</button>
+        </form>
+
+        <div class="divider">
+            <span>OR</span>
+        </div>
+
+        <div class="social-signup">
+            <button class="social-btn" onclick="signupWithGoogle()">
+                <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
+                Sign up with Google
+            </button>
+            <button class="social-btn" onclick="signupWithFacebook()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                Sign up with Facebook
+            </button>
+        </div>
+
+        <div class="divider">
+            <span>Already have an account?</span>
+        </div>
+
+        <div class="login-link">
+            <a href="login.html">Sign In</a>
+        </div>
+
+        <div class="back-home">
+            <a href="index.html">← Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        // Check if already logged in when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                // Already logged in, redirect to dashboard
+                window.location.href = 'dashboard.html';
+            }
+        });
+
+        const signupForm = document.getElementById('signupForm');
+        const fullnameInput = document.getElementById('fullname');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const termsCheckbox = document.getElementById('terms');
+        
+        const fullnameError = document.getElementById('fullnameError');
+        const emailError = document.getElementById('emailError');
+        const passwordError = document.getElementById('passwordError');
+        const confirmPasswordError = document.getElementById('confirmPasswordError');
+        
+        const passwordStrength = document.getElementById('passwordStrength');
+        const strengthBarFill = document.getElementById('strengthBarFill');
+        const strengthText = document.getElementById('strengthText');
+
+        // Email validation
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // Password strength checker
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            
+            if (password.length >= 8) strength++;
+            if (password.length >= 12) strength++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            if (/\d/.test(password)) strength++;
+            if (/[^a-zA-Z0-9]/.test(password)) strength++;
+            
+            return strength;
+        }
+
+        // Update password strength indicator
+        passwordInput.addEventListener('input', function() {
+            const password = passwordInput.value;
+            
+            if (password.length === 0) {
+                passwordStrength.classList.remove('show');
+                return;
+            }
+            
+            passwordStrength.classList.add('show');
+            const strength = checkPasswordStrength(password);
+            
+            strengthBarFill.className = 'strength-bar-fill';
+            
+            if (strength <= 2) {
+                strengthBarFill.classList.add('weak');
+                strengthText.textContent = 'Weak password';
+                strengthText.style.color = '#c62828';
+            } else if (strength <= 4) {
+                strengthBarFill.classList.add('medium');
+                strengthText.textContent = 'Medium password';
+                strengthText.style.color = '#f9a825';
+            } else {
+                strengthBarFill.classList.add('strong');
+                strengthText.textContent = 'Strong password';
+                strengthText.style.color = '#2e7d32';
+            }
+        });
+
+        // Form submission
+        signupForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Reset error messages
+            fullnameError.classList.remove('show');
+            emailError.classList.remove('show');
+            passwordError.classList.remove('show');
+            confirmPasswordError.classList.remove('show');
+            
+            let isValid = true;
+            
+            // Validate full name
+            if (!fullnameInput.value || fullnameInput.value.trim().length < 2) {
+                fullnameError.classList.add('show');
+                isValid = false;
+            }
+            
+            // Validate email
+            if (!emailInput.value || !validateEmail(emailInput.value)) {
+                emailError.classList.add('show');
+                isValid = false;
+            }
+            
+            // Validate password
+            if (!passwordInput.value || passwordInput.value.length < 8) {
+                passwordError.classList.add('show');
+                isValid = false;
+            }
+            
+            // Validate confirm password
+            if (passwordInput.value !== confirmPasswordInput.value) {
+                confirmPasswordError.classList.add('show');
+                isValid = false;
+            }
+            
+            // Validate terms
+            if (!termsCheckbox.checked) {
+                alert('Please agree to the Terms & Conditions');
+                isValid = false;
+            }
+            
+            if (isValid) {
+                // Here you would send data to your backend
+                const signupData = {
+                    fullname: fullnameInput.value,
+                    email: emailInput.value,
+                    password: passwordInput.value,
+                    newsletter: document.getElementById('newsletter').checked
+                };
+                
+                console.log('Signup data:', signupData);
+                
+                // Example: Send to backend
+                // fetch('/api/signup', {
+                //     method: 'POST',
+                //     headers: {
+                //         'Content-Type': 'application/json',
+                //     },
+                //     body: JSON.stringify(signupData)
+                // })
+                // .then(response => response.json())
+                // .then(data => {
+                //     if (data.success) {
+                //         // AUTO-LOGIN: Save user session
+                //         localStorage.setItem('token', data.token);
+                //         localStorage.setItem('userId', data.user.id);
+                //         localStorage.setItem('userName', data.user.name);
+                //         localStorage.setItem('userEmail', data.user.email);
+                //         localStorage.setItem('loginTime', new Date().getTime());
+                //         
+                //         // Redirect to dashboard (not login page)
+                //         alert('Account created successfully! Welcome to Modasou.');
+                //         window.location.href = 'dashboard.html';
+                //     } else {
+                //         alert('Signup failed: ' + data.message);
+                //     }
+                // });
+                
+                // Signup to customers table (separate from admin users)
+                const SUPABASE_URL = 'https://gztneesmxwfhdmhqikel.supabase.co';
+                const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA';
+
+                // Simple password hash
+                const passwordHash = btoa(passwordInput.value + 'modasou_customer_2024');
+
+                fetch(`${SUPABASE_URL}/rest/v1/customers`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Prefer': 'return=representation'
+                    },
+                    body: JSON.stringify({
+                        full_name: fullnameInput.value,
+                        email: emailInput.value,
+                        password_hash: passwordHash,
+                        created_at: new Date().toISOString()
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Signup response:', data);
+                    
+                    if (data && data[0]) {
+                        const customer = data[0];
+                        // Save session
+                        localStorage.setItem('token', 'customer-' + customer.id);
+                        localStorage.setItem('userId', customer.id);
+                        localStorage.setItem('userName', customer.full_name);
+                        localStorage.setItem('userEmail', customer.email);
+                        localStorage.setItem('loginTime', new Date().getTime());
+                        
+                        alert('Account created successfully! Welcome to Modasou.');
+                        window.location.href = 'dashboard.html';
+                    } else if (data.code === '23505') {
+                        alert('This email is already registered. Please login instead.');
+                    } else if (data.message) {
+                        alert('Signup failed: ' + data.message);
+                    } else {
+                        alert('Signup failed. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please check your connection and try again.');
+                });
+            }
+        });
+
+        // Social signup functions
+        function signupWithGoogle() {
+            console.log('Signup with Google');
+            alert('Google signup would be implemented here');
+            // window.location.href = '/auth/google';
+        }
+
+        function signupWithFacebook() {
+            console.log('Signup with Facebook');
+            alert('Facebook signup would be implemented here');
+            // window.location.href = '/auth/facebook';
+        }
+
+        // Clear errors on input
+        fullnameInput.addEventListener('input', function() {
+            fullnameError.classList.remove('show');
+        });
+
+        emailInput.addEventListener('input', function() {
+            emailError.classList.remove('show');
+        });
+
+        passwordInput.addEventListener('input', function() {
+            passwordError.classList.remove('show');
+        });
+
+        confirmPasswordInput.addEventListener('input', function() {
+            confirmPasswordError.classList.remove('show');
+        });
+    </script>
+</body>
+</html>

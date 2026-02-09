@@ -1,0 +1,806 @@
+<!-- USER DASHBOARD (dashboard.html) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - Modasou</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #faf8f3;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #5d4037;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .navbar-logo {
+            color: #d4af37;
+            font-size: 28px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .navbar-user {
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            background-color: #d4af37;
+            color: #3e2723;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #c9a227;
+        }
+
+        /* Dashboard Container */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px 0;
+            box-shadow: 0 2px 8px rgba(139, 90, 43, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar-title {
+            color: #5d4037;
+            font-size: 20px;
+            font-weight: 600;
+            padding: 0 30px 20px;
+            border-bottom: 2px solid #f0ebe6;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 10px 0;
+        }
+
+        .sidebar-menu li {
+            padding: 15px 30px;
+            color: #5d4037;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-menu li:hover {
+            background-color: #faf8f3;
+            border-left-color: #d4af37;
+        }
+
+        .sidebar-menu li.active {
+            background-color: #f5f0e8;
+            border-left-color: #d4af37;
+            color: #d4af37;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            background-color: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 2px 8px rgba(139, 90, 43, 0.1);
+            min-height: 600px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            color: #5d4037;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #d4af37;
+        }
+
+        /* Account Section */
+        .profile-card {
+            background-color: #faf8f3;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .profile-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .info-item {
+            margin-bottom: 15px;
+        }
+
+        .info-label {
+            color: #8b5a2b;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            color: #5d4037;
+            font-size: 16px;
+        }
+
+        .edit-btn{
+            background: linear-gradient(135deg, #d4af37 0%, #c9a227 100%);
+            color: #3e2723;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .edit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Orders Section */
+        .orders-filter {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .filter-btn {
+            background-color: white;
+            border: 2px solid #d7ccc8;
+            color: #5d4037;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover {
+            border-color: #d4af37;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #d4af37 0%, #c9a227 100%);
+            color: #3e2723;
+            border-color: #d4af37;
+        }
+
+        .order-card {
+            background-color: #faf8f3;
+            border: 2px solid #e0d5c7;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .order-card:hover {
+            border-color: #d4af37;
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0d5c7;
+        }
+
+        .order-id {
+            color: #5d4037;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .order-date {
+            color: #8b5a2b;
+            font-size: 14px;
+        }
+
+        .order-status {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-processing {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+
+        .status-shipped {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-delivered {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .order-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .order-item {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            background-color: #e0d5c7;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            color: #5d4037;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .item-price {
+            color: #d4af37;
+            font-weight: 600;
+        }
+
+        .order-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 2px solid #e0d5c7;
+        }
+
+        .order-total {
+            color: #5d4037;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .track-btn, .reorder-btn, .cancel-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .track-btn {
+            background: linear-gradient(135deg, #d4af37 0%, #c9a227 100%);
+            color: #3e2723;
+        }
+
+        .reorder-btn {
+            background-color: white;
+            border: 2px solid #d4af37;
+            color: #5d4037;
+        }
+
+        .cancel-btn {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .track-btn:hover, .reorder-btn:hover, .cancel-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Wishlist Section */
+        .wishlist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .wishlist-item {
+            background-color: #faf8f3;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .wishlist-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(139, 90, 43, 0.15);
+        }
+
+        .wishlist-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            background-color: #e0d5c7;
+        }
+
+        .wishlist-content {
+            padding: 20px;
+        }
+
+        .wishlist-name {
+            color: #5d4037;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .wishlist-price {
+            color: #d4af37;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .wishlist-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .add-to-cart-btn, .remove-wishlist-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .add-to-cart-btn {
+            background: linear-gradient(135deg, #d4af37 0%, #c9a227 100%);
+            color: #3e2723;
+        }
+
+        .remove-wishlist-btn {
+            background-color: white;
+            border: 2px solid #d7ccc8;
+            color: #5d4037;
+        }
+
+        /* Recommendations Section */
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .recommendation-card {
+            background-color: #faf8f3;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(139, 90, 43, 0.15);
+        }
+
+        .recommendation-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            background-color: #e0d5c7;
+        }
+
+        .recommendation-content {
+            padding: 20px;
+        }
+
+        .recommendation-name {
+            color: #5d4037;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .recommendation-price {
+            color: #d4af37;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .recommendation-reason {
+            color: #8b5a2b;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        .view-product-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #d4af37 0%, #c9a227 100%);
+            color: #3e2723;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .view-product-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #8b5a2b;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state-text {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .browse-btn {
+            background: linear-gradient(135deg, #d4af37 0%, #c9a227 100%);
+            color: #3e2723;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .browse-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+            }
+
+            .profile-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-logo">Modasou</a>
+        <div class="navbar-user">
+            <span id="userName">Welcome, User</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2 class="sidebar-title">My Account</h2>
+            <ul class="sidebar-menu">
+                <li class="active" onclick="showSection('account')">Your Account</li>
+                <li onclick="showSection('orders')">Your Orders</li>
+                <li onclick="showSection('wishlist')">Your Wishlist</li>
+                <li onclick="showSection('recommendations')">Your Recommendations</li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Account Section -->
+            <section id="account" class="section active">
+                <h1 class="section-title">Your Account</h1>
+                
+                <div class="profile-card">
+                    <h3 style="color: #5d4037; margin-bottom: 20px; font-size: 20px;">Personal Information</h3>
+                    <div class="profile-info">
+                        <div class="info-item">
+                            <div class="info-label">Full Name</div>
+                            <div class="info-value" id="profileName">John Doe</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Email Address</div>
+                            <div class="info-value" id="profileEmail">john.doe@example.com</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Phone Number</div>
+                            <div class="info-value" id="profilePhone">+1 234 567 8900</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Member Since</div>
+                            <div class="info-value" id="profileJoined">January 2024</div>
+                        </div>
+                    </div>
+                    <button class="edit-btn" onclick="editProfile()">Edit Profile</button>
+                    
+                </div>
+
+                <div class="profile-card">
+                    <h3 style="color: #5d4037; margin-bottom: 20px; font-size: 20px;">Shipping Address</h3>
+                    <div class="info-item">
+                        <div class="info-value" id="shippingAddress">
+                            123 Fashion Street<br>
+                            New York, NY 10001<br>
+                            United States
+                        </div>
+                    </div>
+                    <button class="edit-btn" onclick="editAddress()">Edit Address</button>
+                    
+                </div>
+            </section>
+
+            <!-- Orders Section -->
+            <section id="orders" class="section">
+                <h1 class="section-title">Your Orders</h1>
+                
+                <div class="orders-filter">
+
+                    <button onclick="window.location.href='order-tracking.html?orderId=' + order.order_id" class="filter-btn" >
+
+                        Track Order
+                         </button>
+                    <button class="filter-btn active" onclick="filterOrders('all')">All Orders</button>
+                    <button class="filter-btn" onclick="filterOrders('pending')">Pending</button>
+                    <button class="filter-btn" onclick="filterOrders('processing')">Processing</button>
+                    <button class="filter-btn" onclick="filterOrders('shipped')">Shipped</button>
+                    <button class="filter-btn" onclick="filterOrders('delivered')">Delivered</button>
+                </div>
+
+                <div id="ordersContainer">
+                    <!-- Orders will be dynamically loaded here -->
+                </div>
+            </section>
+
+            <!-- Wishlist Section -->
+            <section id="wishlist" class="section">
+                <h1 class="section-title">Your Wishlist</h1>
+                
+                <div id="wishlistContainer" class="wishlist-grid">
+                    <!-- Wishlist items will be dynamically loaded here -->
+                </div>
+            </section>
+
+            <!-- Recommendations Section -->
+            <section id="recommendations" class="section">
+                <h1 class="section-title">Your Recommendations</h1>
+                <p style="color: #8b5a2b; margin-bottom: 30px;">Based on your browsing history and preferences</p>
+                
+                <div id="recommendationsContainer" class="recommendations-grid">
+                    <!-- Recommendations will be dynamically loaded here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+
+
+// Reload fresh data from database on page load
+document.addEventListener('DOMContentLoaded', async function() {
+    const userId = localStorage.getItem('userId');
+    const SUPABASE_URL = 'https://gztneesmxwfhdmhqikel.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6dG5lZXNteHdmaGRtaHFpa2VsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjcxNjAzNDAsImV4cCI6MjA4MjczNjM0MH0.iWDtkljuQLZFQeLvBrJHVyXNfpu4bJOvvVab3G0eOsA';
+
+    try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/customers?id=eq.${userId}&select=*`, {
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`
+            }
+        });
+        
+        const data = await response.json();
+        if (data && data[0]) {
+            const customer = data[0];
+            localStorage.setItem('userName', customer.full_name);
+            localStorage.setItem('userEmail', customer.email);
+            localStorage.setItem('userPhone', customer.phone || '');
+            
+            document.getElementById('userName').textContent = `Welcome, ${customer.full_name.split(' ')[0]}`;
+            document.getElementById('profileName').textContent = customer.full_name;
+            document.getElementById('profileEmail').textContent = customer.email;
+            document.getElementById('profilePhone').textContent = customer.phone || 'Not provided';
+            
+            if (customer.shipping_address) {
+                document.getElementById('shippingAddress').innerHTML = customer.shipping_address.replace(/\n/g, '<br>');
+            }
+        }
+    } catch (error) {
+        console.error('Error loading profile:', error);
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const section = urlParams.get('section');
+    if (section) showSection(section);
+    
+    loadOrders();
+    loadWishlist();
+    loadRecommendations();
+});
+
+function showSection(sectionName) {
+    document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+    });
+    document.querySelectorAll('.sidebar-menu li').forEach(item => {
+        item.classList.remove('active');
+    });
+    document.getElementById(sectionName).classList.add('active');
+    event.target?.classList.add('active');
+}
+
+async function loadOrders() {
+    const orders = [
+        { orderId: 'ORD-2024-001', date: '2024-01-15', status: 'delivered', 
+          items: [{ name: 'Designer Handbag', price: 299.99 }], total: 389.98 }
+    ];
+    displayOrders(orders);
+}
+
+function displayOrders(orders) {
+    const container = document.getElementById('ordersContainer');
+    if (orders.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📦</div><div class="empty-state-text">No orders yet</div></div>';
+        return;
+    }
+    container.innerHTML = orders.map(order => `
+        <div class="order-card" data-status="${order.status}">
+            <div class="order-header">
+                <div><div class="order-id">Order #${order.orderId}</div></div>
+                <span class="order-status status-${order.status}">${order.status.toUpperCase()}</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+function filterOrders(status) {
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    document.querySelectorAll('.order-card').forEach(order => {
+        order.style.display = (status === 'all' || order.dataset.status === status) ? 'block' : 'none';
+    });
+}
+
+function trackOrder(orderId) {
+    window.location.href = `order-tracking.html?orderId=${orderId}`;
+}
+
+async function loadWishlist() {
+    displayWishlist([]);
+}
+
+function displayWishlist(items) {
+    document.getElementById('wishlistContainer').innerHTML = '<div class="empty-state"><div class="empty-state-icon">❤️</div><div class="empty-state-text">Wishlist is empty</div></div>';
+}
+
+async function loadRecommendations() {
+    displayRecommendations([]);
+}
+
+function displayRecommendations(items) {
+    document.getElementById('recommendationsContainer').innerHTML = '';
+}
+
+function editProfile() {
+    window.location.href = 'edit-profile.html';
+}
+
+function editAddress() {
+    window.location.href = 'edit-addresses.html';
+}
+// Update address from localStorage addresses
+const savedAddresses = localStorage.getItem('modasou_addresses');
+if (savedAddresses) {
+    const addresses = JSON.parse(savedAddresses);
+    const defaultAddress = addresses.find(a => a.isDefault);
+    
+    if (defaultAddress) {
+        const addressHTML = `
+            ${defaultAddress.line1}<br>
+            ${defaultAddress.line2 ? defaultAddress.line2 + '<br>' : ''}
+            ${defaultAddress.landmark ? defaultAddress.landmark + '<br>' : ''}
+            ${defaultAddress.city}, ${defaultAddress.state} ${defaultAddress.pincode}<br>
+            ${defaultAddress.country}
+        `;
+        document.getElementById('shippingAddress').innerHTML = addressHTML;
+    }}
+function logout() {
+    if (confirm('Are you sure you want to logout?')) {
+        localStorage.clear();
+        window.location.href = 'index.html';
+    }
+}
+    </script>
+</body>
+</html>
